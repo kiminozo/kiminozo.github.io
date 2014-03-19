@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title">
+<meta name="og:url" content="http://yoursite.com/page/4/">
+<meta name="og:image">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-wp7应用开发笔记16-本地toast-提示" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/28/wp7应用开发笔记16-本地toast-提示/" class="article-date">
+  <time datetime="2012-01-27T22:07:00.000Z" itemprop="datePublished">1月 28 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/28/wp7应用开发笔记16-本地toast-提示/">WP7应用开发笔记(16) 本地Toast 提示</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Toast_通知简介">Toast 通知简介</h2>
+<p>Toast 通知是推送通知的三种类型的其中一种。</p>
+<p>Toast 通知显示在屏幕的顶部，用于通知用户某个事件，如新闻或天气警报。除非用户通过向右轻拂关闭通知，否则 Toast 将显示大约 10 秒钟。如果用户点按 Toast，则会启动发送该 Toast 通知的应用程序。</p>
+<p>Toast 通知的元素如下：</p>
+<ul>
+<li><p>标题。紧挨着应用程序图标之后显示的黑体字字符串。在 XML 架构中，该字符串定义为 Text1 属性。</p>
+</li>
+<li><p>内容。紧挨着&ldquo;标题&rdquo;之后显示的非黑体字字符串。在 XML 架构中，该字符串定义为 Text2 属性。</p>
+</li>
+<li><p>参数。如果用户点按 Toast，则将参数值传递给您的应用程序，而不进行显示。该参数可以指示应用程序应该启动到的页面。该参数还包含传递到应用程序的名称-值对。在 XML 架构中，该字符串定义为 Param 属性。</p>
+</li>
+</ul>
+<p>显示效果如下：</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC539609.jpg" alt=""></p>
+<p>&nbsp;</p>
+<h2 id="本地Toast_提示">本地Toast 提示</h2>
+<p>有时候我们需要显示一些提示信息可以使用Toast提示来直观的呈现，但是Toast提示必须使用推送通知。这样不是很方便，有没有办法不通过推送通知直接呈现出Toast通知的效果呢？</p>
+<p>我寻找了很久在SDK里面好像暂时没有官方的实现方式，不过开源项目<a href="http://www.windowsphonegeek.com/tips/new-coding4fun-phone-toolkit-v1-2-officially-released" target="_blank">Coding4Fun.Phone.Toolkit</a> 里的ToastPrompt就实现了这个效果，而且使用很简单。不过因为是本地的Toast提示不能在App外部呈现。</p>
+<p>&nbsp;</p>
+<p>先声明一下：下面的部分内容摘自 <a href="http://www.windowsphonegeek.com/articles/WP7-Toast-Prompt-in-depth" target="_blank">WP7 ToastPrompt in depth</a></p>
+<h3 id="使用ToastPrompt">使用ToastPrompt</h3>
+<p>首先下载<a href="http://www.windowsphonegeek.com/tips/new-coding4fun-phone-toolkit-v1-2-officially-released" target="_blank">Coding4Fun.Phone.Toolkit</a> 引用到项目中。</p>
+<p>&nbsp;</p>
+<p>ToastPrompt呈现效果有横向和纵向</p>
+<p>&nbsp;</p>
+<p><img src="http://www.windowsphonegeek.com/upload/articles/66-1_thumb.png" alt=""><img src="http://www.windowsphonegeek.com/upload/articles/66-2_2.png" alt=""></p>
+<p>&nbsp;</p>
+<p>代码如下，用法和Message有点像：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> Button_Click(<span style="color: #0000ff;">object</span> sender, RoutedEventArgs e)<br>{<br>    ToastPrompt toast = <span style="color: #0000ff;">new</span> ToastPrompt(); <span style="color: #008000;">//</span><span style="color: #008000;">实例化 </span><span style="color: #008000;"><br></span><br>    toast.Title = <span style="color: #800000;">“</span><span style="color: #800000;">ToastPrompt</span><span style="color: #800000;">“</span>; <span style="color: #008000;">//</span><span style="color: #008000;">设置标题 </span><span style="color: #008000;"><br></span>    toast.Message = <span style="color: #800000;">“</span><span style="color: #800000;">Some message</span><span style="color: #800000;">“</span>; <span style="color: #008000;">//</span><span style="color: #008000;">设置正文消息 </span><span style="color: #008000;"><br></span>    toast.FontSize = <span style="color: #800080;">50</span>; <span style="color: #008000;">//</span><span style="color: #008000;">设置文本大小(可选) </span><span style="color: #008000;"><br></span>    toast.TextOrientation = System.Windows.Controls.Orientation.Vertical; <span style="color: #008000;">//</span><span style="color: #008000;">设置呈现为纵向 </span><span style="color: #008000;"><br></span>    toast.ImageSource = <span style="color: #0000ff;">new</span> BitmapImage(<span style="color: #0000ff;">new</span> Uri(<span style="color: #800000;">“</span><span style="color: #800000;">ApplicationIcon.png</span><span style="color: #800000;">“</span>, UriKind.RelativeOrAbsolute));    <span style="color: #008000;">//</span><span style="color: #008000;">设置 标题前的图片(可选) </span><span style="color: #008000;"><br></span>   toast.Background = <span style="color: #0000ff;">new</span> SolidColorBrush(Colors.LightGray); <span style="color: #008000;">//</span><span style="color: #008000;">背景色(可选) </span><span style="color: #008000;"><br></span>   toast.Foreground = <span style="color: #0000ff;">new</span> SolidColorBrush(Colors.Red); <span style="color: #008000;">//</span><span style="color: #008000;">前景色(可选)</span><span style="color: #008000;"><br></span><br><br>    toast.Completed += toast_Completed; <span style="color: #008000;">//</span><span style="color: #008000;">Toast显示完毕后触发事件(可选) </span><span style="color: #008000;"><br></span>    toast.Show();<br>}<br><br><span style="color: #0000ff;">void</span> toast_Completed(<span style="color: #0000ff;">object</span> sender, PopUpEventArgs&lt;<span style="color: #0000ff;">string</span>, PopUpResult&gt; e)<br>{<br>    <span style="color: #008000;">//</span><span style="color: #008000;">TODO:Toast显示完毕后事件处理 </span><span style="color: #008000;"><br></span>}</pre><br></div>
+
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/28/wp7应用开发笔记16-本地toast-提示/" data-id="b6nurjgrvkbk6dpg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记15-推送通知" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/28/wp7应用开发笔记15-推送通知/" class="article-date">
+  <time datetime="2012-01-27T21:38:00.000Z" itemprop="datePublished">1月 28 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/28/wp7应用开发笔记15-推送通知/">WP7应用开发笔记(15) 推送通知</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>推送通知是WP开发中一个非常重要的概念，因为我这个项目可能不需要，但是有必要学习一下。</p>
+<p>MSDN讲得很清楚，园子里也有很多相关文章，这里简单提一下好了。</p>
+<p>&nbsp;</p>
+<h2 id="推送通知">推送通知</h2>
+<p>了解C/S架构的朋友都知道，客户端到服务器的消息传输可以是双向的，客户端即可以主动从服务器获取消息，也可以被动接受来自服务器通知，而不像纯B/S架构浏览器只能主动从服务器获取消息。</p>
+<p>而且WP手机虽然是C/S模式，但是微软不允许手机被动接收服务器的消息，但是这样无法实现服务器通知。WP提供了一种代理的机制来实现服务器通知，这就是推送通知。</p>
+<p>&nbsp;</p>
+<p>推送通知是一种云服务器代理，服务器不能直接向手机客户端发送消息，必须通过云服务器代理发送。</p>
+<p>MSDN的官方流程如下：</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC505514.jpg" alt=""></p>
+<p>&nbsp;</p>
+<p>流程大概是两步：</p>
+<p>1 客户端从推送云服务（MPNS)获取通知URI，提交给自己的第三方服务器</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012813363580.jpg" alt=""></p>
+<p>2 自己的第三方服务器的通过URI提交通知给推送云服务（MPNS)，推送云服务（MPNS)推送通知到手机</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012813364682.jpg" alt=""></p>
+<h2 id="进一步学习推送通知">进一步学习推送通知</h2>
+<p>大概介绍一下，推送通知还有很多内容需要学习，MSDN讲得非常明白，这里就不详细介绍了：</p>
+<p><a href="http://msdn.microsoft.com/zh-cn/library/ff402537(v=vs.92" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff402537(v=vs.92).aspx</a>.aspx “<a href="http://msdn.microsoft.com/zh-cn/library/ff402537(v=vs.92).aspx" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff402537(v=vs.92).aspx</a>“)</p>
+<p>&nbsp;</p>
+<p>园子里有很多文章：</p>
+<p>Windows Phone 7编程实践&mdash;推送通知_剖析推送通知实现架构：</p>
+<p><a href="http://www.cnblogs.com/xuesong/archive/2011/04/08/2008987.html" title="http://www.cnblogs.com/xuesong/archive/2011/04/08/2008987.html" target="_blank">http://www.cnblogs.com/xuesong/archive/2011/04/08/2008987.html</a></p>
+<p>WP7学习笔记：推送通知服务（附件的源码还比较直观）</p>
+<p><a href="http://www.cnblogs.com/joetao/articles/2214482.html" title="http://www.cnblogs.com/joetao/articles/2214482.html" target="_blank">http://www.cnblogs.com/joetao/articles/2214482.html</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/28/wp7应用开发笔记15-推送通知/" data-id="2x469kvmpob7ewpd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记14-使用caliburn-micro简化mvvm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/27/wp7应用开发笔记14-使用caliburn-micro简化mvvm/" class="article-date">
+  <time datetime="2012-01-27T04:47:00.000Z" itemprop="datePublished">1月 27 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/27/wp7应用开发笔记14-使用caliburn-micro简化mvvm/">WP7应用开发笔记(14) 使用Caliburn Micro简化MVVM</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>续上一篇对MVVM模式的简单介绍，可以了解到MVVM需要编写许多的自定义Command和Action之类的，而且每个类都需要设置DataContext。操作和代码比较重复，为了减少代码量并统一标准，需要引入MVVM框架提高效率。</p>
+<p>&nbsp;</p>
+<p>开源的MVVM框架有：<br><strong>PRISM</strong>：由微软提供，和 MEF/Unity 一起用于依赖注入，支持组合命令，可以扩展。MSDN 上有详细的教程和演练。<br><strong>MVVM Light Toolkit</strong>：有 visual Studio 和 Expression Blend 的项目和项的模板。更多信息请看这里，另外可以参考 VS 和 Expression Blend 的使用教程。<br><strong>Caliburn Micro</strong>：小巧但功能强大框架，支持简化绑定，注入等，实现多种 UI 模式解决实际问题.</p>
+<p><strong>Simple MVVM Toolkit</strong>：提供 VS 项目和项的模板，依赖注入，支持深拷贝以及模型和视图模型之间的属性关联。<br><strong>Catel</strong>：包含项目和项的模板，用户控件和企业类库。支持动态视图模型注入，视图模型的延迟加载和验证。还支持 WP7 专用的视图模型服务。</p>
+<p>&nbsp;</p>
+<p>这里我准备使用Caliburn.Micro，它很好的支持WP7.1还特别包含了专门为WP设计的Caliburn.Micro.Extensions</p>
+<p>开源项目地址：</p>
+<p><a href="http://caliburnmicro.codeplex.com/" title="http://caliburnmicro.codeplex.com/" target="_blank">http://caliburnmicro.codeplex.com/</a></p>
+<p>&nbsp;</p>
+<h2 id="Caliburn-Micro框架的一些特点">Caliburn.Micro框架的一些特点</h2>
+<p>Caliburn.Micro里面使用了很多名称约定来实现和简化代码，而且提供了很多机制减少开发工作。</p>
+<p>&nbsp;</p>
+<h3 id="1-_简化绑定">1. 简化绑定</h3>
+<p>Caliburn.Micro设计了一个Binding Conventions 绑定公约，能够简化绑定代码：</p>
+<p>直接设置与绑定相同名称的（区分大小写）x:Name 就可以自动被绑定了&nbsp;</p>
+<h4 id="1)_简化数据绑定：">1) 简化数据绑定：</h4>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBox </span><span style="color: #ff0000;">Text</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{Binding Path=CustomerName}</span><span style="color: #0000ff;">“</span> <span style="color: #0000ff;">/&gt;</span></pre><br></div>
+
+<p>在Caliburn.Micro中可以写成：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBox </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=&rdquo;CustomerName&rdquo; </span><span style="color: #0000ff;">/&gt;</span></pre><br></div>
+
+<p>达到同样的数据绑定效果，而且默认为双向绑定。</p>
+<p>&nbsp;</p>
+<h4 id="2)简化命令绑定：">2)简化命令绑定：</h4>
+<p>而且同样支持命令绑定而且更加简化：</p>
+<p>原来实现命令绑定的主要代码：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> ICommand HelloCommand{ <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span>; }<br><br>HelloCommand = <span style="color: #0000ff;">new</span> InvokeCommand(OnHello);<br><br><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> OnHello(){<br><br>MessageBox.Show(&ldquo;Hello world&rdquo;)<br><br>}</pre><br></div>
+
+<p>&nbsp;&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Button </span><span style="color: #ff0000;">Command</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{Binding HelloCommand}</span><span style="color: #0000ff;">“</span> <span style="color: #0000ff;">/&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>在Caliburn.Micro中可以写成，直接与方法名相同就可以了，其余的Command可以一概不用。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Button </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=&rdquo;OnHello&rdquo; </span><span style="color: #0000ff;">/&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<h4 id="3)简化动作绑定（事件绑定)：">3)简化动作绑定（事件绑定)：</h4>
+<p>动作绑定在Caliburn.Micro中实现了自己的ActionMessage，将原来的绑定方式：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Button </span><span style="color: #ff0000;">Content</span><span style="color: #0000ff;">=”Button”</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i:Interaction.Triggers</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i:EventTrigger </span><span style="color: #ff0000;">EventName</span><span style="color: #0000ff;">=”Click”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">local:InvokeAction </span><span style="color: #ff0000;">Command</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{Binding HelloCommand}</span><span style="color: #0000ff;">“</span> <span style="color: #0000ff;">/&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">i:EventTrigger</span><span style="color: #0000ff;">&gt;</span><br>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">i:Interaction.Triggers</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Button</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>写为下面的方式，并设置MethodName为对应的方法名字就可以了。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Button </span><span style="color: #ff0000;">Content</span><span style="color: #0000ff;">=”Button”</span><span style="color: #0000ff;">&gt;</span><br>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i:Interaction.Triggers</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i:EventTrigger </span><span style="color: #ff0000;">EventName</span><span style="color: #0000ff;">=”Click”</span><span style="color: #0000ff;">&gt;</span><br>                  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">cal:ActionMessage </span><span style="color: #ff0000;">MethodName</span><span style="color: #0000ff;">=”OnHello”</span> <span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">i:EventTrigger</span><span style="color: #0000ff;">&gt;</span><br>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">i:Interaction.Triggers</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Button</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;此外还可以设置方法的参数Parameter ，使用$eventArgs可以将eventArg对象自动传入进去。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">cal:Parameter </span><span style="color: #ff0000;">Value</span><span style="color: #0000ff;">=”$eventArgs”</span> <span style="color: #0000ff;">/&gt;</span> </pre><br></div>
+
+<p>&nbsp;</p>
+<h3 id="2_自动View-ViewModel映射">2 自动View-ViewModel映射</h3>
+<p>不需要写DataContext = new MainPageViewModel();之类的代码，Caliburn.Micro可以自动完成这个映射，</p>
+<p>只需要按照名称约定来实现：</p>
+<p>View全部为： {CustomName}View</p>
+<p>ViewModel 对于的名称:&nbsp; {CustomName}ViewModel</p>
+<p>如：HelloView 就会自动映射并绑定到HelloViewModel 。</p>
+<p>&nbsp;</p>
+<p>需要注意的是命名空间也是有要求的：</p>
+<p>有2种命名空间方式可以被正确识别：</p>
+<ul>
+<li>View和ViewModel在同一名称空间下.</li>
+<li>View 在Views名称空间下，ViewModel在ViewModels名称空间下。</li>
+</ul>
+<p>&nbsp;</p>
+<h3 id="3_依赖注入">3 依赖注入</h3>
+<p>&nbsp;</p>
+<p>因为Caliburn.Micro内部使用了IoC容器，依赖注入也是很容易的功能，这里就不详细介绍了。</p>
+<p>需要提示的是Caliburn.Micro在WP里面使用的是一个轻量级的PhoneContainer容器。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h3 id="4_辅助接口">4 辅助接口</h3>
+<p>MVVM模式比较复杂的地方就是ViewModel之间的交互。Caliburn.Micro提供了非常多的可供注入的接口提供给</p>
+<p>ViewModel使用。</p>
+<p>&nbsp;</p>
+<h4 id="1)INavigationService_导航服务接口：">1)INavigationService 导航服务接口：</h4>
+<p>页面导航是WP开发的重要功能，INavigationService接口实现了封装导航功能，并能在ViewModel里被注入使用。</p>
+<p>首先是构造函数注入：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> MainPageViewModel(INavigationService navigationService&hellip;)<br>{<br>            <span style="color: #0000ff;">this</span>.navigationService = navigationService;<br><br>}</pre><br></div>
+
+<p>&nbsp;</p>
+<p>然后直接可以导航到ViewModel，不需要知道View的相对地址：</p>
+<div class="cnblogs_code"><br><pre>navigationService.UriFor&lt;ConfigViewModel&gt;().Navigate();</pre><br></div>
+
+<p>当然也可以后退：</p>
+<div class="cnblogs_code"><br><pre>navigationService.GoBack();</pre><br></div>
+
+<p>&nbsp;</p>
+<h4 id="2）墓碑机制和ViewModel状态存储和中断恢复">2）墓碑机制和ViewModel状态存储和中断恢复</h4>
+<p>我先称赞一下，这个功能很强大！</p>
+<p>&nbsp;</p>
+<p>墓碑机制是微软Windows Phone 7手机操作系统中的一个程序运行规则。说简单点，就是手机上一个任务被迫中断时（如有电话打入），系统记录下当前应用程序的状态后，（像把事件记录在墓碑上一样），然后中止程序。当需要恢复时，根据&ldquo;墓碑&rdquo;上的内容，将程序恢复到中断之前的状态。这样的一种机制就是&ldquo;墓碑机制&rdquo;。</p>
+<p>&nbsp;</p>
+<p>不过恢复中断状态需要手动编写非常麻烦，Caliburn.Micro提供了更简单的实现，大大提高了效率。</p>
+<p>IStorageHandler和抽象类StorageHandler&lt;T&gt; 可以保存和恢复ViewModel状态，支持存储在State或者IsolatedStorageSettings中，</p>
+<p>使用非常方便而且能自动工作。</p>
+<p>&nbsp;</p>
+<p>首先看看一个简单ViewModel例子：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> MainPageViewModel:Screen<br>    {<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">string</span> hello;<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Hello<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> hello; }<br>            <span style="color: #0000ff;">set</span><br>            {<br>                hello = value;<br>                NotifyOfPropertyChange(() =&gt; Hello);<br>            }<br>        }<br><br>    }</pre><br></div>
+
+<p>&nbsp;</p>
+<p>根据MainPageViewModel 定义MainPageViewModelStorage类，继承StorageHandler&lt;MainPageViewModel&gt;</p>
+<p>定义完成后不用引用，<strong>Caliburn.Micro会自动工作</strong>。</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> MainPageViewModelStorage : StorageHandler&lt;MainPageViewModel&gt;<br>    {<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> Configure()<br>        {<br>            Id(p =&gt; p.DisplayName);<br><br>            Property(model =&gt; model.Hello)<br>                .InPhoneState()<br>                .RestoreAfterActivation();<br>        }<br>    }</pre><br></div>
+
+<p>&nbsp;</p>
+<p>首先需要指定Id为ViewModel的唯一标识，这里使用Id(p =&gt; p.DisplayName)。</p>
+<p>然后设置各个Property的存储方式和恢复事件。</p>
+<p>&nbsp;</p>
+<p>存储方式有InPhoneState和InAppSettings。</p>
+<p>恢复事件有RestoreAfterActivation、RestoreAfterViewLoad、RestoreAfterViewReady。</p>
+<p>这个设置方式是不是有点像NHibernate的Map映射。</p>
+<p>&nbsp;</p>
+<h4 id="3）IWindowManager_窗体管理">3）IWindowManager 窗体管理</h4>
+<p>可以打开自定义的Dialog或者Popup</p>
+<p>同样只需要知道ViewModel不需要知道View，例如：</p>
+<div class="cnblogs_code"><br><pre>windowManager.ShowDialog(<span style="color: #0000ff;">new</span> ConfigViewModel);</pre><br></div>
+
+<p>&nbsp;</p>
+<h4 id="4）IEventAggregator_窗体间消息通知">4）IEventAggregator 窗体间消息通知</h4>
+<p>实现观察者模式和中介者模式，IEventAggregator 作为中介者从一个ViewModel向另一个订阅消息的ViewModel发送消息对象。</p>
+<p>在WP里面用得比较少，不过IEventAggregator 内部实现了UI线程切换有时候还是比较方便。</p>
+<p>具体可以参考文档：</p>
+<p><a href="http://caliburnmicro.codeplex.com/wikipage?title=The%20Event%20Aggregator&amp;referringTitle=Documentation" title="http://caliburnmicro.codeplex.com/wikipage?title=The%20Event%20Aggregator&amp;referringTitle=Documentation" target="_blank">http://caliburnmicro.codeplex.com/wikipage?title=The%20Event%20Aggregator&amp;referringTitle=Documentation</a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2 id="如果需要继续深入的学习请参考:">如果需要继续深入的学习请参考:</h2>
+<p>请学习 Caliburn.Micro v1.3 RTWsamples 提供的示例代码：</p>
+<p>特别是：&nbsp;</p>
+<p>Caliburn.Micro.HelloWP71</p>
+<p>Caliburn.Micro.HelloWindowManagerWP71&nbsp;</p>
+<p>&nbsp;阅读文档：</p>
+<p>Documentation: 详细文档：</p>
+<p><a href="http://caliburnmicro.codeplex.com/documentation" title="http://caliburnmicro.codeplex.com/documentation" target="_blank">http://caliburnmicro.codeplex.com/documentation</a></p>
+<p>Working with Windows Phone 7 v1.1：（里面在WP项目中引入Caliburn.Micro）</p>
+<p><a href="http://caliburnmicro.codeplex.com/wikipage?title=Working%20with%20Windows%20Phone%207%20v1.1&amp;referringTitle=Documentation" title="http://caliburnmicro.codeplex.com/wikipage?title=Working%20with%20Windows%20Phone%207%20v1.1&amp;referringTitle=Documentation" target="_blank">http://caliburnmicro.codeplex.com/wikipage?title=Working%20with%20Windows%20Phone%207%20v1.1&amp;referringTitle=Documentation</a></p>
+<p>&nbsp;</p>
+<p>园子里的一些Caliburn.Micro教程：</p>
+<p><a href="http://www.cnblogs.com/Zhouyongh/tag/Caliburn/" title="http://www.cnblogs.com/Zhouyongh/tag/Caliburn/" target="_blank">http://www.cnblogs.com/Zhouyongh/tag/Caliburn/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/27/wp7应用开发笔记14-使用caliburn-micro简化mvvm/" data-id="q3frvvasaeh6t5us" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记13-mvvm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/27/wp7应用开发笔记13-mvvm/" class="article-date">
+  <time datetime="2012-01-26T23:37:00.000Z" itemprop="datePublished">1月 27 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/27/wp7应用开发笔记13-mvvm/">WP7应用开发笔记(13) MVVM</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Model-View-ViewModel_设计模式">Model-View-ViewModel 设计模式</h2>
+<p>MVVM这个模式在WPF和Silverlight开发中已经非常流行了，因为WP7的应用开发也是Silverlight的，MVVM的一样可以适用。</p>
+<p>虽然MVVM有不少明确的定义，但是我也没有找到比较统一的来描述它，所以大概说一下我的总结：</p>
+<p>&nbsp;</p>
+<p>MVVM和MVC、MVP一样都是为了分离呈现和业务为目标的设计模式，MVVM使用了WPF系列库特有的绑定机制从视图层移除绝大部分的业务处理和业务数据提供的逻辑。于独立的视图模型层更有利于测试。</p>
+<p>大概结构如下：</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012715284472.png" alt=""></p>
+<p>&nbsp;</p>
+<p>View更关注界面的呈现，ViewModel更关注业务处理，Model作为之间交互的模型数据。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2 id="MVVM的绑定_<span_style="color:_#000000;">Binding</span>">MVVM的绑定 <span style="color: #000000;">Binding</span></h2>
+<p>WPF和Silverlight提供了强大的绑定功能，为MVVM提供了必要的基础：</p>
+<h3 id="1_数据来源">1 数据来源</h3>
+<p>在使用绑定之前，需要有基础的数据的来源，如CLR 对象和 XML 形式，</p>
+<p>在MVVM里就应该这个View视图对于的ViewModel视图模型。</p>
+<p>将ViewModel对象设定到视图根元素的FrameworkElement. DataContext 属性 上完成数据来源的设置，根元素一般就是</p>
+<p>phone:PhoneApplicationPage 。</p>
+<p>代码很简单</p>
+<pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">partial</span> <span class="kwrd">class</span> MainPageView
+ {
+        <span class="rem">// 构造函数</span>
+        <span class="kwrd">public</span> MainPageView()
+        {
+            InitializeComponent();
+            DataContext = <span class="kwrd">new</span> MainPageViewModel();
+        }
+}</pre>
+<style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+
+&nbsp;
+
+### 2 数据绑定
+
+数据绑定是在应用程序 UI 与业务逻辑之间建立连接的过程。如果绑定具有正确设置并且数据提供正确通知，则当数据更改其值时，绑定到数据的元素会自动反映更改。
+
+![](http://i.msdn.microsoft.com/dynimg/IC106529.png)
+
+在MVVM里，简单的说就是能够让视图View和视图模型ViewModel的数据能够动态同步更新，并且支持更新的方法。
+
+实现同步更新需要让ViewModel实现INotifyPropertyChanged接口
+
+<span style="font-family: Verdana;">&nbsp;</span>&nbsp;
+
+<div class="cnblogs_code">
+<pre>  <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">interface</span> INotifyPropertyChanged
+  {
+        <span style="color: #008000;">//</span><span style="color: #008000;">     在更改属性值时发生。</span><span style="color: #008000;">
+</span>        <span style="color: #0000ff;">event</span> PropertyChangedEventHandler PropertyChanged;
+  }</pre>
+</div>
+
+&nbsp;
+
+<span style="font-family: Verdana;">PropertyChangedEventArgs的定义如下：</span>
+
+<style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+
+<span style="font-family: Verdana;">&nbsp;</span>
+
+<div class="cnblogs_code">
+<pre>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> PropertyChangedEventArgs : EventArgs
+    {
+        <span style="color: #008000;">//</span><span style="color: #008000;"> propertyName: 已更改的属性的名称。</span><span style="color: #008000;">
+</span>        <span style="color: #0000ff;">public</span> PropertyChangedEventArgs(<span style="color: #0000ff;">string</span> propertyName);
+
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> PropertyName { <span style="color: #0000ff;">get</span>; }
+    }</pre>
+</div>
+
+&nbsp;
+
+<span style="font-family: Verdana;">只需要在ViewModel的属性更新时触发PropertyChanged并传入更改的属性名称就可以了。</span>
+
+<span style="font-family: Verdana;"><span style="font-family: Verdana;">完整示例：</span></span>
+
+&nbsp;
+
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> DemoCustomer  : INotifyPropertyChanged
+{
+
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">event</span> PropertyChangedEventHandler PropertyChanged;
+
+    <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> NotifyPropertyChanged(String info)
+    {
+        <span style="color: #0000ff;">if</span> (PropertyChanged != <span style="color: #0000ff;">null</span>)
+        {
+            PropertyChanged(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">new</span> PropertyChangedEventArgs(info));
+        }
+    }
+
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> CustomerName
+    {
+        <span style="color: #0000ff;">get</span>
+        {
+            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.customerNameValue;
+        }
+
+        <span style="color: #0000ff;">set</span>
+        {
+            <span style="color: #0000ff;">if</span> (value != <span style="color: #0000ff;">this</span>.customerNameValue)
+            {
+                <span style="color: #0000ff;">this</span>.customerNameValue = value;
+                NotifyPropertyChanged(<span style="color: #800000;">"</span><span style="color: #800000;">CustomerName</span><span style="color: #800000;">"</span>);
+            }
+        }
+    }
+}</pre>
+</div>
+
+<span style="font-family: Verdana;">
+</span>
+
+<span style="font-family: Verdana;">在XAML里面添加下面的代码就可以实现数据绑定</span>
+
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBox </span><span style="color: #ff0000;">Text</span><span style="color: #0000ff;">="</span><span style="color: #808000;">{Binding Path=CustomerName, Mode=TwoWay}</span><span style="color: #0000ff;">"</span> <span style="color: #0000ff;">/&gt;</span></pre>
+</div>
+
+&nbsp;
+
+<span style="font-family: Verdana;">这样在界面修改TextBox 或 后台程序修改CustomerName的时候都可以同步更新（内部还解决线程切换的问题）</span><span style="font-family: Verdana;">数据绑定可以方便的同步View和ViewModel，并很好的减少了耦合。</span>
+
+<style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+<pre class="csharpcode">&nbsp;</pre>
+<style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+
+### 3 命令绑定
+
+&nbsp;
+
+命令是 WPF 中的输入机制，它提供的输入处理比设备输入具有更高的语义级别。
+
+例如，在许多应用程序中都能找到的 &ldquo;复制&rdquo;、 &ldquo;剪切&rdquo;和 &ldquo;粘贴&rdquo;操作就是命令。
+
+&nbsp;
+
+命令支持自定义命令，实现自定义命令需要实现ICommand接口
+
+<span style="font-family: Verdana;">&nbsp;</span>&nbsp;
+
+<div class="cnblogs_code">
+<pre>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">interface</span> ICommand
+    {
+         <span style="color: #008000;">//</span><span style="color: #008000;">     当出现影响是否应执行该命令的更改时发生。</span><span style="color: #008000;">
+</span>        <span style="color: #0000ff;">event</span> EventHandler CanExecuteChanged;
+
+        <span style="color: #008000;">//</span><span style="color: #008000;">     定义用于确定此命令是否可以在其当前状态下执行的方法。</span><span style="color: #008000;">
+</span>          <span style="color: #0000ff;">bool</span> CanExecute(<span style="color: #0000ff;">object</span> parameter);
+
+        <span style="color: #008000;">//</span><span style="color: #008000;">     定义在调用此命令时调用的方法。</span><span style="color: #008000;">
+</span>           <span style="color: #0000ff;">void</span> Execute(<span style="color: #0000ff;">object</span> parameter);
+    }</pre>
+</div>
+
+&nbsp;
+
+<span style="font-family: Verdana;">自定义命令是MVVM命令绑定的基础。实现一个最简单的自定义Command，暂时无视CanExecuteChanged变更和传入参数。</span>
+
+&nbsp;
+
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> InvokeCommand : ICommand
+    {
+        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> Action action;
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">event</span> EventHandler CanExecuteChanged;
+
+        <span style="color: #0000ff;">public</span> InvokeCommand(Action action)
+        {
+            <span style="color: #0000ff;">this</span>.action = action;
+        }
+
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> CanExecute(<span style="color: #0000ff;">object</span> parameter)
+        {
+            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;
+        }
+
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Execute(<span style="color: #0000ff;">object</span> parameter)
+        {
+            action();
+        }
+    }</pre>
+</div>
+
+&nbsp;
+
+<span style="font-family: Verdana;">在ViewModel里面添加属性</span>
+
+<pre class="csharpcode">&nbsp;</pre>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">public</span> ICommand HelloCommand{ <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span>; } </pre>
+</div>
+<pre class="csharpcode"><span style="font-family: Verdana;">ViewModel构造函数内添加</span></pre>
+<style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+<pre class="csharpcode">&nbsp;</pre>
+<div class="cnblogs_code">
+<pre>HelloCommand = <span style="color: #0000ff;">new</span> InvokeCommand(() =&gt; MessageBox.Show(&ldquo;Hello world&rdquo;));</pre>
+</div>
+<pre class="csharpcode"></pre>
+
+<p><span style="font-family: Verdana;">在ButtonBase类里面有一个 Command属性，获取或设置当按此按钮时要调用的命令。</span></p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">button </span><span style="color: #ff0000;">command</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{Binding HelloCommand}</span><span style="color: #0000ff;">“</span> <span style="color: #0000ff;">/&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p><span style="font-family: Verdana;">&nbsp;这样点击button就会触发MessageBox.Show(&ldquo;Hello world&rdquo;)); 命令绑定提供了简单的机制，让业务处理的消息可以在ViewModel里执行。</span></p>
+<pre class="csharpcode">&nbsp;</pre>
+
+<h3 id="4-扩展命令绑定为动作绑定（事件绑定）">4.扩展命令绑定为动作绑定（事件绑定）</h3>
+<p>命令绑定仅仅提供了ButtonBase的点击事件，要是有更复杂的事件需要使用到动作绑定，这个基础是由</p>
+<p>System.Windows.Interactivity提供的，在C:Program Files (x86)Microsoft SDKsExpressionBlendWindows Phonev7.1Libraries里面可以找到。</p>
+<p>另外动作绑定并没有正式的名称，我只是为了统一随口叫的。</p>
+<p>&nbsp;</p>
+<p>动作绑定就稍微复杂一点，首先我们需要实现一个自定义的动作，继承TriggerAction实现自己的InvokeAction。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> InvokeAction:TriggerAction&lt;FrameworkElement&gt;<br>    {<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> DependencyProperty CommandProperty<br>            = DependencyProperty.Register(<span style="color: #800000;">“</span><span style="color: #800000;">Command</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">typeof</span> (ICommand), <span style="color: #0000ff;">typeof</span> (InvokeAction));<br><br>        <span style="color: #0000ff;">public</span> ICommand Command<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> (ICommand) GetValue(CommandProperty); }<br>            <span style="color: #0000ff;">set</span> { SetCurrentValue(CommandProperty, value); }<br>        }<br>        <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> Invoke(<span style="color: #0000ff;">object</span> parameter)<br>        {<br>            ICommand command = Command;<br>            <span style="color: #0000ff;">if</span> (command  == <span style="color: #0000ff;">null</span>)<span style="color: #0000ff;">return</span>;<br>            <span style="color: #0000ff;">if</span> (!command.CanExecute(parameter)) <span style="color: #0000ff;">return</span>;<br><br>            command.Execute(parameter);<br>        }<br>    }</pre><br></div><br><pre class="csharpcode"></pre><br><style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style><br><br>里面定义了一个Command的依赖属性，用法和ButtonBase一样，这样就可以方便绑定命令了。<br><br>XAML代码如下：<br><br>首先引用System.Windows.Interactivity添加命名空间：<br><br>xmlns:i=”clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity”<br><br><div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Button </span><span style="color: #ff0000;">Content</span><span style="color: #0000ff;">=”Button”</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i:Interaction.Triggers</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i:EventTrigger </span><span style="color: #ff0000;">EventName</span><span style="color: #0000ff;">=”Click”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">local:InvokeAction </span><span style="color: #ff0000;">Command</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{Binding HelloCommand}</span><span style="color: #0000ff;">“</span> <span style="color: #0000ff;">/&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">i:EventTrigger</span><span style="color: #0000ff;">&gt;</span><br>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">i:Interaction.Triggers</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Button</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>i:EventTrigger 的EventName可以设置该控件上的各种事件，这里为了方便还是用的点击Click</p>
+<p>local:InvokeAction将自定义动作InvokeAction元素添加进去，还是继续使用上一节定义的HelloCommand，</p>
+<p>同样点击Button 之后Hello World就显示出来了。</p>
+<p>当然使用i:InvokeCommandAction&nbsp;更方便，我只是演示一下。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/27/wp7应用开发笔记13-mvvm/" data-id="4mnqjgqcfhmwxqlq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记12-添加页面动画" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/26/wp7应用开发笔记12-添加页面动画/" class="article-date">
+  <time datetime="2012-01-26T06:02:00.000Z" itemprop="datePublished">1月 26 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/26/wp7应用开发笔记12-添加页面动画/">WP7应用开发笔记(12)  添加页面动画</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>页面动画就是页面的切换的动画过度效果。</p>
+<p>平时使用Wp手机的系统程序都是像翻页一样的过度效果，我下面就准备完成简单的添加这样的效果。</p>
+<p>&nbsp;</p>
+<h2 id="使用Windows_Phone_Toolkit">使用Windows Phone Toolkit</h2>
+<p>其实这个动画效果不需要自己实现，Windows Phone Toolkit 已经封装好了现成库，我们只需要调用就可以了。</p>
+<p>这里可以下载:</p>
+<p><a href="http://silverlight.codeplex.com/" title="http://silverlight.codeplex.com/" target="_blank">http://silverlight.codeplex.com/</a></p>
+<p>安装后可以在C:Program Files (x86)Microsoft SDKsWindows Phonev7.1Toolkit 找到[32位系统去掉(x86)]，</p>
+<p>引用到项目中就可以了，里面还有不少增强控件也非常实用，相信大家都用过了。</p>
+<p>不过这里主要使用的是TransitionService.NavigationInTransition</p>
+<p>&nbsp;</p>
+<h2 id="为页面添加过度效果">为页面添加过度效果</h2>
+<p><strong>第一步，必须要有一个不可缺少的准备工作</strong>，就是找到app.xaml.cs里面</p>
+<p>找到&nbsp;&nbsp;&nbsp; RootFrame = new PhoneApplicationFrame();</p>
+<p>替换成 RootFrame = new TransitionFrame();</p>
+<p>&nbsp;</p>
+<p><strong>第二步,在页面上添加效果代码</strong></p>
+<p>先添加名称空间xmlns:toolkit=”clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit”</p>
+<p>&nbsp;</p>
+<p>然后再&lt;phone:PhoneApplicationPage&gt;元素下添加</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TransitionService.NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”BackwardIn”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”ForwardIn”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:TransitionService.NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TransitionService.NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”BackwardOut”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”ForwardOut”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:TransitionService.NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>OK简单2步就完成了一个页面的翻页动画效果。</p>
+<p>Toolkit 提供了很多动画效果都在Microsoft.Phone.Controls.ToolkitTransitionsTransitions 里面,</p>
+<p>还可以继承TransitionElement实现自己的动画。</p>
+<p>不过我觉得默认的TurnstileTransition最满意，太炫了影响使用。</p>
+<p>&nbsp;</p>
+<h2 id="将过度效果作为页面样式">将过度效果作为页面样式</h2>
+<p>如果页面比较多每个页面都想要效果，那么可以将效果作为样式添加到系统资源文件里或者直接写在App.xaml里。</p>
+<p>方法也很简单</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Application.Resources</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Style </span><span style="color: #ff0000;">x:Key</span><span style="color: #0000ff;">=”TransitionPageStyle”</span><span style="color: #ff0000;"> TargetType</span><span style="color: #0000ff;">=”phone:PhoneApplicationPage”</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”toolkit:TransitionService.NavigationInTransition”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”BackwardIn”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”ForwardIn”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”toolkit:TransitionService.NavigationOutTransition”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”BackwardOut”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”ForwardOut”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Style</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Application.Resources</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>需要效果的页面添加一个属性Style=”{StaticResource TransitionPageStyle}”就可以了</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/26/wp7应用开发笔记12-添加页面动画/" data-id="yzer0lrs6ilihcus" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记11-自定义按钮" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/26/wp7应用开发笔记11-自定义按钮/" class="article-date">
+  <time datetime="2012-01-25T22:12:00.000Z" itemprop="datePublished">1月 26 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/26/wp7应用开发笔记11-自定义按钮/">WP7应用开发笔记(11) 自定义按钮</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>不知不觉写了很多东西，不过结构有点乱了，写完了需要整理一下。回顾一下界面设计，这草图又要出来献丑了。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012513545996.jpg" alt=""></p>
+<p>除了已经实现的<a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329373.html" target="_blank">圆形触控控件</a>以外，其他按钮都是圆环+图片的方式，有比较有写一个自定义控件，取个名字叫RoundButton。</p>
+<p>&nbsp;</p>
+<h2 id="RoundButton类">RoundButton类</h2>
+<p>RoundButton具有和Button相同的行为和视觉状态，唯一区别是RoundButton拥有图标</p>
+<p>那么继承Button并添加依赖属性ImageSource类型为ImageSource。</p>
+<p>再添加一个ImageBrush用于绘制图片。</p>
+<p>代码如下：</p>
+<div class="cnblogs_code"><br><pre>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> RoundButton : Button<br>    {<br>        <span style="color: #0000ff;">protected</span> ImageBrush OpacityImageBrush;<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> OpacityImageBrushName = <span style="color: #800000;">“</span><span style="color: #800000;">OpacityImageBrush</span><span style="color: #800000;">“</span>;<br><br>        <span style="color: #0000ff;">public</span> RoundButton()<br>        {<br>            DefaultStyleKey = <span style="color: #0000ff;">typeof</span>(RoundButton);<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">readonly</span> DependencyProperty ImageSourceProperty<br>            = DependencyProperty.Register(<span style="color: #800000;">“</span><span style="color: #800000;">ImageSource</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">typeof</span>(ImageSource), <span style="color: #0000ff;">typeof</span>(RoundButton), <span style="color: #0000ff;">new</span> PropertyMetadata(OnImageSourceChanged));<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> OnImageSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)<br>        {<br>            <span style="color: #0000ff;">var</span> sender = o <span style="color: #0000ff;">as</span> RoundButton;<br><br>            <span style="color: #0000ff;">if</span> (sender == <span style="color: #0000ff;">null</span> || e.NewValue == e.OldValue)<br>                <span style="color: #0000ff;">return</span>;<br><br>            sender.SetImageBrush(e.NewValue <span style="color: #0000ff;">as</span> ImageSource);<br>        }<br><br>        <span style="color: #0000ff;">public</span> ImageSource ImageSource<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> (ImageSource)GetValue(ImageSourceProperty); }<br>            <span style="color: #0000ff;">set</span> { SetValue(ImageSourceProperty, value); }<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> OnApplyTemplate()<br>        {<br>            <span style="color: #0000ff;">base</span>.OnApplyTemplate();<br>            OpacityImageBrush = GetTemplateChild(OpacityImageBrushName) <span style="color: #0000ff;">as</span> ImageBrush;<br><br>            <span style="color: #0000ff;">if</span> (ImageSource == <span style="color: #0000ff;">null</span>)<br>                ImageSource = <span style="color: #0000ff;">new</span> BitmapImage(<span style="color: #0000ff;">new</span> Uri(<span style="color: #800000;">“</span><span style="color: #800000;">/VirtualKeyboard.Controls;component/Icons/word.ok.png</span><span style="color: #800000;">“</span>, UriKind.RelativeOrAbsolute));<br>            <span style="color: #0000ff;">else</span><br>                SetImageBrush(ImageSource);<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> SetImageBrush(ImageSource imageSource)<br>        {<br>            <span style="color: #0000ff;">if</span> (OpacityImageBrush == <span style="color: #0000ff;">null</span>)<br>                <span style="color: #0000ff;">return</span>;<br><br>            OpacityImageBrush.ImageSource = imageSource;<br>        }<br>    }</pre><br></div>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2 id="RoundButton模板">RoundButton模板</h2>
+<p>编写好RoundButton类后还需要编写其模板已呈现出圆形按钮的效果</p>
+<p>基本模板由两个重叠的圆Ellipse构成：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">StackPanel</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid </span><span style="color: #ff0000;">Width</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{TemplateBinding Width}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{TemplateBinding Height}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”3”</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Ellipse<br>                                </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ButtonBackground”</span><span style="color: #ff0000;"><br>                                Stroke</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{TemplateBinding BorderBrush}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>                                StrokeThickness</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneStrokeThickness}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>                                Fill</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{TemplateBinding Background}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>                                Margin</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneTouchTargetOverhang}</span><span style="color: #0000ff;">“</span> <span style="color: #0000ff;">/&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Ellipse<br>                                </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ButtonForeground”</span><span style="color: #ff0000;"><br>                                Fill</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{TemplateBinding Foreground}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>                                Margin</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneTouchTargetOverhang}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">&gt;</span><br>                                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Ellipse.OpacityMask</span><span style="color: #0000ff;">&gt;</span><br>                                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ImageBrush </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”OpacityImageBrush”</span> <span style="color: #0000ff;">/&gt;</span><br>                                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Ellipse.OpacityMask</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Ellipse</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">StackPanel</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>呈现如下：</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012614075986.jpg" alt=""></p>
+<p>为了对输入响应我需要按下的视觉状态VisualState Pressed 通过VisualStateGroups添加相应的动画板Storyboard实现</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateManager.VisualStateGroups</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateGroup </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”CommonStates”</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Normal”</span> <span style="color: #0000ff;">/&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”MouseOver”</span><span style="color: #0000ff;">/&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Pressed”</span><span style="color: #0000ff;">&gt;</span><br>                                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames </span><span style="color: #ff0000;">Storyboard.TargetProperty</span><span style="color: #0000ff;">=”Fill”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ButtonBackground”</span><span style="color: #0000ff;">&gt;</span><br>                                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DiscreteObjectKeyFrame </span><span style="color: #ff0000;">KeyTime</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneContrastBackgroundBrush}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>                                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames</span><span style="color: #0000ff;">&gt;</span><br>                                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames </span><span style="color: #ff0000;">Storyboard.TargetProperty</span><span style="color: #0000ff;">=”Stroke”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ButtonBackground”</span><span style="color: #0000ff;">&gt;</span><br>                                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DiscreteObjectKeyFrame </span><span style="color: #ff0000;">KeyTime</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneContrastBackgroundBrush}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>                                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames</span><span style="color: #0000ff;">&gt;</span><br>                                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames </span><span style="color: #ff0000;">Storyboard.TargetProperty</span><span style="color: #0000ff;">=”Fill”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ButtonForeground”</span><span style="color: #0000ff;">&gt;</span><br>                                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DiscreteObjectKeyFrame </span><span style="color: #ff0000;">KeyTime</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneBackgroundBrush}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>                                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames</span><span style="color: #0000ff;">&gt;</span><br>                                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>呈现效果：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012614092698.jpg" alt=""></p>
+<p>完整XAML代码</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('9b2365c7-2598-409a-9684-04fa8503fe63')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_9b2365c7-2598-409a-9684-04fa8503fe63" class="cnblogs_code_hide"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Style </span><span style="color: #ff0000;">TargetType</span><span style="color: #0000ff;">=”local:RoundButton”</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”BorderBrush”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneContrastBackgroundBrush}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”Foreground”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneForegroundBrush}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”FontFamily”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneFontFamilySemiBold}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”FontSize”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”12”</span> <span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”Padding”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”10,3,10,5”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”VerticalAlignment”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”Top”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”Template”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ControlTemplate </span><span style="color: #ff0000;">TargetType</span><span style="color: #0000ff;">=”local:RoundButton”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateManager.VisualStateGroups</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateGroup </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”CommonStates”</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Normal”</span> <span style="color: #0000ff;">/&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”MouseOver”</span><span style="color: #0000ff;">/&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Pressed”</span><span style="color: #0000ff;">&gt;</span><br>                                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames </span><span style="color: #ff0000;">Storyboard.TargetProperty</span><span style="color: #0000ff;">=”Fill”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ButtonBackground”</span><span style="color: #0000ff;">&gt;</span><br>                                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DiscreteObjectKeyFrame </span><span style="color: #ff0000;">KeyTime</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneContrastBackgroundBrush}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>                                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames</span><span style="color: #0000ff;">&gt;</span><br>                                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames </span><span style="color: #ff0000;">Storyboard.TargetProperty</span><span style="color: #0000ff;">=”Stroke”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ButtonBackground”</span><span style="color: #0000ff;">&gt;</span><br>                                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DiscreteObjectKeyFrame </span><span style="color: #ff0000;">KeyTime</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneContrastBackgroundBrush}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>                                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames</span><span style="color: #0000ff;">&gt;</span><br>                                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames </span><span style="color: #ff0000;">Storyboard.TargetProperty</span><span style="color: #0000ff;">=”Fill”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ButtonForeground”</span><span style="color: #0000ff;">&gt;</span><br>                                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DiscreteObjectKeyFrame </span><span style="color: #ff0000;">KeyTime</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneBackgroundBrush}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>                                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ObjectAnimationUsingKeyFrames</span><span style="color: #0000ff;">&gt;</span><br>                                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Disabled”</span> <span style="color: #0000ff;">/&gt;</span><br>                            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateGroup</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateManager.VisualStateGroups</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">StackPanel</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid </span><span style="color: #ff0000;">Width</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{TemplateBinding Width}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{TemplateBinding Height}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”3”</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Ellipse<br>                                </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ButtonBackground”</span><span style="color: #ff0000;"><br>                                Stroke</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{TemplateBinding BorderBrush}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>                                StrokeThickness</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneStrokeThickness}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>                                Fill</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{TemplateBinding Background}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>                                Margin</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneTouchTargetOverhang}</span><span style="color: #0000ff;">“</span> <span style="color: #0000ff;">/&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Ellipse<br>                                </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ButtonForeground”</span><span style="color: #ff0000;"><br>                                Fill</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{TemplateBinding Foreground}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>                                Margin</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneTouchTargetOverhang}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">&gt;</span><br>                                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Ellipse.OpacityMask</span><span style="color: #0000ff;">&gt;</span><br>                                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ImageBrush </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”OpacityImageBrush”</span> <span style="color: #0000ff;">/&gt;</span><br>                                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Ellipse.OpacityMask</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Ellipse</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">StackPanel</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ControlTemplate</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Style</span><span style="color: #0000ff;">&gt;</span></pre><br></div><br></div>
+
+<p>完成播放器界面布局</p>
+<p>有了按钮，我还PS了一套图标，将RoundButton设置好布局后效果如下，是不是有点感觉了。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012614102397.jpg" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/26/wp7应用开发笔记11-自定义按钮/" data-id="8gzgicelhyuwknyr" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记10-导航" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/26/wp7应用开发笔记10-导航/" class="article-date">
+  <time datetime="2012-01-25T21:34:00.000Z" itemprop="datePublished">1月 26 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/26/wp7应用开发笔记10-导航/">WP7应用开发笔记(10) 导航</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="导航概述">导航概述</h2>
+<p>Windows Phone 应用程序基于 Silverlight 页面模型，用户可以在其中浏览不同屏幕的内容。</p>
+<p>具体的可以查阅：<a href="http://msdn.microsoft.com/zh-cn/library/ff941091(v=vs.92" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff941091(v=vs.92).aspx</a>.aspx “<a href="http://msdn.microsoft.com/zh-cn/library/ff941091(v=vs.92).aspx" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff941091(v=vs.92).aspx</a>“)</p>
+<p>通过NavigationService类可以轻松的实现导航：</p>
+<p>常用的方法是</p>
+<p>NavigationService.Navigate(new Uri(“/ConfigView.xaml”, UriKind.Relative));</p>
+<p>导航到ConfigView.xaml</p>
+<p>还可以在app里面设置UriMapper注册页面的别名</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var mapper = new UriMapper();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mapper.UriMappings.Add(CreateUriMapping(“Config”, “/ConfigView.xaml”));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mapper.UriMappings.Add(CreateUriMapping(“1”, “/ConfigView.xaml”));</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RootFrame.UriMapper = mapper;</p>
+<p>之后同样也可以导航到ConfigView.xaml</p>
+<p>NavigationService.Navigate(new Uri(“Config”, UriKind.Relative));</p>
+<p>NavigationService.Navigate(new Uri(&rdquo;1”, UriKind.Relative));</p>
+<p>另外一个常用的是后退，使用后退堆栈<strong>BackStack</strong>进行导航</p>
+<p>NavigationService.GoBack();</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2 id="导航事件">导航事件</h2>
+<p>PhoneApplicationPage提供了4个可以重写的事件方法，可以对导航</p>
+<p>OnNavigatingFrom 将要离开页面触发</p>
+<p>OnNavigatedFrom 离开页面后触发</p>
+<p>OnNavigatedTo 进入页面后触发</p>
+<p>OnFragmentNavigation 在导航到包括片断的统一资源标识符 (URI) 时调用。一个片断是片断分隔符 (#) 后的值。和html里面的#差不多。</p>
+<p>&nbsp;</p>
+<h2 id="导航设计">导航设计</h2>
+<p>本程序只有3个页面 遥控器主页面，设置页面、帮助页面，它们之间的导航方式用状态图描述如下：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012613324398.jpg" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/26/wp7应用开发笔记10-导航/" data-id="of6sjusb4nsucned" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记9-应用程序栏" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/26/wp7应用开发笔记9-应用程序栏/" class="article-date">
+  <time datetime="2012-01-25T20:51:00.000Z" itemprop="datePublished">1月 26 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/26/wp7应用开发笔记9-应用程序栏/">WP7应用开发笔记(9)  应用程序栏</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>可以使用 Windows Phone SDK 快速轻松地向应用程序中添加应用程序栏。应用程序栏是沿着手机屏幕底部的一行图标按钮，它们为用户提供对应用程序最常见任务的快速访问。</p>
+<p>呈现模式有：</p>
+<p>1.最简Minimized 就仅仅在下面显示…</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC531105.png" alt=""></p>
+<p>2 普通：</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC531095.png" alt=""></p>
+<p>3 展开：</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC531106.png" alt=""></p>
+<p>4 展开+菜单：</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC531092.png" alt=""></p>
+<p>&nbsp;</p>
+<h2 id="遥控器界面的应用程序栏">遥控器界面的应用程序栏</h2>
+<p>首先是遥控器的应用程序栏，因为平时需要操作我用最简方式呈现，为了统一将背景色变成透明</p>
+<p>这样只能点右边的…才能展开。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012612481390.jpg" alt=""></p>
+<p>展开后显示&ldquo;设置&rdquo;、&ldquo;帮助&rdquo;两个菜单，将背景色设置成黑色。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012612483025.jpg" alt=""></p>
+<p>通过监听ApplicationBar的StateChanged事件可以实现，代码如下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> OnAppBarStateChanged(<span style="color: #0000ff;">object</span> sender, ApplicationBarStateChangedEventArgs e)<br>{<br>            ApplicationBar.BackgroundColor = e.IsMenuVisible ? Colors.Black : Colors.Transparent;<br>}</pre><br></div>
+
+<p>&nbsp;</p>
+<h2 id="设置界面的应用程序栏">设置界面的应用程序栏</h2>
+<p>一般的设置界面都是&ldquo;保存&rdquo;和&rdquo;取消&rdquo;,因为微软的设计准则里不推荐使用&ldquo;取消&rdquo;按钮，通过系统的后腿键实现。</p>
+<p>那么这里仅仅需要一个&ldquo;保存&rdquo;。</p>
+<p>保存的图标可以在C:Program Files (x86)Microsoft SDKsWindows Phonev7.1Icons找到（32位系统去掉(x86))</p>
+<p>将appbar.save.rest.png添加到项目中，设置</p>
+<p>&lt;shell:ApplicationBarIconButton IconUri=”/Icons/appbar.save.rest.png” Text=”保存” /&gt;</p>
+<p><span style="color: #ff0000;"><strong>有一个非常重要的问题要注意：一定要将图片生成属性设置为内容，不然无法显示。</strong></span></p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012612494213.jpg" alt=""></p>
+<p>运行后显示如下：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012612495441.jpg" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/26/wp7应用开发笔记9-应用程序栏/" data-id="p1bvoy1odxrewagx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记8-ip输入框控件" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/26/wp7应用开发笔记8-ip输入框控件/" class="article-date">
+  <time datetime="2012-01-25T20:08:00.000Z" itemprop="datePublished">1月 26 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/26/wp7应用开发笔记8-ip输入框控件/">WP7应用开发笔记(8)  IP输入框控件</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>因为需要在手机上配置IP，我需要一个界面输入IP地址，虽然直接使用TextBox，但是这样不太友好，我希望能够有和Windows网络设置上一样的IP输入框。所以决定写一个自定义控件。</p>
+<p>&nbsp;</p>
+<h2 id="设计控件外观">设计控件外观</h2>
+<p>4个TextBox和3个显示&ldquo;.&rdquo;的TextBlock就可以了，结构很简单：</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012612043192.jpg" alt=""></p>
+<p>XAML代码如下：</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">StackPanel </span><span style="color: #ff0000;">Orientation</span><span style="color: #0000ff;">=”Horizontal”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”72”</span> <span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBox </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”TextOctet1”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBlock </span><span style="color: #ff0000;">Text</span><span style="color: #0000ff;">=”.”</span> <span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBox </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”TextOctet2”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBlock </span><span style="color: #ff0000;">Text</span><span style="color: #0000ff;">=”.”</span> <span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBox </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”TextOctet3”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBlock </span><span style="color: #ff0000;">Text</span><span style="color: #0000ff;">=”.”</span> <span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBox </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”TextOctet4”</span><span style="color: #0000ff;">/&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">StackPanel</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>因为IP地址里面只有数字和&ldquo;.&rdquo;，而且每位地址最长为3。为了限制输入将样式设置如下：</p>
+<div class="cnblogs_code"><br><pre>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">UserControl.Resources</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Style </span><span style="color: #ff0000;">TargetType</span><span style="color: #0000ff;">=”TextBox”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”Width”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”90”</span><span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”MaxLength”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”3”</span><span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”TextAlignment”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”Right”</span><span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”InputScope”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”Number”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Style</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Style </span><span style="color: #ff0000;">TargetType</span><span style="color: #0000ff;">=”TextBlock”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”Margin”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”5,30,5,0”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Style</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">UserControl.Resources</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;InputScope设置为Number，限制输入数字和.。</p>
+<h2 id="InputScope">InputScope</h2>
+<p>复习一下WP里面有一个叫做InputScope的依赖属性，这个是软输入面板设置 在WP里面非常有用的属性。支持的名称和功能如下：</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>AddressCity 城市地址的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>AddressCountryName 国家/地区的名称的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>AddressCountryShortName 国家/地区的缩写名称的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>AddressStateOrProvince 省/市/自治区的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>AddressStreet 街道地址的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>AlphanumericFullWidth 字母数字全角字符的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>AlphanumericHalfWidth 字母数字半角字符的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>ApplicationEnd 不支持。仅限在 用于 Windows Phone 的 Silverlight 中内部使用。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Bopomofo 汉语拼音语音转换系统的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Chat 用于文本消息传递的 SIP 布局，可识别预定义的缩写。仅在 用于 Windows Phone 的 Silverlight 中受支持。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>CurrencyAmount 货币数量的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>CurrencyAmountAndSymbol 货币数量和符号的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>CurrencyChinese 中国货币的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Date 日历日期的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>DateDay 日历日期中数字日期的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>DateDayName 日历日期中日期名称的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>DateMonth 日历日期中数字月份的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>DateMonthName 日历日期中月份名称的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>DateYear 日历日期中年份的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Default 输入命令的默认处理。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Digits 数字的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>EmailNameOrAddress 用于电子邮件名称或地址的 SIP 布局。仅在 用于 Windows Phone 的 Silverlight 中受支持。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>EmailSmtpAddress 简单邮件传输协议 (SMTP) 电子邮件地址的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>EmailUserName 电子邮件用户名的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>EnumString 不支持。仅限在 用于 Windows Phone 的 Silverlight 中内部使用。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>FileName&nbsp; 文件名的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>FullFilePath 文件完整路径的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Hanja 朝鲜文汉字字符的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Hiragana 平假名书写体系的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>KatakanaFullWidth 全角片假名字符的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>KatakanaHalfWidth 半角片假名字符的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>LogOnName 登录名的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Maps 用于输入地图位置的 SIP 布局。仅在 用于 Windows Phone 的 Silverlight 中受支持。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>NameOrPhoneNumber 用于 SMS&ldquo;至&rdquo;字段的 SIP 布局。仅在 用于 Windows Phone 的 Silverlight 中受支持。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Number 数字的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>NumberFullWidth 全角数字的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>OneChar 某个字符的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Password 密码的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>PersonalFullName 个人的全名的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>PersonalGivenName 个人的名字的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>PersonalMiddleName 个人的中间名的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>PersonalNamePrefix 个人姓名前缀的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>PersonalNameSuffix 个人姓名后缀的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>PersonalSurname 个人的姓的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>PhraseList 词组列表的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>PostalAddress 邮寄地址的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>PostalCode 邮政编码的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Private 不支持。仅限在 用于 Windows Phone 的 Silverlight 中的内部使用。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>RegularExpression 正则表达式的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Search 用于搜索查询的 SIP 布局。仅在 用于 Windows Phone 的 Silverlight 中受支持。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Srgs 语音识别语法规范 (SRGS) 的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>TelephoneAreaCode 区号的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>TelephoneCountryCode 电话的国家/地区代码的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>TelephoneLocalNumber 本地电话号码的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>TelephoneNumber 电话号码的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Text 用于标准文本输入的软件输入面板 (SIP) 布局。仅在 用于 Windows Phone 的 Silverlight 中受支持。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Time 时间的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>TimeHour 小时的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>TimeMinorSec 时间的分钟或秒的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Url 统一资源定位符 (URL) 的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Xml XML 的文本输入模式。</p>
+<p><img src="http://i.msdn.microsoft.com/Hash/030c41d9079671d09a62d8e2c1db6973.gif" alt="受 Silverlight for Windows Phone 支持" title="受 Silverlight for Windows Phone 支持"><br>Yomi 不支持。仅限在 用于 Windows Phone 的 Silverlight 中内部使用。</p>
+<p>&nbsp;</p>
+<h2 id="控件代码实现">控件代码实现</h2>
+<p>先定义一下叫IPAddress的依赖属性，复习一下：</p>
+<p><pre class="csharpcode"> <span class="kwrd">public</span> <span class="kwrd">static</span> <span class="kwrd">readonly</span> DependencyProperty IPAddressProperty =<br>            DependencyProperty.Register(<span class="str">“IPAddress”</span>, <span class="kwrd">typeof</span>(<span class="kwrd">string</span>), <span class="kwrd">typeof</span>(IPBox),<br>            <span class="kwrd">new</span> PropertyMetadata(String.Empty, IPPropertyChangedCallback));</p>
+<pre><code>    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>void<span class="tag">&lt;/<span class="title">span</span>&gt;</span> IPPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs arg)
+    {
+        var <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>value<span class="tag">&lt;/<span class="title">span</span>&gt;</span> = (<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>string<span class="tag">&lt;/<span class="title">span</span>&gt;</span>)arg.NewValue;
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>if<span class="tag">&lt;/<span class="title">span</span>&gt;</span> (<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>string<span class="tag">&lt;/<span class="title">span</span>&gt;</span>.IsNullOrWhiteSpace(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>value<span class="tag">&lt;/<span class="title">span</span>&gt;</span>)) <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>return<span class="tag">&lt;/<span class="title">span</span>&gt;</span>;
+        var ipBox = (IPBox)sender;
+        ipBox.SetIPAddress(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>value<span class="tag">&lt;/<span class="title">span</span>&gt;</span>);
+    }
+
+    [Description(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"str"</span>&gt;</span>"获取或设置IP"<span class="tag">&lt;/<span class="title">span</span>&gt;</span>)]
+    [Category(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"str"</span>&gt;</span>"Common Properties"<span class="tag">&lt;/<span class="title">span</span>&gt;</span>)]
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>public<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>string<span class="tag">&lt;/<span class="title">span</span>&gt;</span> IPAddress
+    {
+        get { <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>return<span class="tag">&lt;/<span class="title">span</span>&gt;</span> (<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>string<span class="tag">&lt;/<span class="title">span</span>&gt;</span>)GetValue(IPAddressProperty); }
+        set { SetValue(IPAddressProperty, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>value<span class="tag">&lt;/<span class="title">span</span>&gt;</span>); }
+    }<span class="tag">&lt;/<span class="title">pre</span>&gt;</span>
+</code></pre><style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+
+<p>需要实现的功能有</p>
+<ul>
+<li>限制输入范围为0～255</li>
+<li>输入&ldquo;.&rdquo;自动将焦点跳到下一个TextBox</li>
+<li>输入到3个数字的时候，自动将焦点跳到下一个TextBox</li>
+<li>按Back键如果当前TextBox没有文本，需要自动将焦点跳到前一个TextBox</li>
+</ul>
+<p>&nbsp;</p>
+<p>实现这些功能需要对每个TextBox监听TextChanged和KeyDown事件，并作相应处理。</p>
+<p>完整代码如下：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('852ab589-2630-4331-a4a5-6788fd01f51d')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_852ab589-2630-4331-a4a5-6788fd01f51d" class="cnblogs_code_hide"><br><pre>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">partial</span> <span style="color: #0000ff;">class</span> IPBox<br>    {<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> DependencyProperty IPAddressProperty =<br>            DependencyProperty.Register(<span style="color: #800000;">“</span><span style="color: #800000;">IPAddress</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">typeof</span>(<span style="color: #0000ff;">string</span>), <span style="color: #0000ff;">typeof</span>(IPBox),<br>            <span style="color: #0000ff;">new</span> PropertyMetadata(String.Empty, IPPropertyChangedCallback));<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> IPPropertyChangedCallback(DependencyObject sender, DependencyPropertyChangedEventArgs arg)<br>        {<br>            <span style="color: #0000ff;">var</span> value = (<span style="color: #0000ff;">string</span>)arg.NewValue;<br>            <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">string</span>.IsNullOrWhiteSpace(value)) <span style="color: #0000ff;">return</span>;<br>            <span style="color: #0000ff;">var</span> ipBox = (IPBox)sender;<br>            ipBox.SetIPAddress(value);<br>        }<br><br>        [Description(<span style="color: #800000;">“</span><span style="color: #800000;">获取或设置IP</span><span style="color: #800000;">“</span>)]<br>        [Category(<span style="color: #800000;">“</span><span style="color: #800000;">Common Properties</span><span style="color: #800000;">“</span>)]<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> IPAddress<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> (<span style="color: #0000ff;">string</span>)GetValue(IPAddressProperty); }<br>            <span style="color: #0000ff;">set</span> { SetValue(IPAddressProperty, value); }<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> TextBox[] textBoxs;<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">string</span>[] ipParts;<br><br>        <span style="color: #0000ff;">public</span> IPBox()<br>        {<br>            InitializeComponent();<br><br>            textBoxs = <span style="color: #0000ff;">new</span>[]<br>                           {<br>                               TextOctet1,<br>                               TextOctet2,<br>                               TextOctet3,<br>                               TextOctet4<br>                           };<br>            ipParts = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">string</span>[<span style="color: #800080;">4</span>];<br>            <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; <span style="color: #800080;">4</span>; i++)<br>            {<br>                <span style="color: #0000ff;">var</span> box = textBoxs[i];<br>                box.Tag = i;<br>                box.TextChanged += OnTextChanged;<br>                box.KeyDown += OnKeyDown;<br>            }<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> UpdateIPAddress()<br>        {<br>            <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; <span style="color: #800080;">4</span>; i++)<br>            {<br>                ipParts[i] = textBoxs[i].Text;<br>            }<br>            <span style="color: #0000ff;">if</span> (ipParts.Any(<span style="color: #0000ff;">string</span>.IsNullOrWhiteSpace)) <span style="color: #0000ff;">return</span>;<br>            IPAddress = <span style="color: #0000ff;">string</span>.Format(<span style="color: #800000;">“</span><span style="color: #800000;">{0}.{1}.{2}.{3}</span><span style="color: #800000;">“</span>, TextOctet1.Text, TextOctet2.Text, TextOctet3.Text,<br>                                      TextOctet4.Text);<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> SetIPAddress(<span style="color: #0000ff;">string</span> value)<br>        {<br>            IPAddress tmp;<br>            <span style="color: #0000ff;">if</span> (!System.Net.IPAddress.TryParse(value, <span style="color: #0000ff;">out</span> tmp)) <span style="color: #0000ff;">return</span>;<br><br>            <span style="color: #0000ff;">string</span>[] octets = value.Split(<span style="color: #800000;">‘</span><span style="color: #800000;">.</span><span style="color: #800000;">‘</span>);<br>            <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; <span style="color: #800080;">4</span>; i++)<br>            {<br>                <span style="color: #0000ff;">if</span> (ipParts[i] != octets[i])<br>                {<br>                    ipParts[i] = octets[i];<br>                    textBoxs[i].Text = octets[i];<br>                }<br>            }<br><br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> OnTextChanged(<span style="color: #0000ff;">object</span> sender, TextChangedEventArgs e)<br>        {<br>            <span style="color: #0000ff;">var</span> textBox = (TextBox)sender;<br>            <span style="color: #0000ff;">var</span> index = (<span style="color: #0000ff;">int</span>)textBox.Tag;<br><br>            <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">string</span>.IsNullOrWhiteSpace(textBox.Text)) <span style="color: #0000ff;">return</span>;<br>            <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">int</span>.Parse(textBox.Text) &gt; <span style="color: #800080;">255</span>)<br>            {<br>                textBox.Text = <span style="color: #800000;">“</span><span style="color: #800000;">255</span><span style="color: #800000;">“</span>;<br>                textBox.Select(<span style="color: #800080;">3</span>, <span style="color: #800080;">0</span>);<br>            }<br><br>            <span style="color: #0000ff;">if</span> (ipParts[index] == textBox.Text) <span style="color: #0000ff;">return</span>;<br>            <span style="color: #0000ff;">if</span> (textBox.Text.Length == <span style="color: #800080;">3</span>)<br>            {<br>                NextFocus(index);<br>            }<br>            UpdateIPAddress();<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> OnKeyDown(<span style="color: #0000ff;">object</span> sender, KeyEventArgs e)<br>        {<br>            <span style="color: #0000ff;">var</span> textBox = (TextBox)sender;<br>            <span style="color: #0000ff;">if</span> (e.PlatformKeyCode == <span style="color: #800080;">190</span>) <span style="color: #008000;">//</span><span style="color: #008000;">.</span><span style="color: #008000;"><br></span>            {<br>                e.Handled = <span style="color: #0000ff;">true</span>;<br>                <span style="color: #0000ff;">if</span> (!<span style="color: #0000ff;">string</span>.IsNullOrEmpty(textBox.Text))<br>                {<br>                    NextFocus((<span style="color: #0000ff;">int</span>)textBox.Tag);<br>                }<br>                <span style="color: #0000ff;">return</span>;<br>            }<br>            <span style="color: #0000ff;">if</span> (e.Key == Key.Back)<br>            {<br>                <span style="color: #0000ff;">if</span> (<span style="color: #0000ff;">string</span>.IsNullOrEmpty(textBox.Text))<br>                {<br>                    e.Handled = <span style="color: #0000ff;">true</span>;<br>                    PrevFocus((<span style="color: #0000ff;">int</span>)textBox.Tag);<br>                }<br>            }<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> NextFocus(<span style="color: #0000ff;">int</span> index)<br>        {<br>            <span style="color: #0000ff;">if</span> (index &gt;= <span style="color: #800080;">3</span>) <span style="color: #0000ff;">return</span>;<br>            <span style="color: #0000ff;">var</span> box = textBoxs[index + <span style="color: #800080;">1</span>];<br>            box.Focus();<br>            box.Select(box.Text.Length, <span style="color: #800080;">0</span>);<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> PrevFocus(<span style="color: #0000ff;">int</span> index)<br>        {<br>            <span style="color: #0000ff;">if</span> (index &lt; <span style="color: #800080;">1</span>) <span style="color: #0000ff;">return</span>;<br>            <span style="color: #0000ff;">var</span> box = textBoxs[index - <span style="color: #800080;">1</span>];<br>            box.Focus();<br>            box.Select(box.Text.Length, <span style="color: #800080;">0</span>);<br>        }<br>    }</pre><br></div><br></div>
+
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/26/wp7应用开发笔记8-ip输入框控件/" data-id="sinh3jnv3j6slh1q" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记7-配置和存储" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/26/wp7应用开发笔记7-配置和存储/" class="article-date">
+  <time datetime="2012-01-25T19:18:00.000Z" itemprop="datePublished">1月 26 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/26/wp7应用开发笔记7-配置和存储/">WP7应用开发笔记(7)  配置和存储</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="配置">配置</h2>
+<p>既然选择了TCP协议，那么从WP7手机连接到TCP服务器，必须要知道服务器的IP和端口。为了方便服务器端口使用固定的8012端口。</p>
+<p>那么WP7至少需要在手机上存储IP地址字符串。</p>
+<p>&nbsp;</p>
+<h2 id="Windows_Phone_本地数据存储">Windows Phone 本地数据存储</h2>
+<p>Windows Phone 应用程序可以使用独立存储将数据储存到手机本地。应用程序可以通过三种方式储存数据：</p>
+<ol>
+<li><strong>设置</strong>：使用 IsolatedStorageSettings 类将数据存储为键/值对。</li>
+<li><strong>文件和文件夹</strong>：使用 IsolatedStorageFile 类存储文件和文件夹。</li>
+<li><strong>本地数据库</strong>：7.1新增，只能支持LINQ TO SQL ，不能写SQL语句。</li>
+</ol>
+<p>&nbsp;</p>
+<h2 id="本地存储IP数据">本地存储IP数据</h2>
+<p>因为我只需要存储一个IP地址，不用考虑，IsolatedStorageSettings是最佳选择。下面是一个包装封装类，看看IsolatedStorageSettings是如何使用的吧。</p>
+<p><pre class="csharpcode"> <span class="kwrd">public</span> <span class="kwrd">static</span> <span class="kwrd">class</span> IPEndPointStorage<br>  {<br>        <span class="kwrd">private</span> <span class="kwrd">const</span> <span class="kwrd">string</span> Key = <span class="str">“ipaddress”</span>;<br>        <span class="kwrd">public</span> <span class="kwrd">const</span> <span class="kwrd">int</span> Port = 8012;</p>
+<pre><code>    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>public<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>string<span class="tag">&lt;/<span class="title">span</span>&gt;</span> IPAddress
+    {
+        get
+        {
+            <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>string<span class="tag">&lt;/<span class="title">span</span>&gt;</span> ipAddress;
+            <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>return<span class="tag">&lt;/<span class="title">span</span>&gt;</span> IsolatedStorageSettings.ApplicationSettings.TryGetValue(Key, <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>out<span class="tag">&lt;/<span class="title">span</span>&gt;</span> ipAddress) ? ipAddress : <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>null<span class="tag">&lt;/<span class="title">span</span>&gt;</span>;
+        }
+        set { IsolatedStorageSettings.ApplicationSettings[Key] = <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>value<span class="tag">&lt;/<span class="title">span</span>&gt;</span>; }
+    }
+</code></pre><p>}</pre></p>
+<style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/26/wp7应用开发笔记7-配置和存储/" data-id="9zk4qljqn8bil8ul" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" href="/page/5/">Next &raquo;</a>
+    </nav>
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

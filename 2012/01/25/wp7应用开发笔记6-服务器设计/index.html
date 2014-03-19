@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>WP7应用开发笔记(6) 服务器设计 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="WP7应用开发笔记(6) 服务器设计">
+<meta name="og:url" content="http://yoursite.com/2012/01/25/wp7应用开发笔记6-服务器设计/">
+<meta name="og:image" content="http://pic002.cnblogs.com/images/2012/25121/2012012515474676.jpg">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="TCP服务器
+服务器类图
+
+这里模仿了WebFrom的IHttpHandler，我设计了一个ITcpHandler提供给ServiceListener让外部解析。实现类是KeyMethodHandler。
+报文TcpContext包含了TcpRequest和TcpResponse，TcpRequest和消息报文结构相同，增加了从Socket获取的TcpEndpoint，TcpResponse仅仅只">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-wp7应用开发笔记6-服务器设计" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/25/wp7应用开发笔记6-服务器设计/" class="article-date">
+  <time datetime="2012-01-25T00:12:00.000Z" itemprop="datePublished">1月 25 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WP7应用开发笔记(6) 服务器设计
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="TCP服务器">TCP服务器</h2>
+<p>服务器类图</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012515474676.jpg" alt=""></p>
+<p>这里模仿了WebFrom的IHttpHandler，我设计了一个ITcpHandler提供给ServiceListener让外部解析。实现类是KeyMethodHandler。</p>
+<p>报文TcpContext包含了TcpRequest和TcpResponse，TcpRequest和消息报文结构相同，增加了从Socket获取的TcpEndpoint，TcpResponse仅仅只是回调状态和消息（暂时没有使用）。</p>
+<p>ServiceListener、BufferManager、SocketAsyncEventArgsPool和MDSN上标准的例子接近，原则上都是为了重用Buffer和SocketAsyncEventArgs对象，节约内存开销。</p>
+<p>&nbsp;</p>
+<p>回顾一下SocketAsyncEventArgs方式的Socket代码写法</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">var</span> e = <span style="color: #0000ff;">new</span> SocketAsyncEventArgs();<br>e.Completed += <span style="color: #0000ff;">this</span>.OnAccept;<br>e.AcceptSocket = <span style="color: #0000ff;">null</span>;<br><br>…<br><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> ProcessAccept(SocketAsyncEventArgs e){<br>…<br><span style="color: #0000ff;">bool</span> willRaiseEvent = <span style="color: #0000ff;">this</span>.listener.AcceptAsync(e);<br><span style="color: #0000ff;">if</span> (!willRaiseEvent)<br>{<br>      <span style="color: #0000ff;">this</span>.OnAccept(<span style="color: #0000ff;">null</span>, e);<br>}<br>}<br><br>…<br><br><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> OnAccept(<span style="color: #0000ff;">object</span> sender, SocketAsyncEventArgs e)<br> {<br><br>            <span style="color: #0000ff;">try</span><br>            {<br>                <span style="color: #0000ff;">if</span> (e.SocketError != SocketError.Success)<br>                {<br>                    …<br>                    <span style="color: #0000ff;">return</span>;<br>                }<br>                Socket client = e.AcceptSocket;<br>                <span style="color: #0000ff;">if</span> (client == <span style="color: #0000ff;">null</span>)<br>                {<br>                    …<br>                    <span style="color: #0000ff;">return</span>;<br>                }<br>                <span style="color: #0000ff;">var</span> asyncEventArg = eventPool.Pop();<br>                <span style="color: #0000ff;">if</span> (asyncEventArg == <span style="color: #0000ff;">null</span>)<br>                {<br>                    …<br>                    <span style="color: #0000ff;">return</span>;<br>                }<br>                <span style="color: #0000ff;">var</span> token = (AsyncUserToken)asyncEventArg.UserToken;<br>                token.Socket = client;<br>                token.EndPoint = (IPEndPoint)client.RemoteEndPoint;<br>                <span style="color: #0000ff;">bool</span> willRaiseEvent = client.ReceiveAsync(asyncEventArg);<br>                <span style="color: #0000ff;">if</span> (!willRaiseEvent)<br>                {<br>                    <span style="color: #0000ff;">this</span>.ProcessReceive(asyncEventArg);<br>                }<br>            }<br>            <span style="color: #0000ff;">catch</span> (Exception err)<br>            {<br>                Debug.Print(<span style="color: #800000;">“</span><span style="color: #800000;">Accept exception,{0}</span><span style="color: #800000;">“</span>, err);<br>            }<br>            <span style="color: #0000ff;">finally</span><br>            {<br>                e.AcceptSocket = <span style="color: #0000ff;">null</span>;<br>                <span style="color: #0000ff;">this</span>.ProcessAccept(e);<br>            }<br>        }</pre><br></div>
+
+<p>&nbsp;</p>
+<h2 id="命令解析">命令解析</h2>
+<p>命令解析的类图</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012516100932.jpg" alt=""></p>
+<p>KeyMethodHandler包含了2个ICommand接口，分别的实现是KeyboardCommand用于触发直接按键事件，另外一个是MediaCommand 用于触发媒体按键。这2个类都包含了IKeyboardHook接口，实现是KeyboardHook用于调用系统接口。</p>
+<p>媒体按键一般都组合快捷键，而且可以配置，配置类就是MediaMethodConfig.</p>
+<p>&nbsp;</p>
+<p>调用系统接口触发键盘的实现：</p>
+<p><pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">interface</span> IKeyBoardHook<br>    {<br>        <span class="kwrd">void</span> PressKey(Keys keyCode);<br>        <span class="kwrd">void</span> PressKey(Keys[] keyCode);<br>    }</p>
+<pre><code><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>public<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>sealed<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>class<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoardHook : IKeyBoardHook
+{
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>readonly<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoardHook instance = <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>new<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoardHook();
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>public<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoardHook Instance
+    {
+        get { <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>return<span class="tag">&lt;/<span class="title">span</span>&gt;</span> instance; }
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoardHook()
+    {
+
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>enum<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoard
+    {
+        KeyDown = 0x0001,
+        KeyUp = 0x0002
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>public<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>void<span class="tag">&lt;/<span class="title">span</span>&gt;</span> PressKey(Keys keyCode)
+    {
+        PressKey(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>new<span class="tag">&lt;/<span class="title">span</span>&gt;</span>[] { keyCode });
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>public<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>void<span class="tag">&lt;/<span class="title">span</span>&gt;</span> PressKey(Keys[] keyCodes)
+    {
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>if<span class="tag">&lt;/<span class="title">span</span>&gt;</span> (keyCodes == <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>null<span class="tag">&lt;/<span class="title">span</span>&gt;</span> || keyCodes.Length == 0) <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>return<span class="tag">&lt;/<span class="title">span</span>&gt;</span>;
+
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>int<span class="tag">&lt;/<span class="title">span</span>&gt;</span> length = keyCodes.Length;
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>for<span class="tag">&lt;/<span class="title">span</span>&gt;</span> (<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>int<span class="tag">&lt;/<span class="title">span</span>&gt;</span> i = 0; i &amp;lt; length; i++)
+        {
+            PutDownKey(keyCodes[i]);
+        }
+        Thread.SpinWait(5000);
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>for<span class="tag">&lt;/<span class="title">span</span>&gt;</span> (<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>int<span class="tag">&lt;/<span class="title">span</span>&gt;</span> i = length - 1; i &amp;gt;= 0; i--)
+        {
+            ReceiveKey(keyCodes[i]);
+        }
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>void<span class="tag">&lt;/<span class="title">span</span>&gt;</span> PutDownKey(Keys keyCode)
+    {
+        KeyboardEvent((<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>byte<span class="tag">&lt;/<span class="title">span</span>&gt;</span>)keyCode, 0, KeyBoard.KeyDown, 0);
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>void<span class="tag">&lt;/<span class="title">span</span>&gt;</span> ReceiveKey(Keys keyCode)
+    {
+        KeyboardEvent((<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>byte<span class="tag">&lt;/<span class="title">span</span>&gt;</span>)keyCode, 0, KeyBoard.KeyUp, 0);
+    }
+
+    [DllImport(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"str"</span>&gt;</span>"user32.dll"<span class="tag">&lt;/<span class="title">span</span>&gt;</span>, CharSet = CharSet.Auto, EntryPoint = <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"str"</span>&gt;</span>"keybd_event"<span class="tag">&lt;/<span class="title">span</span>&gt;</span>)]
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>extern<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>void<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyboardEvent(
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>byte<span class="tag">&lt;/<span class="title">span</span>&gt;</span> bVk,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>byte<span class="tag">&lt;/<span class="title">span</span>&gt;</span> bScan,
+        KeyBoard dwFlags,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>int<span class="tag">&lt;/<span class="title">span</span>&gt;</span> dwExtraInfo
+        );
+}<span class="tag">&lt;/<span class="title">pre</span>&gt;</span>
+</code></pre><style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/25/wp7应用开发笔记6-服务器设计/" data-id="4hob4r30ur0i32gn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2012/01/26/wp7应用开发笔记7-配置和存储/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          WP7应用开发笔记(7)  配置和存储
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/01/25/wp7应用开发笔记5-通信设计/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WP7应用开发笔记(5) 通信设计</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

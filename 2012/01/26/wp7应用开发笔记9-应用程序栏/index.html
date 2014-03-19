@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>WP7应用开发笔记(9)  应用程序栏 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="WP7应用开发笔记(9)  应用程序栏">
+<meta name="og:url" content="http://yoursite.com/2012/01/26/wp7应用开发笔记9-应用程序栏/">
+<meta name="og:image" content="http://i.msdn.microsoft.com/dynimg/IC531105.png">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="可以使用 Windows Phone SDK 快速轻松地向应用程序中添加应用程序栏。应用程序栏是沿着手机屏幕底部的一行图标按钮，它们为用户提供对应用程序最常见任务的快速访问。
+呈现模式有：
+1.最简Minimized 就仅仅在下面显示…
+
+2 普通：
+
+3 展开：
+
+4 展开+菜单：
+
+&nbsp;
+遥控器界面的应用程序栏
+首先是遥控器的应用程序栏，因为平时需要操作我用最简方式呈现，为了统一将背景">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-wp7应用开发笔记9-应用程序栏" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/26/wp7应用开发笔记9-应用程序栏/" class="article-date">
+  <time datetime="2012-01-25T20:51:00.000Z" itemprop="datePublished">1月 26 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WP7应用开发笔记(9)  应用程序栏
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>可以使用 Windows Phone SDK 快速轻松地向应用程序中添加应用程序栏。应用程序栏是沿着手机屏幕底部的一行图标按钮，它们为用户提供对应用程序最常见任务的快速访问。</p>
+<p>呈现模式有：</p>
+<p>1.最简Minimized 就仅仅在下面显示…</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC531105.png" alt=""></p>
+<p>2 普通：</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC531095.png" alt=""></p>
+<p>3 展开：</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC531106.png" alt=""></p>
+<p>4 展开+菜单：</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC531092.png" alt=""></p>
+<p>&nbsp;</p>
+<h2 id="遥控器界面的应用程序栏">遥控器界面的应用程序栏</h2>
+<p>首先是遥控器的应用程序栏，因为平时需要操作我用最简方式呈现，为了统一将背景色变成透明</p>
+<p>这样只能点右边的…才能展开。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012612481390.jpg" alt=""></p>
+<p>展开后显示&ldquo;设置&rdquo;、&ldquo;帮助&rdquo;两个菜单，将背景色设置成黑色。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012612483025.jpg" alt=""></p>
+<p>通过监听ApplicationBar的StateChanged事件可以实现，代码如下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> OnAppBarStateChanged(<span style="color: #0000ff;">object</span> sender, ApplicationBarStateChangedEventArgs e)<br>{<br>            ApplicationBar.BackgroundColor = e.IsMenuVisible ? Colors.Black : Colors.Transparent;<br>}</pre><br></div>
+
+<p>&nbsp;</p>
+<h2 id="设置界面的应用程序栏">设置界面的应用程序栏</h2>
+<p>一般的设置界面都是&ldquo;保存&rdquo;和&rdquo;取消&rdquo;,因为微软的设计准则里不推荐使用&ldquo;取消&rdquo;按钮，通过系统的后腿键实现。</p>
+<p>那么这里仅仅需要一个&ldquo;保存&rdquo;。</p>
+<p>保存的图标可以在C:Program Files (x86)Microsoft SDKsWindows Phonev7.1Icons找到（32位系统去掉(x86))</p>
+<p>将appbar.save.rest.png添加到项目中，设置</p>
+<p>&lt;shell:ApplicationBarIconButton IconUri=”/Icons/appbar.save.rest.png” Text=”保存” /&gt;</p>
+<p><span style="color: #ff0000;"><strong>有一个非常重要的问题要注意：一定要将图片生成属性设置为内容，不然无法显示。</strong></span></p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012612494213.jpg" alt=""></p>
+<p>运行后显示如下：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012612495441.jpg" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/26/wp7应用开发笔记9-应用程序栏/" data-id="p1bvoy1odxrewagx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2012/01/26/wp7应用开发笔记10-导航/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          WP7应用开发笔记(10) 导航
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/01/26/wp7应用开发笔记8-ip输入框控件/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WP7应用开发笔记(8)  IP输入框控件</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

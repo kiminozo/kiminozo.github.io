@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>WP7自定义控件 评分控件 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="WP7自定义控件 评分控件">
+<meta name="og:url" content="http://yoursite.com/2012/03/11/wp7自定义控件-评分控件/">
+<meta name="og:image" content="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="最近在写一个新的APP程序，需要使用评分功能，WP的Toolkit里面没有包含，只能自己写一个了。
+&nbsp;
+评分控件要点
+评分控件已经很熟悉了，还是总结一下要点。
+
+由10个（可配置）横排的五星组成，默认非高亮色（灰色）
+得分由从左到右高亮（如红色，颜色可配置）显示得分数量的五星，控件能够提供获取和设置得分的属性。
+可以点击其中一个五星修改评分。
+为了提高触摸体验，支持拖动控件修改得分
+
+&">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-wp7自定义控件-评分控件" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/03/11/wp7自定义控件-评分控件/" class="article-date">
+  <time datetime="2012-03-11T03:57:00.000Z" itemprop="datePublished">3月 11 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WP7自定义控件 评分控件
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在写一个新的APP程序，需要使用评分功能，WP的Toolkit里面没有包含，只能自己写一个了。</p>
+<p>&nbsp;</p>
+<h2 id="评分控件要点">评分控件要点</h2>
+<p>评分控件已经很熟悉了，还是总结一下要点。</p>
+<ol>
+<li>由10个（可配置）横排的五星组成，默认非高亮色（灰色）</li>
+<li>得分由从左到右高亮（如红色，颜色可配置）显示得分数量的五星，控件能够提供获取和设置得分的属性。</li>
+<li>可以点击其中一个五星修改评分。</li>
+<li>为了提高触摸体验，支持拖动控件修改得分</li>
+</ol>
+<p>&nbsp;</p>
+<h2 id="根据要点设计控件">根据要点设计控件</h2>
+<h3 id="根据要点1设计控件布局">根据要点1设计控件布局</h3>
+<p>Horizontal排列的StackPanel（包含在ItemsControl 控件内部） 和 绘制五星的Path 组成。</p>
+<p>最上面提供一个透明的Rectangle扩展触摸空间（WP只能在绘制的控件上触摸）。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ItemsControl </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”stars”</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ItemsControl.ItemsPanel</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ItemsPanelTemplate</span><span style="color: #0000ff;">&gt;</span><br>                                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">StackPanel </span><span style="color: #ff0000;">Orientation</span><span style="color: #0000ff;">=”Horizontal”</span> <span style="color: #0000ff;">/&gt;</span><br>                                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ItemsPanelTemplate</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ItemsControl.ItemsPanel</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ItemsControl.ItemTemplate</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DataTemplate</span><span style="color: #0000ff;">&gt;</span><br>                                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Path </span><span style="color: #ff0000;">Data</span><span style="color: #0000ff;">=”M16,0 L19.77688,12.223213 L32.000001,12.222913 L22.111121,19.776973 L25.888544,32.000001 L16,24.445454 L6.1114563,32.000001 L9.88888,19.776973 L2.2971745E-08,12.222913 L12.22312,12.223213 z”</span><span style="color: #ff0000;"><br>                              Fill</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{Binding Fill}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"> HorizontalAlignment</span><span style="color: #0000ff;">=”Left”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”32”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”1,0”</span><span style="color: #ff0000;"> Width</span><span style="color: #0000ff;">=”32”</span><span style="color: #ff0000;"><br>                              Stretch</span><span style="color: #0000ff;">=”Fill”</span><span style="color: #ff0000;"> VerticalAlignment</span><span style="color: #0000ff;">=”Top”</span> <span style="color: #0000ff;">/&gt;</span><br>                                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">DataTemplate</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ItemsControl.ItemTemplate</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ItemsControl</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Rectangle </span><span style="color: #ff0000;">Fill</span><span style="color: #0000ff;">=”#00000000”</span><span style="color: #0000ff;">/&gt;</span></pre><br></div>
+
+<h3 id="根据要点1、2设计控件属性">根据要点1、2设计控件属性</h3>
+<p>Brush MarkedFill&nbsp; 选中了的五星刷子</p>
+<p>Brush UnMarkedFill 未选中的五星刷子</p>
+<p>int MaxStars 最大五星数量</p>
+<p>Marked 当前评价值</p>
+<p>&nbsp;</p>
+<h3 id="根据要点2设计控件属性改变行为">根据要点2设计控件属性改变行为</h3>
+<p>很简单获取Marked 然后将每个五星都修改一下颜色</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> FillStars(<span style="color: #0000ff;">int</span> index)<br>        {<br>            <span style="color: #0000ff;">if</span> (!VerifyValue(index)) <span style="color: #0000ff;">return</span>;<br><br>            <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>, length = starItems.Count; i &lt; length; i++)<br>            {<br>                <span style="color: #0000ff;">var</span> star = starItems[i];<br>                <span style="color: #0000ff;">if</span> (i &gt; index)<br>                {<br>                    star.Fill = UnMarkedFill;<br>                }<br>                <span style="color: #0000ff;">else</span><br>                {<br>                    star.Fill = MarkedFill;<br>                }<br>            }<br><br>        }</pre><br></div>
+
+<h2 id="根据要点3、4设计控件触控行为">根据要点3、4设计控件触控行为</h2>
+<p>将2个要点合并了，实现方法为：</p>
+<ul>
+<li>滑动前（点中）： 修改为当前X轴的高亮位置</li>
+<li>滑动中：根据X轴变化高亮位置</li>
+<li>滑动完成（放开）： 修改为当前X轴的高亮位置，并更新评分Marked 当前评价值</li>
+</ul>
+<p>通过五星的宽度可以获取X轴所在的五星</p>
+<p>代码如下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> OnManipulationStarted(ManipulationStartedEventArgs e)<br>        {<br>            e.Handled = <span style="color: #0000ff;">true</span>;<br>            UpdateStar(e.ManipulationOrigin);<br>            <span style="color: #0000ff;">base</span>.OnManipulationStarted(e);<br>        }<br><br>        <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> OnManipulationDelta(ManipulationDeltaEventArgs e)<br>        {<br>            e.Handled = <span style="color: #0000ff;">true</span>;<br>            UpdateStar(e.ManipulationOrigin);<br>            <span style="color: #0000ff;">base</span>.OnManipulationDelta(e);<br>        }<br><br>        <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> OnManipulationCompleted(ManipulationCompletedEventArgs e)<br>        {<br>            e.Handled = <span style="color: #0000ff;">true</span>;<br>            <span style="color: #0000ff;">var</span> index = UpdateStar(e.ManipulationOrigin);<br>            <span style="color: #0000ff;">if</span> (VerifyValue(index)) { Marked = index + <span style="color: #800080;">1</span>; }<br>            <span style="color: #0000ff;">base</span>.OnManipulationCompleted(e);<br>        }</pre><br></div>
+
+<p>&nbsp;</p>
+<h2 id="完整代码">完整代码</h2>
+<p>&nbsp;</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('6cebecfd-2ad6-447f-9e03-ac2db0cb4779')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_6cebecfd-2ad6-447f-9e03-ac2db0cb4779" class="cnblogs_code_hide"><br><pre><span style="color: #0000ff;">using</span> System.Collections.ObjectModel;<br><span style="color: #0000ff;">using</span> System.ComponentModel;<br><span style="color: #0000ff;">using</span> System.Diagnostics;<br><span style="color: #0000ff;">using</span> System.Windows;<br><span style="color: #0000ff;">using</span> System.Windows.Controls;<br><span style="color: #0000ff;">using</span> System.Windows.Input;<br><span style="color: #0000ff;">using</span> System.Windows.Media;<br><br><span style="color: #0000ff;">namespace</span> KimiStudio.Controls<br>{<br>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> StarMark : Control<br>    {<br>        <span style="color: #0000ff;">private</span> ItemsControl stars;<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">int</span> StarSize = <span style="color: #800080;">34</span>;<br>        <span style="color: #0000ff;">private</span> ObservableCollection&lt;StarItem&gt; starItems;<br><br>        <span style="color: #0000ff;">#region</span> DependencyPropertys<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> DependencyProperty MarkedFillProperty =<br>           DependencyProperty.Register(<span style="color: #800000;">“</span><span style="color: #800000;">MarkedFill</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">typeof</span>(Brush), <span style="color: #0000ff;">typeof</span>(StarMark),<br>           <span style="color: #0000ff;">new</span> PropertyMetadata(<span style="color: #0000ff;">new</span> SolidColorBrush(Colors.Red)));<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> DependencyProperty UnMarkedFillProperty =<br>            DependencyProperty.Register(<span style="color: #800000;">“</span><span style="color: #800000;">UnMarkedFill</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">typeof</span>(Brush), <span style="color: #0000ff;">typeof</span>(StarMark),<br>            <span style="color: #0000ff;">new</span> PropertyMetadata(<span style="color: #0000ff;">new</span> SolidColorBrush(Colors.DarkGray)));<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> DependencyProperty MaxStarsProperty =<br>            DependencyProperty.Register(<span style="color: #800000;">“</span><span style="color: #800000;">MaxStars</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">typeof</span>(<span style="color: #0000ff;">int</span>), <span style="color: #0000ff;">typeof</span>(StarMark),<br>            <span style="color: #0000ff;">new</span> PropertyMetadata(<span style="color: #800080;">10</span>));<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> DependencyProperty MarkedProperty =<br>            DependencyProperty.Register(<span style="color: #800000;">“</span><span style="color: #800000;">Marked</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">typeof</span>(<span style="color: #0000ff;">int</span>), <span style="color: #0000ff;">typeof</span>(StarMark),<br>            <span style="color: #0000ff;">new</span> PropertyMetadata(<span style="color: #800080;">0</span>, OnMarkedPropertyChanged));<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">int</span> Marked<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> (<span style="color: #0000ff;">int</span>)GetValue(MarkedProperty); }<br>            <span style="color: #0000ff;">set</span> { SetValue(MarkedProperty, value); }<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">int</span> MaxStars<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> (<span style="color: #0000ff;">int</span>)GetValue(MaxStarsProperty); }<br>            <span style="color: #0000ff;">set</span> { SetValue(MaxStarsProperty, value); }<br>        }<br><br>        <span style="color: #0000ff;">public</span> Brush UnMarkedFill<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> (Brush)GetValue(UnMarkedFillProperty); }<br>            <span style="color: #0000ff;">set</span> { SetValue(UnMarkedFillProperty, value); }<br>        }<br><br>        <span style="color: #0000ff;">public</span> Brush MarkedFill<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> (Brush)GetValue(MarkedFillProperty); }<br>            <span style="color: #0000ff;">set</span> { SetValue(MarkedFillProperty, value); }<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> OnMarkedPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs args)<br>        {<br>            <span style="color: #0000ff;">var</span> starMark = o <span style="color: #0000ff;">as</span> StarMark;<br>            <span style="color: #0000ff;">if</span> (starMark == <span style="color: #0000ff;">null</span> || args.NewValue == args.OldValue) <span style="color: #0000ff;">return</span>;<br><br>            starMark.SetMarked((<span style="color: #0000ff;">int</span>)args.NewValue);<br>        }<br><br>        <span style="color: #0000ff;">#endregion</span><br><br>        <span style="color: #0000ff;">public</span> StarMark()<br>        {<br>            <span style="color: #0000ff;">this</span>.DefaultStyleKey = <span style="color: #0000ff;">typeof</span>(StarMark);<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> OnApplyTemplate()<br>        {<br>            <span style="color: #0000ff;">base</span>.OnApplyTemplate();<br>            stars = (ItemsControl)GetTemplateChild(<span style="color: #800000;">“</span><span style="color: #800000;">stars</span><span style="color: #800000;">“</span>);<br><br>            starItems = <span style="color: #0000ff;">new</span> ObservableCollection&lt;StarItem&gt;();<br>            <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>, length = MaxStars; i &lt; length; i++)<br>            {<br>                starItems.Add(<span style="color: #0000ff;">new</span> StarItem { Fill = UnMarkedFill });<br>            }<br>            stars.ItemsSource = starItems;<br>            SetMarked(Marked);<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> SetMarked(<span style="color: #0000ff;">int</span> value)<br>        {<br>            <span style="color: #0000ff;">if</span> (stars == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span>; ;<br>            FillStars(value - <span style="color: #800080;">1</span>);<br>        }<br><br>        <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> OnManipulationStarted(ManipulationStartedEventArgs e)<br>        {<br>            e.Handled = <span style="color: #0000ff;">true</span>;<br>            UpdateStar(e.ManipulationOrigin);<br>            <span style="color: #0000ff;">base</span>.OnManipulationStarted(e);<br>        }<br><br>        <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> OnManipulationDelta(ManipulationDeltaEventArgs e)<br>        {<br>            e.Handled = <span style="color: #0000ff;">true</span>;<br>            UpdateStar(e.ManipulationOrigin);<br>            <span style="color: #0000ff;">base</span>.OnManipulationDelta(e);<br>        }<br><br>        <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> OnManipulationCompleted(ManipulationCompletedEventArgs e)<br>        {<br>            e.Handled = <span style="color: #0000ff;">true</span>;<br>            <span style="color: #0000ff;">var</span> index = UpdateStar(e.ManipulationOrigin);<br>            <span style="color: #0000ff;">if</span> (VerifyValue(index)) { Marked = index + <span style="color: #800080;">1</span>; }<br>            <span style="color: #0000ff;">base</span>.OnManipulationCompleted(e);<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">int</span> UpdateStar(Point point)<br>        {<br>            <span style="color: #0000ff;">int</span> x = (<span style="color: #0000ff;">int</span>)point.X;<br>            <span style="color: #0000ff;">int</span> index = x / StarSize;<br>            FillStars(index);<br>            <span style="color: #0000ff;">return</span> index;<br>        }<br><br>        <span style="color: #008000;">//</span><span style="color: #008000;">SL可用<br>        </span><span style="color: #008000;">//</span><span style="color: #008000;">protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)<br>        </span><span style="color: #008000;">//</span><span style="color: #008000;">{<br>        </span><span style="color: #008000;">//</span><span style="color: #008000;">    int x = (int)e.GetPosition(stars).X;<br>        </span><span style="color: #008000;">//</span><span style="color: #008000;">    int index = x / StarSize;<br>        </span><span style="color: #008000;">//</span><span style="color: #008000;">    FillStars(index);<br><br>        </span><span style="color: #008000;">//</span><span style="color: #008000;">    if (VerifyValue(index)) { Marked = index + 1; }<br>        </span><span style="color: #008000;">//</span><span style="color: #008000;">    base.OnMouseLeftButtonUp(e);<br>        </span><span style="color: #008000;">//</span><span style="color: #008000;">}</span><span style="color: #008000;"><br></span><br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">bool</span> VerifyValue(<span style="color: #0000ff;">int</span> index)<br>        {<br>            <span style="color: #0000ff;">if</span> (index &lt; <span style="color: #800080;">0</span> || index &gt;= stars.Items.Count) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>;<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> FillStars(<span style="color: #0000ff;">int</span> index)<br>        {<br>            <span style="color: #0000ff;">if</span> (!VerifyValue(index)) <span style="color: #0000ff;">return</span>;<br><br>            <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>, length = starItems.Count; i &lt; length; i++)<br>            {<br>                <span style="color: #0000ff;">var</span> star = starItems[i];<br>                <span style="color: #0000ff;">if</span> (i &gt; index)<br>                {<br>                    star.Fill = UnMarkedFill;<br>                }<br>                <span style="color: #0000ff;">else</span><br>                {<br>                    star.Fill = MarkedFill;<br>                }<br>            }<br><br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> StarItem : INotifyPropertyChanged<br>        {<br>            <span style="color: #0000ff;">private</span> Brush fill;<br><br>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">event</span> PropertyChangedEventHandler PropertyChanged;<br><br>            <span style="color: #0000ff;">public</span> Brush Fill<br>            {<br>                <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> fill; }<br>                <span style="color: #0000ff;">set</span><br>                {<br>                    <span style="color: #0000ff;">if</span> (fill == value) <span style="color: #0000ff;">return</span>;<br>                    fill = value;<br>                    OnPropertyChanged(<span style="color: #800000;">“</span><span style="color: #800000;">Fill</span><span style="color: #800000;">“</span>);<br>                }<br>            }<br><br>            <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> OnPropertyChanged(<span style="color: #0000ff;">string</span> propertyName)<br>            {<br>                <span style="color: #0000ff;">var</span> handler = PropertyChanged;<br>                <span style="color: #0000ff;">if</span> (handler == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span>;<br>                handler(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">new</span> PropertyChangedEventArgs(propertyName));<br>            }<br>        }<br>    }<br>}</pre><br></div><br></div>
+
+<p>对应的Generic.xaml</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('305c9c41-625d-42a8-b335-4d105b5fb722')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_305c9c41-625d-42a8-b335-4d105b5fb722" class="cnblogs_code_hide"><br><pre> <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Style </span><span style="color: #ff0000;">TargetType</span><span style="color: #0000ff;">=”local:StarMark”</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”Width”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”340”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”Height”</span><span style="color: #ff0000;"> Value</span><span style="color: #0000ff;">=”35”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”Template”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ControlTemplate </span><span style="color: #ff0000;">TargetType</span><span style="color: #0000ff;">=”local:StarMark”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ItemsControl </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”stars”</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ItemsControl.ItemsPanel</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ItemsPanelTemplate</span><span style="color: #0000ff;">&gt;</span><br>                                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">StackPanel </span><span style="color: #ff0000;">Orientation</span><span style="color: #0000ff;">=”Horizontal”</span> <span style="color: #0000ff;">/&gt;</span><br>                                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ItemsPanelTemplate</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ItemsControl.ItemsPanel</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">ItemsControl.ItemTemplate</span><span style="color: #0000ff;">&gt;</span><br>                                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DataTemplate</span><span style="color: #0000ff;">&gt;</span><br>                                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Path </span><span style="color: #ff0000;">Data</span><span style="color: #0000ff;">=”M16,0 L19.77688,12.223213 L32.000001,12.222913 L22.111121,19.776973 L25.888544,32.000001 L16,24.445454 L6.1114563,32.000001 L9.88888,19.776973 L2.2971745E-08,12.222913 L12.22312,12.223213 z”</span><span style="color: #ff0000;"><br>                              Fill</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{Binding Fill}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"> HorizontalAlignment</span><span style="color: #0000ff;">=”Left”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”32”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”1,0”</span><span style="color: #ff0000;"> Width</span><span style="color: #0000ff;">=”32”</span><span style="color: #ff0000;"><br>                              Stretch</span><span style="color: #0000ff;">=”Fill”</span><span style="color: #ff0000;"> VerticalAlignment</span><span style="color: #0000ff;">=”Top”</span> <span style="color: #0000ff;">/&gt;</span><br>                                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">DataTemplate</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ItemsControl.ItemTemplate</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ItemsControl</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Rectangle </span><span style="color: #ff0000;">Fill</span><span style="color: #0000ff;">=”#00000000”</span><span style="color: #0000ff;">/&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">ControlTemplate</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Style</span><span style="color: #0000ff;">&gt;</span></pre><br></div><br></div>
+
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/03/11/wp7自定义控件-评分控件/" data-id="0trrx3rhqetkxzyd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2012/03/12/模拟windows-phone-开始菜单的瓦片动画/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          模拟Windows phone 开始菜单的瓦片动画
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/03/05/wp7应用开发笔记-tilteffect为控件添加倾斜的触控响应效果/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WP7应用开发笔记 TiltEffect为控件添加倾斜的触控响应效果</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

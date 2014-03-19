@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>我的WP7应用开发笔记系列 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="我的WP7应用开发笔记系列">
+<meta name="og:url" content="http://yoursite.com/2012/01/30/我的wp7应用开发笔记系列/">
+<meta name="og:image" content="http://pic002.cnblogs.com/images/2012/25121/2012013020043528.gif">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="春节期间在学习WP7开发，为了练手开发了一款简单的程序，在这里记录一下设计开发过程给大家分享。
+本人虽然有几年的C#开发经验，但是wp7程序还是刚刚开始学习。
+边学边开发边写文章，目录结构可能比较混乱,文章只记录了开发过程的知识点，没有详细的编码过程。
+如果有什么问题还请各位园友见谅。
+&nbsp;
+多媒体遥控器
+先卖个广告，介绍一下这个程序：
+寒冷的冬天在电脑上看电影、动漫等视频的时候，是不是不">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-我的wp7应用开发笔记系列" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/30/我的wp7应用开发笔记系列/" class="article-date">
+  <time datetime="2012-01-30T04:06:00.000Z" itemprop="datePublished">1月 30 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      我的WP7应用开发笔记系列
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>春节期间在学习WP7开发，为了练手开发了一款简单的程序，在这里记录一下设计开发过程给大家分享。</p>
+<p>本人虽然有几年的C#开发经验，但是wp7程序还是刚刚开始学习。</p>
+<p>边学边开发边写文章，目录结构可能比较混乱,文章只记录了开发过程的知识点，没有详细的编码过程。</p>
+<p>如果有什么问题还请各位园友见谅。</p>
+<p>&nbsp;</p>
+<h2 id="多媒体遥控器">多媒体遥控器</h2>
+<p>先卖个广告，介绍一下这个程序：</p>
+<p>寒冷的冬天在电脑上看电影、动漫等视频的时候，是不是不想伸手去按键盘呢，这款软件可以帮助您。</p>
+<p>&nbsp;</p>
+<p>此软件是一款迷你的多媒体遥控器，主要适合在客厅、卧室中喜欢用个人电脑看视频的朋友。<br>此软件能用您的手机方便的远程控制您的个人电脑上的媒体播放器，方便地控制视频播放、音量大小等。</p>
+<p>此软件使用注意事项：</p>
+<ul>
+<li>需要您在您的个人电脑上安装多媒体遥控器的信号接收软件，并需要.net 4.0支持</li>
+<li>在手机端设置接收信号的IP地址（IP就是你电脑的IP）</li>
+<li>需要使用Wifi网络，保证手机和电脑在一个无线路由器下。</li>
+</ul>
+<p>&nbsp;</p>
+<p>多媒体遥控器的XAP 文件和信号接收软件可以在下面的地址中免费下载</p>
+<p>ZUNE</p>
+<p><a href="http://redirect.zune.net/redirect?type=phoneApp&amp;id=d9bab6c2-ad4d-47fe-a2af-100e00d63a17" target="_blank"><img src="http://pic002.cnblogs.com/images/2012/25121/2012013020043528.gif" alt=""></a></p>
+<p><a href="http://www.windowsphone.com/zh-HK/apps/d9bab6c2-ad4d-47fe-a2af-100e00d63a17" title="http://www.windowsphone.com/zh-HK/apps/d9bab6c2-ad4d-47fe-a2af-100e00d63a17" target="_blank">http://redirect.zune.net/redirect?type=phoneApp&amp;id=d9bab6c2-ad4d-47fe-a2af-100e00d63a17</a></p>
+<p>&nbsp;即拍即下：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020412032574.png" alt=""></p>
+<p>开源项目地址：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012013020120973.png" alt="">&nbsp;</p>
+<p><a href="http://virtualkeyboard.codeplex.com/" title="http://www.windowsphone.com/zh-HK/apps/d9bab6c2-ad4d-47fe-a2af-100e00d63a17" target="_blank">http://virtualkeyboard.codeplex.com/</a></p>
+<p>开源协议&nbsp;<span id="currentLicense">The MIT License (MIT)</span></p>
+<p>项目名叫虚拟键盘，本来是想把键盘功能完整实现的，现在暂时完成了多媒体遥控器部分，欢迎下载源代码研究。</p>
+<p>&nbsp;</p>
+<p>最后感谢您使用此共享软件，我希望您能喜欢，如果您有什么建议和意见欢迎告诉我，欢迎一起交流技术。</p>
+<p>&nbsp;</p>
+<h2 id="文章目录">文章目录</h2>
+<ul>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329346-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(1)_序言</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329346.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(1) 序言</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329353-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(2)_思考</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329353.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(2) 思考</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329362-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(3)_界面设计</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329362.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(3) 界面设计</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329373-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(4)_圆形滑动控件实现</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329373.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(4) 圆形滑动控件实现</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329384-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(5)_通信设计</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329384.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(5) 通信设计</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329395-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(6)_服务器设计</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329395.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(6) 服务器设计</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329567-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(7)_配置和存储</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329567.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(7) 配置和存储</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329574-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(8)_IP输入框控件</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329574.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(8) IP输入框控件</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329608-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(9)_应用程序栏</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329608.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(9) 应用程序栏</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329615-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(10)_导航</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329615.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(10) 导航</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329621-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(11)_自定义按钮</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329621.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(11) 自定义按钮</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329863-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(12)_添加页面动画</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329863.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(12) 添加页面动画</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/27/2330112-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(13)_MVVM</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/27/2330112.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(13) MVVM</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/27/2330200-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(14)_使用Caliburn_Micro简化MVVM</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/27/2330200.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(14) 使用Caliburn Micro简化MVVM</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/28/2330516-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(15)_推送通知</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/28/2330516.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(15) 推送通知</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/28/2330521-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(16)_本地Toast_提示</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/28/2330521.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(16) 本地Toast 提示</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/28/2330652-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(17)_提交应用</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/28/2330652.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(17) 提交应用</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/02/01/2335063-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(18)_本地化与多语言</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/02/01/2335063.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(18) 本地化与多语言</span></a></h4>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>第一个系列暂时到此结束，1个月不到学习了不少东西，也感觉漏掉了很多东西，以后等我继续学习在来写一个新应用吧。</p>
+<p>我还得准备工作相关的知识了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/30/我的wp7应用开发笔记系列/" data-id="do2cqt6tueu8opt8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2012/01/31/wp7应用开发笔记-插曲-小心使用messagebox/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          WP7应用开发笔记-插曲 小心使用MessageBox
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/01/30/wp7应用开发笔记17-提交应用/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WP7应用开发笔记(17) 提交应用</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

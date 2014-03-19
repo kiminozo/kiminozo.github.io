@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>WP7应用开发笔记-技巧 使用VisualState布置屏幕方向处理 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="WP7应用开发笔记-技巧 使用VisualState布置屏幕方向处理">
+<meta name="og:url" content="http://yoursite.com/2012/02/12/wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理/">
+<meta name="og:image" content="http://images.cnblogs.com/cnblogs_com/Terrylee/WindowsLiveWriter/Silverlight2_12761/TerryLee_0092_3.png">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="VisualState是什么?
+VisualState 指定控件处于特定状态时的外观。
+例如，按下 Button 时，它的边框颜色可能与正常时的颜色不同。VisualState 类具有更改控件外观的 Storyboard 属性。控件进入 VisualState.Name 属性指定的状态时，Storyboard 开始。控件退出该状态时，Storyboard 停止。
+&nbsp;
+例如CheckBox">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/12/wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理/" class="article-date">
+  <time datetime="2012-02-11T21:49:00.000Z" itemprop="datePublished">2月 12 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WP7应用开发笔记-技巧 使用VisualState布置屏幕方向处理
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="VisualState是什么?">VisualState是什么?</h2>
+<p>VisualState 指定控件处于特定状态时的外观。</p>
+<p>例如，按下 Button 时，它的边框颜色可能与正常时的颜色不同。VisualState 类具有更改控件外观的 Storyboard 属性。控件进入 VisualState.Name 属性指定的状态时，Storyboard 开始。控件退出该状态时，Storyboard 停止。</p>
+<p>&nbsp;</p>
+<p>例如CheckBox就有下面几种状态组：</p>
+<p><img src="http://images.cnblogs.com/cnblogs_com/Terrylee/WindowsLiveWriter/Silverlight2_12761/TerryLee_0092_3.png" alt=""></p>
+<p>使用 VisualStateManager 通过将 VisualState 对象的名称传递到 GoToState 方法，来进行状态过渡。</p>
+<p>深入学习：</p>
+<p>谈谈Silverlight 2中的视觉状态管理</p>
+<p><a href="http://kb.cnblogs.com/page/42918/" title="http://kb.cnblogs.com/page/42918/" target="_blank">http://kb.cnblogs.com/page/42918/</a></p>
+<p>VisualState 类<br><a href="http://msdn.microsoft.com/zh-cn/library/system.windows.visualstate(VS.95" target="_blank">http://msdn.microsoft.com/zh-cn/library/system.windows.visualstate(VS.95).aspx</a>.aspx “<a href="http://msdn.microsoft.com/zh-cn/library/system.windows.visualstate(VS.95).aspx" target="_blank">http://msdn.microsoft.com/zh-cn/library/system.windows.visualstate(VS.95).aspx</a>“)</p>
+<p>&nbsp;</p>
+<h2 id="WP的屏幕方向处理">WP的屏幕方向处理</h2>
+<p>简单说一下WP屏幕方向一共主要有3种 竖向Portrait、左横向LandscapeLeft、右横向LandscapeRight，不支持倒置。</p>
+<p>屏幕方向和PhoneApplicationPage相关，可以对每一个页面单独设置。</p>
+<p>相关的属性和事件有：</p>
+<p>SupportedOrientations&nbsp; 获取或设置页面所支持的手机方向，只能横、只能竖、横竖都可以。</p>
+<p>Orientation 获取当前页面的方向</p>
+<p>OrientationChanged 页面方向改变时触发此事件</p>
+<p>&nbsp;</p>
+<p>因为竖向分辨率为480<em>800，横向分辨率为800</em>480，在布局和呈现上有很大的区别：</p>
+<p>可以参考一下这篇文章：</p>
+<p><a href="http://www.cnblogs.com/mcgrady/archive/2012/02/06/2340598.html" title="http://www.cnblogs.com/mcgrady/archive/2012/02/06/2340598.html" target="_blank">http://www.cnblogs.com/mcgrady/archive/2012/02/06/2340598.html</a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2 id="使用VisualState布置屏幕方向处理">使用VisualState布置屏幕方向处理</h2>
+<p>前面说了这么多，现在进入正题，既然VisualState 指定控件处于特定状态时的外观，而PhoneApplicationPage在方向上又有至少2种状态，那么可以使用VisualState 来呈现竖向Portrait和横向Landscape的两种状态。</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 16px;"><strong>来演练一个例子: 在竖向的时候显示圆形，在横向的时候显示方形。</strong></span></p>
+<p><span style="font-size: 16px;"><strong>&nbsp;</strong></span></p>
+<p>先在界面上添加一个圆形和方形，默认方向是竖向，方形不可见，所以的Opacity为0。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #008000;">&lt;!—</span><span style="color: #008000;">ContentPanel - 在此放置附加内容</span><span style="color: #008000;">—&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ContentPanel”</span><span style="color: #ff0000;"> Grid.Row</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”12,0,12,0”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Rectangle </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> Fill</span><span style="color: #0000ff;">=”#FFF4F4F5”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”96”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”125,146,177,0”</span><span style="color: #ff0000;"> Opacity</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Stroke</span><span style="color: #0000ff;">=”Black”</span><span style="color: #ff0000;"> VerticalAlignment</span><span style="color: #0000ff;">=”Top”</span><span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Ellipse </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> Fill</span><span style="color: #0000ff;">=”#FFF4F4F5”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”158”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”117,110,138,0”</span><span style="color: #ff0000;"> Opacity</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Stroke</span><span style="color: #0000ff;">=”Black”</span><span style="color: #ff0000;"> VerticalAlignment</span><span style="color: #0000ff;">=”Top”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<h3 id="首先是自定义VisualState">首先是自定义VisualState</h3>
+<p>我将状态定义到名字LayoutRoot的Grid 上，也就是默认的那个Grid 。</p>
+<p>定义VisualStateGroup 为Layout ，再添加2个VisualState 分别叫竖向Portrait和横向Landscape</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”LayoutRoot”</span><span style="color: #ff0000;"> Background</span><span style="color: #0000ff;">=”Transparent”</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateManager.VisualStateGroups</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateGroup </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Layout”</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Landscape”</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateGroup</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateManager.VisualStateGroups</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<h3 id="然后为VisualState添加动画版Storyboard">然后为VisualState添加动画版Storyboard</h3>
+<p>在竖向Portrait状态圆形可见，将Opacity设置为1，将方形Opacity设置为0。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>在横向Landscape状态方形可见，将Opacity设置为1，将圆形形Opacity设置为0。</p>
+<div class="cnblogs_code"><br><pre>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Landscape”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>还可以添加Transitions实现动画过度：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateGroup.Transitions</span><span style="color: #0000ff;">&gt;</span><br>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualTransition </span><span style="color: #ff0000;">GeneratedDuration</span><span style="color: #0000ff;">=”0:0:1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualTransition </span><span style="color: #ff0000;">GeneratedDuration</span><span style="color: #0000ff;">=”0:0:1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”Landscape”</span><span style="color: #0000ff;">/&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateGroup.Transitions</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>完整页面代码如下，当然使用Blend编辑起来更方便：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('cadb024c-da61-4365-88ba-07a7842e4fc7')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_cadb024c-da61-4365-88ba-07a7842e4fc7" class="cnblogs_code_hide"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">phone:PhoneApplicationPage<br>    </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">=”<a href="http://schemas.microsoft.com/winfx/2006/xaml/presentation" target="_blank">http://schemas.microsoft.com/winfx/2006/xaml/presentation</a>“</span><span style="color: #ff0000;"><br>    xmlns:x</span><span style="color: #0000ff;">=”<a href="http://schemas.microsoft.com/winfx/2006/xaml" target="_blank">http://schemas.microsoft.com/winfx/2006/xaml</a>“</span><span style="color: #ff0000;"><br>    xmlns:phone</span><span style="color: #0000ff;">=”clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone”</span><span style="color: #ff0000;"><br>    xmlns:shell</span><span style="color: #0000ff;">=”clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone”</span><span style="color: #ff0000;"><br>    xmlns:d</span><span style="color: #0000ff;">=”<a href="http://schemas.microsoft.com/expression/blend/2008" target="_blank">http://schemas.microsoft.com/expression/blend/2008</a>“</span><span style="color: #ff0000;"><br>    xmlns:mc</span><span style="color: #0000ff;">=”<a href="http://schemas.openxmlformats.org/markup-compatibility/2006" target="_blank">http://schemas.openxmlformats.org/markup-compatibility/2006</a>“</span><span style="color: #ff0000;"><br>    mc:Ignorable</span><span style="color: #0000ff;">=”d”</span><span style="color: #ff0000;"> d:DesignWidth</span><span style="color: #0000ff;">=”480”</span><span style="color: #ff0000;"> d:DesignHeight</span><span style="color: #0000ff;">=”768”</span><span style="color: #ff0000;"><br>    x:Class</span><span style="color: #0000ff;">=”WindowsPhoneApplication2.MainPage”</span><span style="color: #ff0000;"><br>    FontFamily</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneFontFamilyNormal}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>    FontSize</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneFontSizeNormal}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>    Foreground</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneForegroundBrush}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>    SupportedOrientations</span><span style="color: #0000ff;">=”PortraitOrLandscape”</span><span style="color: #ff0000;"> Orientation</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #ff0000;"><br>    shell:SystemTray.IsVisible</span><span style="color: #0000ff;">=”True”</span><span style="color: #ff0000;"> OrientationChanged</span><span style="color: #0000ff;">=”PhoneApplicationPage_OrientationChanged”</span><span style="color: #0000ff;">&gt;</span><br><br>    <span style="color: #008000;">&lt;!—</span><span style="color: #008000;">LayoutRoot 是放置所有页面内容的根网格</span><span style="color: #008000;">—&gt;</span><br>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”LayoutRoot”</span><span style="color: #ff0000;"> Background</span><span style="color: #0000ff;">=”Transparent”</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateManager.VisualStateGroups</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateGroup </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Layout”</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateGroup.Transitions</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualTransition </span><span style="color: #ff0000;">GeneratedDuration</span><span style="color: #0000ff;">=”0:0:1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #0000ff;">/&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualTransition </span><span style="color: #ff0000;">GeneratedDuration</span><span style="color: #0000ff;">=”0:0:1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”Landscape”</span><span style="color: #0000ff;">/&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateGroup.Transitions</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Landscape”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateGroup</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateManager.VisualStateGroups</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid.RowDefinitions</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">RowDefinition </span><span style="color: #ff0000;">Height</span><span style="color: #0000ff;">=”Auto”</span><span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">RowDefinition </span><span style="color: #ff0000;">Height</span><span style="color: #0000ff;">=”*”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid.RowDefinitions</span><span style="color: #0000ff;">&gt;</span><br><br>        <span style="color: #008000;">&lt;!—</span><span style="color: #008000;">TitlePanel 包含应用程序名称和页面标题</span><span style="color: #008000;">—&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">StackPanel </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”TitlePanel”</span><span style="color: #ff0000;"> Grid.Row</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”12,17,0,28”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBlock </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ApplicationTitle”</span><span style="color: #ff0000;"> Text</span><span style="color: #0000ff;">=”MY APPLICATION”</span><span style="color: #ff0000;"> Style</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneTextNormalStyle}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBlock </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”PageTitle”</span><span style="color: #ff0000;"> Text</span><span style="color: #0000ff;">=”page name”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”9,-7,0,0”</span><span style="color: #ff0000;"> Style</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneTextTitle1Style}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">StackPanel</span><span style="color: #0000ff;">&gt;</span><br><br>        <span style="color: #008000;">&lt;!—</span><span style="color: #008000;">ContentPanel - 在此放置附加内容</span><span style="color: #008000;">—&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ContentPanel”</span><span style="color: #ff0000;"> Grid.Row</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”12,0,12,0”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Rectangle </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> Fill</span><span style="color: #0000ff;">=”#FFF4F4F5”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”96”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”125,146,177,0”</span><span style="color: #ff0000;"> Opacity</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Stroke</span><span style="color: #0000ff;">=”Black”</span><span style="color: #ff0000;"> VerticalAlignment</span><span style="color: #0000ff;">=”Top”</span><span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Ellipse </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> Fill</span><span style="color: #0000ff;">=”#FFF4F4F5”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”158”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”117,110,138,0”</span><span style="color: #ff0000;"> Opacity</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Stroke</span><span style="color: #0000ff;">=”Black”</span><span style="color: #ff0000;"> VerticalAlignment</span><span style="color: #0000ff;">=”Top”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">phone:PhoneApplicationPage</span><span style="color: #0000ff;">&gt;</span></pre><br></div><br></div>
+
+<p>&nbsp;</p>
+<h3 id="使用OrientationChanged_事件切换VisualState">使用OrientationChanged 事件切换VisualState</h3>
+<p>&nbsp;</p>
+<p>首先是监听事件OrientationChanged=”PhoneApplicationPage_OrientationChanged”。</p>
+<p>然后使用 VisualStateManager 通过将 VisualState 对象的名称传递到 GoToState 方法，来进行状态过渡。</p>
+<p>代码如下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> PhoneApplicationPage_OrientationChanged(<span style="color: #0000ff;">object</span> sender, OrientationChangedEventArgs e)<br>       {<br>           <span style="color: #0000ff;">switch</span> (e.Orientation)<br>           {<br>               <span style="color: #0000ff;">case</span> PageOrientation.Landscape:<br>               <span style="color: #0000ff;">case</span> PageOrientation.LandscapeLeft:<br>               <span style="color: #0000ff;">case</span> PageOrientation.LandscapeRight:<br>                   VisualStateManager.GoToState(<span style="color: #0000ff;">this</span>, <span style="color: #800000;">“</span><span style="color: #800000;">Landscape</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">true</span>);<br>                   <span style="color: #0000ff;">break</span>;<br>               <span style="color: #0000ff;">default</span>:<br>                   VisualStateManager.GoToState(<span style="color: #0000ff;">this</span>, <span style="color: #800000;">“</span><span style="color: #800000;">Portrait</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">true</span>);<br>                   <span style="color: #0000ff;">break</span>;<br>           }<br><br>       } </pre><br></div>
+
+<p>&nbsp;</p>
+<h3 id="测试效果：">测试效果：</h3>
+<p>使用模拟器旁边的按钮可以很容易的测试效果：</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012021213480953.jpg" alt=""></p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012021213482219.jpg" alt=""></p>
+<p>&nbsp;这样利用VisualState就可以实现比较复杂的方向变化的布局、过度动画等。</p>
+<p>并且利用Blend4可以使用可视化编辑也很方便。</p>
+<p>/h3</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/12/wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理/" data-id="ecret02l6m3waxix" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2012/02/15/从flc中学习的设计模式系列-创建型模式1-单例/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          从FLC中学习的设计模式系列-创建型模式(1)-单例
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/02/12/wp7应用开发笔记-豆知识-使用本地值的时候应该多考/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WP7应用开发笔记-豆知识 使用本地值的时候应该多考虑使用系统主题资源</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

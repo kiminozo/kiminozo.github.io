@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>WP7应用开发笔记(12)  添加页面动画 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="WP7应用开发笔记(12)  添加页面动画">
+<meta name="og:url" content="http://yoursite.com/2012/01/26/wp7应用开发笔记12-添加页面动画/">
+<meta name="og:image">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="页面动画就是页面的切换的动画过度效果。
+平时使用Wp手机的系统程序都是像翻页一样的过度效果，我下面就准备完成简单的添加这样的效果。
+&nbsp;
+使用Windows Phone Toolkit
+其实这个动画效果不需要自己实现，Windows Phone Toolkit 已经封装好了现成库，我们只需要调用就可以了。
+这里可以下载:
+http://silverlight.codeplex.com/
+安">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-wp7应用开发笔记12-添加页面动画" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/26/wp7应用开发笔记12-添加页面动画/" class="article-date">
+  <time datetime="2012-01-26T06:02:00.000Z" itemprop="datePublished">1月 26 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WP7应用开发笔记(12)  添加页面动画
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>页面动画就是页面的切换的动画过度效果。</p>
+<p>平时使用Wp手机的系统程序都是像翻页一样的过度效果，我下面就准备完成简单的添加这样的效果。</p>
+<p>&nbsp;</p>
+<h2 id="使用Windows_Phone_Toolkit">使用Windows Phone Toolkit</h2>
+<p>其实这个动画效果不需要自己实现，Windows Phone Toolkit 已经封装好了现成库，我们只需要调用就可以了。</p>
+<p>这里可以下载:</p>
+<p><a href="http://silverlight.codeplex.com/" title="http://silverlight.codeplex.com/" target="_blank">http://silverlight.codeplex.com/</a></p>
+<p>安装后可以在C:Program Files (x86)Microsoft SDKsWindows Phonev7.1Toolkit 找到[32位系统去掉(x86)]，</p>
+<p>引用到项目中就可以了，里面还有不少增强控件也非常实用，相信大家都用过了。</p>
+<p>不过这里主要使用的是TransitionService.NavigationInTransition</p>
+<p>&nbsp;</p>
+<h2 id="为页面添加过度效果">为页面添加过度效果</h2>
+<p><strong>第一步，必须要有一个不可缺少的准备工作</strong>，就是找到app.xaml.cs里面</p>
+<p>找到&nbsp;&nbsp;&nbsp; RootFrame = new PhoneApplicationFrame();</p>
+<p>替换成 RootFrame = new TransitionFrame();</p>
+<p>&nbsp;</p>
+<p><strong>第二步,在页面上添加效果代码</strong></p>
+<p>先添加名称空间xmlns:toolkit=”clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit”</p>
+<p>&nbsp;</p>
+<p>然后再&lt;phone:PhoneApplicationPage&gt;元素下添加</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TransitionService.NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”BackwardIn”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”ForwardIn”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:TransitionService.NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TransitionService.NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”BackwardOut”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”ForwardOut”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:TransitionService.NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>OK简单2步就完成了一个页面的翻页动画效果。</p>
+<p>Toolkit 提供了很多动画效果都在Microsoft.Phone.Controls.ToolkitTransitionsTransitions 里面,</p>
+<p>还可以继承TransitionElement实现自己的动画。</p>
+<p>不过我觉得默认的TurnstileTransition最满意，太炫了影响使用。</p>
+<p>&nbsp;</p>
+<h2 id="将过度效果作为页面样式">将过度效果作为页面样式</h2>
+<p>如果页面比较多每个页面都想要效果，那么可以将效果作为样式添加到系统资源文件里或者直接写在App.xaml里。</p>
+<p>方法也很简单</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Application.Resources</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Style </span><span style="color: #ff0000;">x:Key</span><span style="color: #0000ff;">=”TransitionPageStyle”</span><span style="color: #ff0000;"> TargetType</span><span style="color: #0000ff;">=”phone:PhoneApplicationPage”</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”toolkit:TransitionService.NavigationInTransition”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”BackwardIn”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationInTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”ForwardIn”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationInTransition</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter </span><span style="color: #ff0000;">Property</span><span style="color: #0000ff;">=”toolkit:TransitionService.NavigationOutTransition”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”BackwardOut”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition.Backward</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:NavigationOutTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>                            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">toolkit:TurnstileTransition </span><span style="color: #ff0000;">Mode</span><span style="color: #0000ff;">=”ForwardOut”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition.Forward</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">toolkit:NavigationOutTransition</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter.Value</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Setter</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Style</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Application.Resources</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>需要效果的页面添加一个属性Style=”{StaticResource TransitionPageStyle}”就可以了</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/26/wp7应用开发笔记12-添加页面动画/" data-id="yzer0lrs6ilihcus" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2012/01/27/wp7应用开发笔记13-mvvm/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          WP7应用开发笔记(13) MVVM
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/01/26/wp7应用开发笔记11-自定义按钮/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WP7应用开发笔记(11) 自定义按钮</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

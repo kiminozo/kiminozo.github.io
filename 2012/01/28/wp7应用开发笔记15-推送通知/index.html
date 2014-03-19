@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>WP7应用开发笔记(15) 推送通知 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="WP7应用开发笔记(15) 推送通知">
+<meta name="og:url" content="http://yoursite.com/2012/01/28/wp7应用开发笔记15-推送通知/">
+<meta name="og:image" content="http://i.msdn.microsoft.com/dynimg/IC505514.jpg">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="推送通知是WP开发中一个非常重要的概念，因为我这个项目可能不需要，但是有必要学习一下。
+MSDN讲得很清楚，园子里也有很多相关文章，这里简单提一下好了。
+&nbsp;
+推送通知
+了解C/S架构的朋友都知道，客户端到服务器的消息传输可以是双向的，客户端即可以主动从服务器获取消息，也可以被动接受来自服务器通知，而不像纯B/S架构浏览器只能主动从服务器获取消息。
+而且WP手机虽然是C/S模式，但是微软不">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-wp7应用开发笔记15-推送通知" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/28/wp7应用开发笔记15-推送通知/" class="article-date">
+  <time datetime="2012-01-27T21:38:00.000Z" itemprop="datePublished">1月 28 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WP7应用开发笔记(15) 推送通知
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>推送通知是WP开发中一个非常重要的概念，因为我这个项目可能不需要，但是有必要学习一下。</p>
+<p>MSDN讲得很清楚，园子里也有很多相关文章，这里简单提一下好了。</p>
+<p>&nbsp;</p>
+<h2 id="推送通知">推送通知</h2>
+<p>了解C/S架构的朋友都知道，客户端到服务器的消息传输可以是双向的，客户端即可以主动从服务器获取消息，也可以被动接受来自服务器通知，而不像纯B/S架构浏览器只能主动从服务器获取消息。</p>
+<p>而且WP手机虽然是C/S模式，但是微软不允许手机被动接收服务器的消息，但是这样无法实现服务器通知。WP提供了一种代理的机制来实现服务器通知，这就是推送通知。</p>
+<p>&nbsp;</p>
+<p>推送通知是一种云服务器代理，服务器不能直接向手机客户端发送消息，必须通过云服务器代理发送。</p>
+<p>MSDN的官方流程如下：</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC505514.jpg" alt=""></p>
+<p>&nbsp;</p>
+<p>流程大概是两步：</p>
+<p>1 客户端从推送云服务（MPNS)获取通知URI，提交给自己的第三方服务器</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012813363580.jpg" alt=""></p>
+<p>2 自己的第三方服务器的通过URI提交通知给推送云服务（MPNS)，推送云服务（MPNS)推送通知到手机</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012813364682.jpg" alt=""></p>
+<h2 id="进一步学习推送通知">进一步学习推送通知</h2>
+<p>大概介绍一下，推送通知还有很多内容需要学习，MSDN讲得非常明白，这里就不详细介绍了：</p>
+<p><a href="http://msdn.microsoft.com/zh-cn/library/ff402537(v=vs.92" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff402537(v=vs.92).aspx</a>.aspx “<a href="http://msdn.microsoft.com/zh-cn/library/ff402537(v=vs.92).aspx" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff402537(v=vs.92).aspx</a>“)</p>
+<p>&nbsp;</p>
+<p>园子里有很多文章：</p>
+<p>Windows Phone 7编程实践&mdash;推送通知_剖析推送通知实现架构：</p>
+<p><a href="http://www.cnblogs.com/xuesong/archive/2011/04/08/2008987.html" title="http://www.cnblogs.com/xuesong/archive/2011/04/08/2008987.html" target="_blank">http://www.cnblogs.com/xuesong/archive/2011/04/08/2008987.html</a></p>
+<p>WP7学习笔记：推送通知服务（附件的源码还比较直观）</p>
+<p><a href="http://www.cnblogs.com/joetao/articles/2214482.html" title="http://www.cnblogs.com/joetao/articles/2214482.html" target="_blank">http://www.cnblogs.com/joetao/articles/2214482.html</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/28/wp7应用开发笔记15-推送通知/" data-id="2x469kvmpob7ewpd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2012/01/28/wp7应用开发笔记16-本地toast-提示/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          WP7应用开发笔记(16) 本地Toast 提示
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/01/27/wp7应用开发笔记14-使用caliburn-micro简化mvvm/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WP7应用开发笔记(14) 使用Caliburn Micro简化MVVM</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

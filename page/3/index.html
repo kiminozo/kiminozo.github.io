@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title">
+<meta name="og:url" content="http://yoursite.com/page/3/">
+<meta name="og:image">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-从flc中学习的设计模式系列-创建型模式2-抽象工厂" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/15/从flc中学习的设计模式系列-创建型模式2-抽象工厂/" class="article-date">
+  <time datetime="2012-02-15T04:11:00.000Z" itemprop="datePublished">2月 15 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/15/从flc中学习的设计模式系列-创建型模式2-抽象工厂/">从FLC中学习的设计模式系列-创建型模式(2)-抽象工厂</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>抽象工厂模式 Abstract Factory 为一个产品家族提供了统一的创建接口。</p>
+<h2 id="&nbsp;">&nbsp;</h2>
+<h2 id="抽象工厂模式">抽象工厂模式</h2>
+<p>来自：<a href="http://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82" title="http://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82" target="_blank">http://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82</a></p>
+<p><strong>抽象工厂模式</strong>（英语：Abstract Factory）是一种常见的<a href="http://zh.wikipedia.org/wiki/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F_(%E8%AE%A1%E7%AE%97%E6%9C%BA" target="_blank">设计模式</a>)。</p>
+<p>此模式为一个产品家族提供了统一的创建接口。</p>
+<p>当需要这个产品家族的某一系列的时候，可以从<em>抽象工厂</em>中选出相对系的系列来创建一个具体的工厂类别。</p>
+<p>&nbsp;</p>
+<h2 id="FLC中的抽象工厂模式">FLC中的抽象工厂模式</h2>
+<p>在FLC中比较典型的就是DbConnection .CreateDbCommand方法</p>
+<p>抽象类DbConnection表示到数据库的连接。</p>
+<p>派生类有OdbcConnection表示Odbc连接，OracleConnection表示Oracle数据库连接，SqlConnection表示SqlServer数据库连接。</p>
+<p>通过抽象方法CreateDbCommand，分别在派生类中实现了创建各自数据库类型的DbCommand的派生类OdbcCommand、</p>
+<p>OracleCommand、SqlCommand，返回他们的父类DbCommand。</p>
+<p>在使用DbConnection 对象的CreateDbCommand时，不需要关心是由那种数据库连接实现的。</p>
+<p>&nbsp;</p>
+<p>类图大致如下：</p>
+<p>因为DbConnection 本身作为了抽象工厂类，DbCommand是工厂生产的产品。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012021520354362.jpg" alt=""></p>
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/15/从flc中学习的设计模式系列-创建型模式2-抽象工厂/" data-id="g2ugqru2ewda4f13" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-从flc中学习的设计模式系列-创建型模式1-单例" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/15/从flc中学习的设计模式系列-创建型模式1-单例/" class="article-date">
+  <time datetime="2012-02-15T03:50:00.000Z" itemprop="datePublished">2月 15 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/15/从flc中学习的设计模式系列-创建型模式1-单例/">从FLC中学习的设计模式系列-创建型模式(1)-单例</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>单例模式Singleton：一个类仅有一个实例，自行实例化并向整个系统提供一个访问它的全局访问点。</p>
+<p>&nbsp;</p>
+<h2 id="单例模式Singleton">单例模式Singleton</h2>
+<p>来自：<a href="http://zh.wikipedia.org/wiki/单例模式" title="http://zh.wikipedia.org/wiki/单例模式" target="_blank">http://zh.wikipedia.org/wiki/单例模式</a></p>
+<p>单例模式，也叫单子模式，是一种常用的软件设计模式。</p>
+<p>在应用这个模式时，单例对象的类必须保证只有一个实例存在。</p>
+<p>许多时候整个系统只需要拥有一个的全局对象，这样有利于我们协调系统整体的行为。比如在某个服务器程序中，该服务器的配置信息存放在一个文件中，这些配置数据由一个单例对象统一读取，然后服务进程中的其他对象再通过这个单例对象获取这些配置信息。这种方式简化了在复杂环境下的配置管理。</p>
+<p>实现单例模式的思路是：一个类能返回对象一个引用(永远是同一个)和一个获得该实例的方法（必须是静态方法，通常使用getInstance这个名称）；当我们调用这个方法时，如果类持有的引用不为空就返回这个引用，如果类保持的引用为空就创建该类的实例并将实例的引用赋予该类保持的引用；同时我们还将该类的构造函数定义为私有方法，这样其他处的代码就无法通过调用该类的构造函数来实例化该类的对象，只有通过该类提供的静态方法来得到该类的唯一实例。</p>
+<p>单例模式在多线程的应用场合下必须小心使用。如果当唯一实例尚未创建时，有两个线程同时调用创建方法，那么它们同时没有检测到唯一实例的存在，从而同时各自创建了一个实例，这样就有两个实例被构造出来，从而违反了单例模式中实例唯一的原则。 解决这个问题的办法是为指示类是否已经实例化的变量提供一个互斥锁(虽然这样会降低效率)。</p>
+<p>&nbsp;</p>
+<h2 id="FLC中的单例">FLC中的单例</h2>
+<p>FLC中有一个不怎么常用的类，体现了单例的实现，确保全局只能有一个SqlClientFactory实例。</p>
+<p>利用C#的语言特性：在创建第一个实例或引用任何静态成员之前，将自动调用静态构造函数。</p>
+<p>在静态构造函数中初始化实例，并使用私有构造函数防止外部使用。</p>
+<pre class="brush: csharp; auto-links: true; collapse: false; first-line: 1; gutter: true; html-script: false; light: false; ruler: false; smart-tabs: true; tab-size: 4; toolbar: true;">public sealed class SqlClientFactory : DbProviderFactory, IServiceProvider
+{
+    // Fields
+    public static readonly SqlClientFactory Instance;
+
+    // Methods
+    static SqlClientFactory(){
+     Instance = new SqlClientFactory(); 
+    } 
+    private SqlClientFactory();
+    public override DbCommand CreateCommand();
+...
+ }</pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/15/从flc中学习的设计模式系列-创建型模式1-单例/" data-id="44qhrqn00du8t3n3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/12/wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理/" class="article-date">
+  <time datetime="2012-02-11T21:49:00.000Z" itemprop="datePublished">2月 12 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/12/wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理/">WP7应用开发笔记-技巧 使用VisualState布置屏幕方向处理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="VisualState是什么?">VisualState是什么?</h2>
+<p>VisualState 指定控件处于特定状态时的外观。</p>
+<p>例如，按下 Button 时，它的边框颜色可能与正常时的颜色不同。VisualState 类具有更改控件外观的 Storyboard 属性。控件进入 VisualState.Name 属性指定的状态时，Storyboard 开始。控件退出该状态时，Storyboard 停止。</p>
+<p>&nbsp;</p>
+<p>例如CheckBox就有下面几种状态组：</p>
+<p><img src="http://images.cnblogs.com/cnblogs_com/Terrylee/WindowsLiveWriter/Silverlight2_12761/TerryLee_0092_3.png" alt=""></p>
+<p>使用 VisualStateManager 通过将 VisualState 对象的名称传递到 GoToState 方法，来进行状态过渡。</p>
+<p>深入学习：</p>
+<p>谈谈Silverlight 2中的视觉状态管理</p>
+<p><a href="http://kb.cnblogs.com/page/42918/" title="http://kb.cnblogs.com/page/42918/" target="_blank">http://kb.cnblogs.com/page/42918/</a></p>
+<p>VisualState 类<br><a href="http://msdn.microsoft.com/zh-cn/library/system.windows.visualstate(VS.95" target="_blank">http://msdn.microsoft.com/zh-cn/library/system.windows.visualstate(VS.95).aspx</a>.aspx “<a href="http://msdn.microsoft.com/zh-cn/library/system.windows.visualstate(VS.95).aspx" target="_blank">http://msdn.microsoft.com/zh-cn/library/system.windows.visualstate(VS.95).aspx</a>“)</p>
+<p>&nbsp;</p>
+<h2 id="WP的屏幕方向处理">WP的屏幕方向处理</h2>
+<p>简单说一下WP屏幕方向一共主要有3种 竖向Portrait、左横向LandscapeLeft、右横向LandscapeRight，不支持倒置。</p>
+<p>屏幕方向和PhoneApplicationPage相关，可以对每一个页面单独设置。</p>
+<p>相关的属性和事件有：</p>
+<p>SupportedOrientations&nbsp; 获取或设置页面所支持的手机方向，只能横、只能竖、横竖都可以。</p>
+<p>Orientation 获取当前页面的方向</p>
+<p>OrientationChanged 页面方向改变时触发此事件</p>
+<p>&nbsp;</p>
+<p>因为竖向分辨率为480<em>800，横向分辨率为800</em>480，在布局和呈现上有很大的区别：</p>
+<p>可以参考一下这篇文章：</p>
+<p><a href="http://www.cnblogs.com/mcgrady/archive/2012/02/06/2340598.html" title="http://www.cnblogs.com/mcgrady/archive/2012/02/06/2340598.html" target="_blank">http://www.cnblogs.com/mcgrady/archive/2012/02/06/2340598.html</a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2 id="使用VisualState布置屏幕方向处理">使用VisualState布置屏幕方向处理</h2>
+<p>前面说了这么多，现在进入正题，既然VisualState 指定控件处于特定状态时的外观，而PhoneApplicationPage在方向上又有至少2种状态，那么可以使用VisualState 来呈现竖向Portrait和横向Landscape的两种状态。</p>
+<p>&nbsp;</p>
+<p><span style="font-size: 16px;"><strong>来演练一个例子: 在竖向的时候显示圆形，在横向的时候显示方形。</strong></span></p>
+<p><span style="font-size: 16px;"><strong>&nbsp;</strong></span></p>
+<p>先在界面上添加一个圆形和方形，默认方向是竖向，方形不可见，所以的Opacity为0。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #008000;">&lt;!—</span><span style="color: #008000;">ContentPanel - 在此放置附加内容</span><span style="color: #008000;">—&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ContentPanel”</span><span style="color: #ff0000;"> Grid.Row</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”12,0,12,0”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Rectangle </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> Fill</span><span style="color: #0000ff;">=”#FFF4F4F5”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”96”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”125,146,177,0”</span><span style="color: #ff0000;"> Opacity</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Stroke</span><span style="color: #0000ff;">=”Black”</span><span style="color: #ff0000;"> VerticalAlignment</span><span style="color: #0000ff;">=”Top”</span><span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Ellipse </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> Fill</span><span style="color: #0000ff;">=”#FFF4F4F5”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”158”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”117,110,138,0”</span><span style="color: #ff0000;"> Opacity</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Stroke</span><span style="color: #0000ff;">=”Black”</span><span style="color: #ff0000;"> VerticalAlignment</span><span style="color: #0000ff;">=”Top”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<h3 id="首先是自定义VisualState">首先是自定义VisualState</h3>
+<p>我将状态定义到名字LayoutRoot的Grid 上，也就是默认的那个Grid 。</p>
+<p>定义VisualStateGroup 为Layout ，再添加2个VisualState 分别叫竖向Portrait和横向Landscape</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”LayoutRoot”</span><span style="color: #ff0000;"> Background</span><span style="color: #0000ff;">=”Transparent”</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateManager.VisualStateGroups</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateGroup </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Layout”</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Landscape”</span><span style="color: #0000ff;">&gt;&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateGroup</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateManager.VisualStateGroups</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<h3 id="然后为VisualState添加动画版Storyboard">然后为VisualState添加动画版Storyboard</h3>
+<p>在竖向Portrait状态圆形可见，将Opacity设置为1，将方形Opacity设置为0。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>在横向Landscape状态方形可见，将Opacity设置为1，将圆形形Opacity设置为0。</p>
+<div class="cnblogs_code"><br><pre>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Landscape”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>还可以添加Transitions实现动画过度：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateGroup.Transitions</span><span style="color: #0000ff;">&gt;</span><br>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualTransition </span><span style="color: #ff0000;">GeneratedDuration</span><span style="color: #0000ff;">=”0:0:1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualTransition </span><span style="color: #ff0000;">GeneratedDuration</span><span style="color: #0000ff;">=”0:0:1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”Landscape”</span><span style="color: #0000ff;">/&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateGroup.Transitions</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>完整页面代码如下，当然使用Blend编辑起来更方便：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('cadb024c-da61-4365-88ba-07a7842e4fc7')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_cadb024c-da61-4365-88ba-07a7842e4fc7" class="cnblogs_code_hide"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">phone:PhoneApplicationPage<br>    </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">=”<a href="http://schemas.microsoft.com/winfx/2006/xaml/presentation" target="_blank">http://schemas.microsoft.com/winfx/2006/xaml/presentation</a>“</span><span style="color: #ff0000;"><br>    xmlns:x</span><span style="color: #0000ff;">=”<a href="http://schemas.microsoft.com/winfx/2006/xaml" target="_blank">http://schemas.microsoft.com/winfx/2006/xaml</a>“</span><span style="color: #ff0000;"><br>    xmlns:phone</span><span style="color: #0000ff;">=”clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone”</span><span style="color: #ff0000;"><br>    xmlns:shell</span><span style="color: #0000ff;">=”clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone”</span><span style="color: #ff0000;"><br>    xmlns:d</span><span style="color: #0000ff;">=”<a href="http://schemas.microsoft.com/expression/blend/2008" target="_blank">http://schemas.microsoft.com/expression/blend/2008</a>“</span><span style="color: #ff0000;"><br>    xmlns:mc</span><span style="color: #0000ff;">=”<a href="http://schemas.openxmlformats.org/markup-compatibility/2006" target="_blank">http://schemas.openxmlformats.org/markup-compatibility/2006</a>“</span><span style="color: #ff0000;"><br>    mc:Ignorable</span><span style="color: #0000ff;">=”d”</span><span style="color: #ff0000;"> d:DesignWidth</span><span style="color: #0000ff;">=”480”</span><span style="color: #ff0000;"> d:DesignHeight</span><span style="color: #0000ff;">=”768”</span><span style="color: #ff0000;"><br>    x:Class</span><span style="color: #0000ff;">=”WindowsPhoneApplication2.MainPage”</span><span style="color: #ff0000;"><br>    FontFamily</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneFontFamilyNormal}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>    FontSize</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneFontSizeNormal}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>    Foreground</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneForegroundBrush}</span><span style="color: #0000ff;">“</span><span style="color: #ff0000;"><br>    SupportedOrientations</span><span style="color: #0000ff;">=”PortraitOrLandscape”</span><span style="color: #ff0000;"> Orientation</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #ff0000;"><br>    shell:SystemTray.IsVisible</span><span style="color: #0000ff;">=”True”</span><span style="color: #ff0000;"> OrientationChanged</span><span style="color: #0000ff;">=”PhoneApplicationPage_OrientationChanged”</span><span style="color: #0000ff;">&gt;</span><br><br>    <span style="color: #008000;">&lt;!—</span><span style="color: #008000;">LayoutRoot 是放置所有页面内容的根网格</span><span style="color: #008000;">—&gt;</span><br>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”LayoutRoot”</span><span style="color: #ff0000;"> Background</span><span style="color: #0000ff;">=”Transparent”</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateManager.VisualStateGroups</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateGroup </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Layout”</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualStateGroup.Transitions</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualTransition </span><span style="color: #ff0000;">GeneratedDuration</span><span style="color: #0000ff;">=”0:0:1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #0000ff;">/&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualTransition </span><span style="color: #ff0000;">GeneratedDuration</span><span style="color: #0000ff;">=”0:0:1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”Landscape”</span><span style="color: #0000ff;">/&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateGroup.Transitions</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Portrait”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">VisualState </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”Landscape”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">DoubleAnimation </span><span style="color: #ff0000;">Duration</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> To</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Storyboard.TargetProperty</span><span style="color: #0000ff;">=”(UIElement.Opacity)”</span><span style="color: #ff0000;"> Storyboard.TargetName</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> d:IsOptimized</span><span style="color: #0000ff;">=”True”</span><span style="color: #0000ff;">/&gt;</span><br>                    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Storyboard</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualState</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateGroup</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">VisualStateManager.VisualStateGroups</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid.RowDefinitions</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">RowDefinition </span><span style="color: #ff0000;">Height</span><span style="color: #0000ff;">=”Auto”</span><span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">RowDefinition </span><span style="color: #ff0000;">Height</span><span style="color: #0000ff;">=”*”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid.RowDefinitions</span><span style="color: #0000ff;">&gt;</span><br><br>        <span style="color: #008000;">&lt;!—</span><span style="color: #008000;">TitlePanel 包含应用程序名称和页面标题</span><span style="color: #008000;">—&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">StackPanel </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”TitlePanel”</span><span style="color: #ff0000;"> Grid.Row</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”12,17,0,28”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBlock </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ApplicationTitle”</span><span style="color: #ff0000;"> Text</span><span style="color: #0000ff;">=”MY APPLICATION”</span><span style="color: #ff0000;"> Style</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneTextNormalStyle}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBlock </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”PageTitle”</span><span style="color: #ff0000;"> Text</span><span style="color: #0000ff;">=”page name”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”9,-7,0,0”</span><span style="color: #ff0000;"> Style</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{StaticResource PhoneTextTitle1Style}</span><span style="color: #0000ff;">“</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">StackPanel</span><span style="color: #0000ff;">&gt;</span><br><br>        <span style="color: #008000;">&lt;!—</span><span style="color: #008000;">ContentPanel - 在此放置附加内容</span><span style="color: #008000;">—&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Grid </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ContentPanel”</span><span style="color: #ff0000;"> Grid.Row</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”12,0,12,0”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Rectangle </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”rectangle”</span><span style="color: #ff0000;"> Fill</span><span style="color: #0000ff;">=”#FFF4F4F5”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”96”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”125,146,177,0”</span><span style="color: #ff0000;"> Opacity</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Stroke</span><span style="color: #0000ff;">=”Black”</span><span style="color: #ff0000;"> VerticalAlignment</span><span style="color: #0000ff;">=”Top”</span><span style="color: #0000ff;">/&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Ellipse </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ellipse”</span><span style="color: #ff0000;"> Fill</span><span style="color: #0000ff;">=”#FFF4F4F5”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”158”</span><span style="color: #ff0000;"> Margin</span><span style="color: #0000ff;">=”117,110,138,0”</span><span style="color: #ff0000;"> Opacity</span><span style="color: #0000ff;">=”1”</span><span style="color: #ff0000;"> Stroke</span><span style="color: #0000ff;">=”Black”</span><span style="color: #ff0000;"> VerticalAlignment</span><span style="color: #0000ff;">=”Top”</span><span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Grid</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">phone:PhoneApplicationPage</span><span style="color: #0000ff;">&gt;</span></pre><br></div><br></div>
+
+<p>&nbsp;</p>
+<h3 id="使用OrientationChanged_事件切换VisualState">使用OrientationChanged 事件切换VisualState</h3>
+<p>&nbsp;</p>
+<p>首先是监听事件OrientationChanged=”PhoneApplicationPage_OrientationChanged”。</p>
+<p>然后使用 VisualStateManager 通过将 VisualState 对象的名称传递到 GoToState 方法，来进行状态过渡。</p>
+<p>代码如下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> PhoneApplicationPage_OrientationChanged(<span style="color: #0000ff;">object</span> sender, OrientationChangedEventArgs e)<br>       {<br>           <span style="color: #0000ff;">switch</span> (e.Orientation)<br>           {<br>               <span style="color: #0000ff;">case</span> PageOrientation.Landscape:<br>               <span style="color: #0000ff;">case</span> PageOrientation.LandscapeLeft:<br>               <span style="color: #0000ff;">case</span> PageOrientation.LandscapeRight:<br>                   VisualStateManager.GoToState(<span style="color: #0000ff;">this</span>, <span style="color: #800000;">“</span><span style="color: #800000;">Landscape</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">true</span>);<br>                   <span style="color: #0000ff;">break</span>;<br>               <span style="color: #0000ff;">default</span>:<br>                   VisualStateManager.GoToState(<span style="color: #0000ff;">this</span>, <span style="color: #800000;">“</span><span style="color: #800000;">Portrait</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">true</span>);<br>                   <span style="color: #0000ff;">break</span>;<br>           }<br><br>       } </pre><br></div>
+
+<p>&nbsp;</p>
+<h3 id="测试效果：">测试效果：</h3>
+<p>使用模拟器旁边的按钮可以很容易的测试效果：</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012021213480953.jpg" alt=""></p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012021213482219.jpg" alt=""></p>
+<p>&nbsp;这样利用VisualState就可以实现比较复杂的方向变化的布局、过度动画等。</p>
+<p>并且利用Blend4可以使用可视化编辑也很方便。</p>
+<p>/h3</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/12/wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理/" data-id="ecret02l6m3waxix" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记-豆知识-使用本地值的时候应该多考" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/12/wp7应用开发笔记-豆知识-使用本地值的时候应该多考/" class="article-date">
+  <time datetime="2012-02-11T20:55:00.000Z" itemprop="datePublished">2月 12 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/12/wp7应用开发笔记-豆知识-使用本地值的时候应该多考/">WP7应用开发笔记-豆知识 使用本地值的时候应该多考虑使用系统主题资源</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近时间比较少了，完成了本地化语言版本的开发，不过提供更新APP的时候没有通过。</p>
+<p>原因是这条手动测试没有过。</p>
+<p>&nbsp;</p>
+<p>5.5.2 - 内容和主题&nbsp;&nbsp;&nbsp;<br>无论使用哪种手机主题，应用程序内容（例如文本和可视元素）都必须清楚易读。例如，如果手机主题从黑色背景更改为白色背景，则应用程序的文本和可视元素必须清楚易读。</p>
+<p>&nbsp;</p>
+<p>调试是找到的问题是一个背景使用了本地值：黑色，但是在白色主题下文本也会变成黑色所以成了一片黑。使用系统资源{StaticResource PhoneBackgroundBrush}就解决了这个问题。</p>
+<p>主要还是自己测试太粗心了，反省！</p>
+<p>&nbsp;</p>
+<p>系统主题提供了很多资源，比如我使用了的下表。</p>
+<p>&nbsp;</p>
+<table style="width: 400px;" border="0" cellspacing="0" cellpadding="2"><br><tbody><br><tr><br><td valign="top" width="133"><br><br><strong>名称</strong><br><br></td><br><td valign="top" width="133"><br><br><strong>类型</strong><br><br></td><br><td valign="top" width="133"><br><br><strong>说明</strong><br><br></td><br></tr><br><tr><br><td valign="top" width="133">PhoneAccentBrush</td><br><td valign="top" width="133">颜色</td><br><td valign="top" width="133">当前主题强调色</td><br></tr><br><tr><br><td valign="top" width="133">PhoneBackgroundColor</td><br><td valign="top" width="133">颜色</td><br><td valign="top" width="133"><br><br>页面和其他控件的默认背景<br><br></td><br></tr><br><tr><br><td valign="top" width="133">PhoneForegroundColor</td><br><td valign="top" width="133">颜色</td><br><td valign="top" width="133">默认的前景和边框颜色</td><br></tr><br><tr><br><td valign="top" width="133">PhoneStrokeThickness</td><br><td valign="top" width="133">Double</td><br><td valign="top" width="133">边距、填充</td><br></tr><br><tr><br><td valign="top" width="133">PhoneFontSizeSmall</td><br><td valign="top" width="133">Double</td><br><td valign="top" width="133">小型字体大小</td><br></tr><br><tr><br><td valign="top" width="133">PhoneFontSizeMedium</td><br><td valign="top" width="133">Double</td><br><td valign="top" width="133">中型字体大小</td><br></tr><br><tr><br><td valign="top" width="133">PhoneFontSizeLarge</td><br><td valign="top" width="133">Double</td><br><td valign="top" width="133">大型字体大小</td><br></tr><br></tbody><br></table>
+
+<p>&nbsp;</p>
+<p>更多主题资源请参考，MSDN的Windows Phone 主题资源：</p>
+<p><a href="http://msdn.microsoft.com/zh-cn/library/ff769552(v=vs.92" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff769552(v=vs.92).aspx</a>.aspx “<a href="http://msdn.microsoft.com/zh-cn/library/ff769552(v=vs.92).aspx" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff769552(v=vs.92).aspx</a>“)</p>
+<p>&nbsp;</p>
+<p>使用系统主题资源可以保证程序界面和当前用户主题的统一性。</p>
+<p>&nbsp;</p>
+<p>为了简便操作，Blend 提供了很方便地系统主题资源绑定：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012021212540991.png" alt=""></p>
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/12/wp7应用开发笔记-豆知识-使用本地值的时候应该多考/" data-id="pwb4zhknwsgmebtj" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-同步上下文-synchronizationcontext-学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/06/同步上下文-synchronizationcontext-学习笔记/" class="article-date">
+  <time datetime="2012-02-06T05:41:00.000Z" itemprop="datePublished">2月 6 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/06/同步上下文-synchronizationcontext-学习笔记/">同步上下文 SynchronizationContext 学习笔记</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>提供在各种同步模型中传播同步上下文的基本功能。，同步上下文的工作就是确保调用在正确的线程上执行。</p>
+<p>&nbsp;</p>
+<h3 id="同步上下文的基本操作">同步上下文的基本操作</h3>
+<h4 id="Current_获取当前同步上下文">Current 获取当前同步上下文</h4>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">var</span> context = SynchronizationContext.Current;</pre><br></div><br><pre class="brush: csharp; auto-links: true; collapse: false; first-line: 1; gutter: true; html-script: false; light: false; ruler: false; smart-tabs: true; tab-size: 4; toolbar: true;"></pre><br><br>#### Send 一个同步消息调度到一个同步上下文。<br><br>&nbsp;<br><br><div class="cnblogs_code"><br><pre>SendOrPostCallback callback = o =&gt;<br>                                              {<br>                                                  <span style="color: #008000;">//</span><span style="color: #008000;">TODO:</span><span style="color: #008000;"><br></span>                                              };<br>context.Send(callback,<span style="color: #0000ff;">null</span>);<br><br></pre><br></div>
+
+<p>send调用后会阻塞直到调用完成。</p>
+<h4 id="Post_将异步消息调度到一个同步上下文。">Post 将异步消息调度到一个同步上下文。</h4>
+<div class="cnblogs_code"><br><pre>SendOrPostCallback callback = o =&gt;<br>                                              {<br>                                                  <span style="color: #008000;">//</span><span style="color: #008000;">TODO:</span><span style="color: #008000;"><br></span>                                              };<br>context.Post(callback,<span style="color: #0000ff;">null</span>);</pre><br></div>
+
+<p>和send的调用方法一样，不过Post会启动一个线程来调用，不会阻塞当前线程。</p>
+<p>&nbsp;</p>
+<h4 id="使用同步上下文来更新UI内容">使用同步上下文来更新UI内容</h4>
+<p>无论WinFroms和WPF都只能用UI线程来更新界面的内容</p>
+<p>常用的调用UI更新方法是Inovke（WinFroms）：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> button_Click(<span style="color: #0000ff;">object</span> sender, EventArgs e)<br>{<br>       ThreadPool.QueueUserWorkItem(BackgroudRun);<br>}<br><br><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> BackgroudRun2(<span style="color: #0000ff;">object</span> state)<br>{<br>            <span style="color: #0000ff;">this</span>.Invoke(<span style="color: #0000ff;">new</span> Action(() =&gt;<br>                                       {<br>                                           label1.Text = <span style="color: #800000;">“</span><span style="color: #800000;">Hello Invoke</span><span style="color: #800000;">“</span>;<br>                                       }));<br>}</pre><br></div>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>使用同步上下文也可以实现相同的效果，</p>
+<p>WinFroms和WPF继承了SynchronizationContext，使同步上下文能够在UI线程或者Dispatcher线程上正确执行</p>
+<p>System.Windows.Forms. WindowsFormsSynchronizationContext<br>System.Windows.Threading. DispatcherSynchronizationContext</p>
+<p>&nbsp;</p>
+<p>调用方法如下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> button_Click(<span style="color: #0000ff;">object</span> sender, EventArgs e)<br>{<br>           <span style="color: #0000ff;">var</span> context = SynchronizationContext.Current; <span style="color: #008000;">//</span><span style="color: #008000;">获取同步上下文</span><span style="color: #008000;"><br></span>           Debug.Assert(context != <span style="color: #0000ff;">null</span>);<br>           ThreadPool.QueueUserWorkItem(BackgroudRun, context);<br>}<br><br><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> BackgroudRun(<span style="color: #0000ff;">object</span> state)<br>{<br>    <span style="color: #0000ff;">var</span> context = state <span style="color: #0000ff;">as</span> SynchronizationContext; <span style="color: #008000;">//</span><span style="color: #008000;">传入的同步上下文</span><span style="color: #008000;"><br></span>    Debug.Assert(context != <span style="color: #0000ff;">null</span>);<br>    SendOrPostCallback callback = o =&gt;<br>                                      {<br>                                          label1.Text = <span style="color: #800000;">“</span><span style="color: #800000;">Hello SynchronizationContext</span><span style="color: #800000;">“</span>;<br>                                      };<br>    context.Send(callback,<span style="color: #0000ff;">null</span>); <span style="color: #008000;">//</span><span style="color: #008000;">调用</span><span style="color: #008000;"><br></span>}</pre><br></div>
+
+<p>使用.net4.0的Task 可以简化成</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> button_Click(<span style="color: #0000ff;">object</span> sender, EventArgs e)<br>{<br>            <span style="color: #0000ff;">var</span>  scheduler = TaskScheduler.FromCurrentSynchronizationContext(); <span style="color: #008000;">//</span><span style="color: #008000;"> 创建一个SynchronizationContext 关联的 TaskScheduler</span><span style="color: #008000;"><br></span>            Task.Factory.StartNew(() =&gt; label1.Text = <span style="color: #800000;">“</span><span style="color: #800000;">Hello TaskScheduler</span><span style="color: #800000;">“</span>, CancellationToken.None,<br>                                  TaskCreationOptions.None, scheduler);<br>}</pre><br></div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/06/同步上下文-synchronizationcontext-学习笔记/" data-id="7tc80sjb450sdox0" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-在codeplex发布clickonce应用程序" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/04/在codeplex发布clickonce应用程序/" class="article-date">
+  <time datetime="2012-02-04T05:43:00.000Z" itemprop="datePublished">2月 4 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/04/在codeplex发布clickonce应用程序/">在Codeplex发布ClickOnce应用程序</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>CodePlex是微软的开源工程网站，涉及诸多微软最新技术的开源工程，同时也可以建立自己的开源工程，大家应该比较熟悉了吧。</p>
+<p>ClickOnce 是一种部署技术，使用该技术可创建自行更新的基于 Windows 的应用程序，这些应用程序可以通过最低程度的用户交互来安装和运行。</p>
+<p>而CodePlex支持ClickOnce的在线发布，可以减少安装部署和特别是更新的成本。当然只能是开源程序。</p>
+<p>下面就介绍一下如何在CodePlex发布ClickOnce应用程序/</p>
+<p>&nbsp;</p>
+<h2 id="发布步骤">发布步骤</h2>
+<h3 id="1_在Codeplex申请你的开源项目">1 在Codeplex申请你的开源项目</h3>
+<p>在Codeplex上注册，添加开源项目并提交源代码，具体过程就不详细介绍了。申请后会得到一个二级域名，我申请的开源项目是<a href="http://virtualkeyboard.codeplex.com/" title="http://virtualkeyboard.codeplex.com/" target="_blank">http://<strong>virtualkeyboard</strong>.codeplex.com/</a></p>
+<p>&nbsp;</p>
+<h3 id="2_发布一个ClickOnce应用程序">2 发布一个ClickOnce应用程序</h3>
+<p>我使用是VS2010其他的应该差别不大。首先选择在可执行项目文件，进入到&ldquo;属性&rdquo;&mdash;&mdash;》&ldquo;发布&rdquo;</p>
+<p>设置发布信息</p>
+<p>发布位置 publish&nbsp;&nbsp; 最好默认</p>
+<p>安装文件夹需要设置成 <a href="http://virtualkeyboard.codeplex.com/releases/clickonce/" title="http://virtualkeyboard.codeplex.com/releases/clickonce/" target="_blank">http://<strong>virtualkeyboard</strong>.codeplex.com/releases/clickonce/</a>&nbsp; 加粗部分为Codeplex的二级域名其他不变</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020421384633.jpg" alt=""></p>
+<p>下面是一些可选操作：</p>
+<p><strong>设置发布版本</strong></p>
+<p>设置发布的版本号，还可以选择自动递增修订号。</p>
+<p>&nbsp;</p>
+<p><strong>设置应用程序文件</strong></p>
+<p>需要选择增加和排除一些不需要的文件</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020421391524.jpg" alt=""></p>
+<p><strong>设置更新选项</strong></p>
+<p>在启动是会检查更新之类的</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020421394431.jpg" alt=""></p>
+<p>&nbsp;</p>
+<p><strong>设置程序清单</strong></p>
+<p>能够设置程序说明、还可以创建桌面快捷方式和文件关联等。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020421402323.jpg" alt=""></p>
+<p>设置好了一些点击立刻发布完成了，</p>
+<p>&nbsp;</p>
+<h3 id="3_打包应用程序文件">3 打包应用程序文件</h3>
+<p>程序发布后会在binReleaseapp.publish目录生成 这些文件，将这些文件全部用zip压缩成压缩包app.publish.zip</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020421405039.jpg" alt=""></p>
+<p>&nbsp;</p>
+<h3 id="4_在Codeplex发布ClickOnce程序">4 在Codeplex发布ClickOnce程序</h3>
+<p>进入codeplex的Download页面选择Create New Release 填入Name</p>
+<p>然后勾选This is a ClickOnce release&nbsp; 将准备好的app.publish.zip上传上去</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020421412117.jpg" alt=""></p>
+<p>然后添加发布说明等。就OK了，</p>
+<p>codeplex会检查application文件的配置，如果遇到什么问题，请检查第2步操作是否做好。</p>
+<p>&nbsp;</p>
+<h3 id="5_下载和使用ClickOnce程序">5 下载和使用ClickOnce程序</h3>
+<p>发布后进入codeplex的Download页面，选择<a href="http://virtualkeyboard.codeplex.com/releases/view/81032#DownloadId=337880" target="_blank">ClickOnce Installer</a>。</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020421413942.jpg" alt=""></p>
+<p>这是浏览器会下载application文件，如果用的IE就会自动运行。</p>
+<p>运行后会出现启动与安装提示，这时才正式下载和安装程序，如果遇到没有系统环境入.net还会自动去官网更新。</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020421415125.jpg" alt=""></p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020421420944.jpg" alt=""></p>
+<p>完成后自动运行，如果在清单选择里选择了创建桌面快捷方式，就会看到桌面快捷方式，否则只能用application运行程序。</p>
+<p>好了，运行成功这样ClickOnce就程序部署就完成了。</p>
+<p>&nbsp;</p>
+<h3 id="参考文档：">参考文档：</h3>
+<p>Creating a ClickOnce Release</p>
+<p><a href="http://codeplex.codeplex.com/wikipage?title=ClickOnce#Creating" title="http://codeplex.codeplex.com/wikipage?title=ClickOnce#Creating" target="_blank">http://codeplex.codeplex.com/wikipage?title=ClickOnce#Creating</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/04/在codeplex发布clickonce应用程序/" data-id="tyh2l9dgfkty8kri" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记18-本地化与多语言" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/01/wp7应用开发笔记18-本地化与多语言/" class="article-date">
+  <time datetime="2012-02-01T04:24:00.000Z" itemprop="datePublished">2月 1 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/01/wp7应用开发笔记18-本地化与多语言/">WP7应用开发笔记(18) 本地化与多语言</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>WP程序面向的是App Hub市场发布，支持多种语言是一个很重要的需求，也能为程序提供更广泛的用户群。</p>
+<p>如何实现让程序实现语言本地化呢？</p>
+<p>&nbsp;</p>
+<h2 id="使用资源文件">使用资源文件</h2>
+<p>熟悉.net开发都知道资源文件中是可以支持多语言与本地化的基本。</p>
+<h3 id="创建资源文件">创建资源文件</h3>
+<p>右键单击项目名称，在&ldquo;添加新项&rdquo;对话框中，选择&ldquo;资源文件&rdquo;，可以命名为 AppResources.resx。此文件包含应用程序默认语言的资源。</p>
+<p>最常用的是字符串资源。字符串资源是一种键-值（还有备注）方式的表，如下图。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020120180156.jpg" alt=""></p>
+<p>AppResources.resx资源文件会自动生成AppResources类用于获取资源的值。</p>
+<p>&nbsp;</p>
+<h3 id="使用资源文件替换文本">使用资源文件替换文本</h3>
+<p>现在要做的是将所有界面相关的字符串全部换成资源文件。</p>
+<p>如：</p>
+<p>ErrMessage = “接收器无法连接”;</p>
+<p>换成</p>
+<p>ErrMessage =&nbsp; AppResources.Could_not_connect;</p>
+<p>这个操作比较单调容易出错，推荐使用Resharp工具的move操作。</p>
+<p>&nbsp;</p>
+<h3 id="綁定资源文件">綁定资源文件</h3>
+<p>除了代码以外，Xaml里面也难免会遇到文本信息。不过不能Xaml中直接使用资源文件，需要一个比较麻烦的工作：</p>
+<p>首先创建一个包装类，我命名为LocalizedStrings，将AppResources的所有静态属性变成成员属性。</p>
+<p>如下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> LocalizedStrings<br>    {<br><br>       <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> ThanksString<br>       {<br>           <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> AppResources.ThanksString; }<br>       }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> UseString<br>       {<br>           <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> AppResources.UseString; }<br>       }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> Discussions<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> AppResources.Discussions; }<br>        }<br><br>…<br><br>}</pre><br></div>
+
+<p>&nbsp;</p>
+<p>将LocalizedStrings添加到App.xaml里</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Application.Resources</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Localization:LocalizedStrings </span><span style="color: #ff0000;">x:Key</span><span style="color: #0000ff;">=”LocalizedStrings”</span> <span style="color: #0000ff;">/&gt;</span><br><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Application.Resources</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>将界面上的文本信息全部换成LocalizedStrings的静态绑定：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBlock </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ApplicationTitle”</span><span style="color: #ff0000;"> Text</span><span style="color: #0000ff;">=&rdquo;多媒体遥控器” </span><span style="color: #0000ff;">/&gt;</span></pre><br></div>
+
+<p>换成：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBlock </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”ApplicationTitle”</span><span style="color: #ff0000;"> Text</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{Binding Path=AppName, Source={StaticResource LocalizedStrings}}</span><span style="color: #0000ff;">“</span> <span style="color: #0000ff;">/&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<h3 id="添加多语言的资源文件">添加多语言的资源文件</h3>
+<p>将界面文本全部移动到资源文件AppResources.resx后。</p>
+<p>复制AppResources.resx重命名为AppResources.en-US.resx&nbsp;</p>
+<p>en-US表示美国英语，将全部键对应的值翻译成英文，然后系统根据当前语言自动选择需要的资源文件。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020120174714.jpg" alt=""></p>
+<p>还可以添加AppResources.zh-TW.resx 繁体中文之类的。</p>
+<p>&nbsp;</p>
+<p>完整的区域性名称表请参考：</p>
+<p><a href="http://msdn.microsoft.com/zh-cn/library/hh202918(v=vs.92" target="_blank">http://msdn.microsoft.com/zh-cn/library/hh202918(v=vs.92).aspx</a>.aspx “<a href="http://msdn.microsoft.com/zh-cn/library/hh202918(v=vs.92).aspx" target="_blank">http://msdn.microsoft.com/zh-cn/library/hh202918(v=vs.92).aspx</a>“)</p>
+<p>&nbsp;</p>
+<h3 id="修改项目文件&nbsp;">修改项目文件&nbsp;</h3>
+<p>用记事本或Notepad++打开RemoteControl.csproj</p>
+<p>找到 SupportedCultures元素，添加需要支持的区域性名称。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">SupportedCultures</span><span style="color: #0000ff;">&gt;</span><br>      <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">SupportedCultures</span><span style="color: #0000ff;">&gt;</span>en-US;zh-TW;zh-CN;<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">SupportedCultures</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">SupportedCultures</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<h3 id="测试语言支持">测试语言支持</h3>
+<p>在WP模拟器中选择&ldquo;设置&rdquo;，进入&ldquo;区域和语言&rdquo;，将显示语言换成你需要测试的语言，根据提示重启。</p>
+<p>运行程序看看是否是对应的语言。</p>
+<p>&nbsp;</p>
+<h2 id="使用语言资源_DLL">使用语言资源 DLL</h2>
+<p>资源文件只能改变程序内部的语言，但是如果想修改WP应用程序列表中的标题或磁贴上的标题就不行了。</p>
+<p>这就需要使用语言资源DLL，语言资源DLL需要用C++项目创建<a href="http://msdn.microsoft.com/zh-cn/library/ff967550(v=vs.92" target="_blank">MDSN</a>.aspx)上有比较详细的介绍，但是太麻烦了。</p>
+<p>&nbsp;</p>
+<p>国外的有人写了一个WP7 AppResLib DLL Generator帮助我们生成 语言资源 DLL</p>
+<p>原文地址：<a href="http://engine-designs.com/wp7-appreslib-dll-generator.html" title="http://engine-designs.com/wp7-appreslib-dll-generator.html" target="_blank">http://engine-designs.com/wp7-appreslib-dll-generator.html</a></p>
+<p>首先下载 <a href="http://engine-designs.com/Content/Download/Tools/WP7AppResLib.zip" target="_blank">WP7 AppResLib DLL Generator</a></p>
+<p>复制Sample.xml 命名为项目名RemoteControl.xml</p>
+<p>编辑内容，国家代码LocaleID可以在Locale_ID_List.txt查询到，没添加就表示默认，Name可以随便取。</p>
+<p>示例：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Projects</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Project </span><span style="color: #ff0000;">Name</span><span style="color: #0000ff;">=”RemoteControl”</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Language </span><span style="color: #ff0000;">Name</span><span style="color: #0000ff;">=”Neutral”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">AppTitle</span><span style="color: #0000ff;">&gt;</span>RemoteControl<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">AppTitle</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TileText</span><span style="color: #0000ff;">&gt;</span>RemoteControl<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">TileText</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Language</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Language </span><span style="color: #ff0000;">Name</span><span style="color: #0000ff;">=”Chinese-RPC”</span><span style="color: #ff0000;"> LocaleID</span><span style="color: #0000ff;">=”0804”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">AppTitle</span><span style="color: #0000ff;">&gt;</span>多媒体遥控器<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">AppTitle</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TileText</span><span style="color: #0000ff;">&gt;</span>多媒体遥控器<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">TileText</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Language</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Language </span><span style="color: #ff0000;">Name</span><span style="color: #0000ff;">=”English (United States)”</span><span style="color: #ff0000;"> LocaleID</span><span style="color: #0000ff;">=”0409”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">AppTitle</span><span style="color: #0000ff;">&gt;</span>RemoteControl<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">AppTitle</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TileText</span><span style="color: #0000ff;">&gt;</span>RemoteControl<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">TileText</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Language</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Language </span><span style="color: #ff0000;">Name</span><span style="color: #0000ff;">=”Chinese - Taiwan”</span><span style="color: #ff0000;"> LocaleID</span><span style="color: #0000ff;">=”0404”</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">AppTitle</span><span style="color: #0000ff;">&gt;</span>多媒體遙控器<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">AppTitle</span><span style="color: #0000ff;">&gt;</span><br>            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TileText</span><span style="color: #0000ff;">&gt;</span>多媒體遙控器<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">TileText</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Language</span><span style="color: #0000ff;">&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Project</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Projects</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>然后再CMD里面运行WP7AppResLib RemoteControl.xml</p>
+<p>就会在下生成目录RemoteControl，里面包含了AppResLib.dll，AppResLib.dll.0404.mui等。</p>
+<p>&nbsp;</p>
+<p>全部拷贝到项目根目录，就是App.xaml所在地目录，&ldquo;添加现有项&rdquo;到项目中。</p>
+<p>查看属性，将生成操作全部设置为&ldquo;内容&rdquo;。</p>
+<p>&nbsp;</p>
+<p>修改WMAppManifest.xml替换2个地方：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">App </span><span style="color: #ff0000;">Title</span><span style="color: #0000ff;">=”@AppResLib.dll,-100”</span><span style="color: #ff0000;"> &hellip;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Tokens</span><span style="color: #0000ff;">&gt;</span><br>      <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">PrimaryToken </span><span style="color: #ff0000;">…</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TemplateType5</span><span style="color: #0000ff;">&gt;</span><br><br>          …<br>          <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Title</span><span style="color: #0000ff;">&gt;</span>@AppResLib.dll,-200<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Title</span><span style="color: #0000ff;">&gt;</span><br><br>          …<br>        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">TemplateType5</span><span style="color: #0000ff;">&gt;</span><br>      <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">PrimaryToken</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Tokens</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>好了这样应用程序列表中的标题或磁贴上的标题就支持本地化了。赶紧测试一下。</p>
+<p>&nbsp;</p>
+<p>参考文档:</p>
+<p>Windows Phone 全球化和本地化</p>
+<p><a href="http://msdn.microsoft.com/zh-cn/library/ff637522(v=vs.92" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff637522(v=vs.92).aspx</a>.aspx “<a href="http://msdn.microsoft.com/zh-cn/library/ff637522(v=vs.92).aspx" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff637522(v=vs.92).aspx</a>“)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/01/wp7应用开发笔记18-本地化与多语言/" data-id="w7l34uhoe4kqjyxg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记-插曲-小心使用messagebox" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/31/wp7应用开发笔记-插曲-小心使用messagebox/" class="article-date">
+  <time datetime="2012-01-31T04:06:00.000Z" itemprop="datePublished">1月 31 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/31/wp7应用开发笔记-插曲-小心使用messagebox/">WP7应用开发笔记-插曲 小心使用MessageBox</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>哎，上班了没什么时间学习了，谈点小技巧。</p>
+<p>最近审查的时候遇到一个问题，研究很久才解决，原来是一个小问题就是MessageBox</p>
+<p>&nbsp;</p>
+<p>原来的代码是这样的，在没有输入IP的时候提示用户并跳转到配置页面。</p>
+<div class="cnblogs_code"><br><pre>MessageBox.Show(<span style="color: #800000;">“</span><span style="color: #800000;">使用前请先设置接收端IP</span><span style="color: #800000;">“</span>);<br>GoToConfig();<span style="color: #008000;">//</span><span style="color: #008000;">跳转到配置页面</span>&nbsp;</pre><br></div>
+
+<p>如果在WPF之类的写这样的代码没有什么大问题，但是WP7里面问题就出现了。</p>
+<p>在MessageBox的模态窗口打开的时候按一下&ldquo;开始菜单&rdquo;Win键会发生意想不到的情况就是</p>
+<p>MessageBox的模块窗口会被关闭，并且返回MessageBoxResult.None</p>
+<p>然后继续执行GoToConfig();但是现在界面以及切换到开始屏幕，</p>
+<p>直接抛出&ldquo;This operation is not supported on a relative URI.&rdquo;异常了。</p>
+<p>&nbsp;</p>
+<p>解决方法是：</p>
+<p><div class="cnblogs_code"></p>
+<pre><span style="color: #0000ff;">var</span> result = MessageBox.Show(<span style="color: #800000;">"</span><span style="color: #800000;">使用前请先设置接收端IP</span><span style="color: #800000;">"</span>);
+<span style="color: #0000ff;">if</span> (result == MessageBoxResult.OK) 
+    GoToConfig();<span style="color: #008000;">//</span><span style="color: #008000;">跳转到配置页面</span></pre>
+</div>
+<pre class="brush: csharp; auto-links: true; collapse: false; first-line: 1; gutter: true; html-script: false; light: false; ruler: false; smart-tabs: true; tab-size: 4; toolbar: true;">&nbsp;</pre>
+
+<p>这个故事告诉我一下在WP7里面使用MessageBox要注意 Deactivated 事件引发的MessageBox返回的情况。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/31/wp7应用开发笔记-插曲-小心使用messagebox/" data-id="gi6f1wodm85tgmhy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-我的wp7应用开发笔记系列" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/30/我的wp7应用开发笔记系列/" class="article-date">
+  <time datetime="2012-01-30T04:06:00.000Z" itemprop="datePublished">1月 30 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/30/我的wp7应用开发笔记系列/">我的WP7应用开发笔记系列</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>春节期间在学习WP7开发，为了练手开发了一款简单的程序，在这里记录一下设计开发过程给大家分享。</p>
+<p>本人虽然有几年的C#开发经验，但是wp7程序还是刚刚开始学习。</p>
+<p>边学边开发边写文章，目录结构可能比较混乱,文章只记录了开发过程的知识点，没有详细的编码过程。</p>
+<p>如果有什么问题还请各位园友见谅。</p>
+<p>&nbsp;</p>
+<h2 id="多媒体遥控器">多媒体遥控器</h2>
+<p>先卖个广告，介绍一下这个程序：</p>
+<p>寒冷的冬天在电脑上看电影、动漫等视频的时候，是不是不想伸手去按键盘呢，这款软件可以帮助您。</p>
+<p>&nbsp;</p>
+<p>此软件是一款迷你的多媒体遥控器，主要适合在客厅、卧室中喜欢用个人电脑看视频的朋友。<br>此软件能用您的手机方便的远程控制您的个人电脑上的媒体播放器，方便地控制视频播放、音量大小等。</p>
+<p>此软件使用注意事项：</p>
+<ul>
+<li>需要您在您的个人电脑上安装多媒体遥控器的信号接收软件，并需要.net 4.0支持</li>
+<li>在手机端设置接收信号的IP地址（IP就是你电脑的IP）</li>
+<li>需要使用Wifi网络，保证手机和电脑在一个无线路由器下。</li>
+</ul>
+<p>&nbsp;</p>
+<p>多媒体遥控器的XAP 文件和信号接收软件可以在下面的地址中免费下载</p>
+<p>ZUNE</p>
+<p><a href="http://redirect.zune.net/redirect?type=phoneApp&amp;id=d9bab6c2-ad4d-47fe-a2af-100e00d63a17" target="_blank"><img src="http://pic002.cnblogs.com/images/2012/25121/2012013020043528.gif" alt=""></a></p>
+<p><a href="http://www.windowsphone.com/zh-HK/apps/d9bab6c2-ad4d-47fe-a2af-100e00d63a17" title="http://www.windowsphone.com/zh-HK/apps/d9bab6c2-ad4d-47fe-a2af-100e00d63a17" target="_blank">http://redirect.zune.net/redirect?type=phoneApp&amp;id=d9bab6c2-ad4d-47fe-a2af-100e00d63a17</a></p>
+<p>&nbsp;即拍即下：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012020412032574.png" alt=""></p>
+<p>开源项目地址：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012013020120973.png" alt="">&nbsp;</p>
+<p><a href="http://virtualkeyboard.codeplex.com/" title="http://www.windowsphone.com/zh-HK/apps/d9bab6c2-ad4d-47fe-a2af-100e00d63a17" target="_blank">http://virtualkeyboard.codeplex.com/</a></p>
+<p>开源协议&nbsp;<span id="currentLicense">The MIT License (MIT)</span></p>
+<p>项目名叫虚拟键盘，本来是想把键盘功能完整实现的，现在暂时完成了多媒体遥控器部分，欢迎下载源代码研究。</p>
+<p>&nbsp;</p>
+<p>最后感谢您使用此共享软件，我希望您能喜欢，如果您有什么建议和意见欢迎告诉我，欢迎一起交流技术。</p>
+<p>&nbsp;</p>
+<h2 id="文章目录">文章目录</h2>
+<ul>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329346-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(1)_序言</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329346.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(1) 序言</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329353-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(2)_思考</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329353.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(2) 思考</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329362-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(3)_界面设计</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329362.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(3) 界面设计</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329373-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(4)_圆形滑动控件实现</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329373.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(4) 圆形滑动控件实现</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329384-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(5)_通信设计</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329384.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(5) 通信设计</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/25/2329395-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(6)_服务器设计</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/25/2329395.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(6) 服务器设计</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329567-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(7)_配置和存储</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329567.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(7) 配置和存储</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329574-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(8)_IP输入框控件</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329574.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(8) IP输入框控件</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329608-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(9)_应用程序栏</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329608.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(9) 应用程序栏</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329615-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(10)_导航</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329615.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(10) 导航</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329621-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(11)_自定义按钮</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329621.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(11) 自定义按钮</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/26/2329863-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(12)_添加页面动画</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/26/2329863.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(12) 添加页面动画</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/27/2330112-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(13)_MVVM</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/27/2330112.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(13) MVVM</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/27/2330200-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(14)_使用Caliburn_Micro简化MVVM</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/27/2330200.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(14) 使用Caliburn Micro简化MVVM</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/28/2330516-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(15)_推送通知</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/28/2330516.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(15) 推送通知</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/28/2330521-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(16)_本地Toast_提示</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/28/2330521.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(16) 本地Toast 提示</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/01/28/2330652-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(17)_提交应用</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/01/28/2330652.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(17) 提交应用</span></a></h4>
+</li>
+<li><h4 id="<a_href="http://www-cnblogs-com/kiminozo/archive/2012/02/01/2335063-html" target="_blank"><span_style="color:_#399aaf;">WP7应用开发笔记(18)_本地化与多语言</span></a>"><a href="http://www.cnblogs.com/kiminozo/archive/2012/02/01/2335063.html" target="_blank"><span style="color: #399aaf;">WP7应用开发笔记(18) 本地化与多语言</span></a></h4>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>第一个系列暂时到此结束，1个月不到学习了不少东西，也感觉漏掉了很多东西，以后等我继续学习在来写一个新应用吧。</p>
+<p>我还得准备工作相关的知识了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/30/我的wp7应用开发笔记系列/" data-id="do2cqt6tueu8opt8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记17-提交应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/30/wp7应用开发笔记17-提交应用/" class="article-date">
+  <time datetime="2012-01-30T04:03:00.000Z" itemprop="datePublished">1月 30 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/30/wp7应用开发笔记17-提交应用/">WP7应用开发笔记(17) 提交应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="注册AppHub帐号">注册AppHub帐号</h2>
+<p>首先使用Windows Live ID登录<a href="http://create.msdn.com/zh-CN" title="http://create.msdn.com/zh-CN" target="_blank">http://create.msdn.com/zh-CN</a> 注册帐号，选择个人或者学生。</p>
+<p>如果想拥有免费帐号，AppHub为学生提供免费1年的使用，需要一个以edu.cn结尾的邮箱作为验证邮箱，如果你已经工作找你的后辈或者亲戚要一个吧。<span style="color: #000000;"><span style="color: #ffffff;">（不行入侵一个,好孩子不要学我）</span> </span></p>
+<p>点击&ldquo;Get Verified&rdquo;，然后按提示操作，选国家China，然后选自己edu.cn的邮箱的那个大学，验证之后邮箱会收到验证码Key.</p>
+<p>在<a href="https://www.dreamspark.com/Activate" target="_blank">https://www.dreamspark.com/Activate</a>页面，输入从edu.cn那个邮箱中收到的邮件所得到的key，此时dreamspark注册成功。</p>
+<p>再进入<a href="http://create.msdn.com/zh-CN" title="http://create.msdn.com/zh-CN" target="_blank">http://create.msdn.com/zh-CN</a>，输入个人信息，按提示操作即可。</p>
+<p>&nbsp;</p>
+<h2 id="提交应用之前准备">提交应用之前准备</h2>
+<p>首先需要一个稳定的XAP程序包（废话）</p>
+<p>然后准备一系列的图片，包括应用程序图标和截图，可以在项目里右键选择&ldquo;Open MarketPlace 测试套件&rdquo; 安装提示准备图片和验证就可以了。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012013020012187.jpg" alt=""></p>
+<p>在运行一些自动测试，我的没有检查出什么问题，因为使用了Socket所以需要使用网络资源。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012013020013769.jpg" alt=""></p>
+<p>注意监视测试需要使用真机测试，不能用模拟器。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012013020014925.jpg" alt=""></p>
+<p>手动测试请参考MSDN的：应用程序提交要求</p>
+<p><a href="http://msdn.microsoft.com/zh-cn/library/hh184844(v=vs.92" target="_blank">http://msdn.microsoft.com/zh-cn/library/hh184844(v=vs.92).aspx</a>.aspx “<a href="http://msdn.microsoft.com/zh-cn/library/hh184844(v=vs.92).aspx" target="_blank">http://msdn.microsoft.com/zh-cn/library/hh184844(v=vs.92).aspx</a>“)</p>
+<p>&nbsp;</p>
+<h2 id="提交应用">提交应用</h2>
+<p>到<a href="http://create.msdn.com/zh-CN" title="http://create.msdn.com/zh-CN" target="_blank">http://create.msdn.com/zh-CN</a>选择 Submit for Windows Phone 因为现在已经是中文版了按照步骤提交就可以了。</p>
+<p>注意发布地区最好加上美国，我就忘了加导致只能在HK的市场才能查询到。</p>
+<p>&nbsp;</p>
+<p>如果还是不是很了解，博客园里面有一篇更详细的图文并茂的文章：</p>
+<p><a href="http://www.cnblogs.com/chenkai/archive/2011/12/22/2298234.html" title="http://www.cnblogs.com/chenkai/archive/2011/12/22/2298234.html" target="_blank">http://www.cnblogs.com/chenkai/archive/2011/12/22/2298234.html</a></p>
+<p>&nbsp;</p>
+<h2 id="等待审核和发布">等待审核和发布</h2>
+<p>提交完成后会状态是：</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012013020021567.jpg" alt=""></p>
+<p>然后还是等待</p>
+<p>首先是【签名并加密】，大概一天不到就完成了，估计是程序自动工作的。</p>
+<p>然后是【认证】，这个过程比较长，应该是人工的，据说要3个工作日，我也差不多。认证完成后会收到邮件通知。</p>
+<p>最后是【发布】 如果选委托发布的话，认证邮件收到后几小时就可以发布了，但是市场上要1天才能搜索到（我杯具的没有选美国地区，还必须在HK才找到，哎）</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012013020023061.jpg" alt=""></p>
+<p>发布完成后可以修改一些详细信息和发布地区，以及提交更新包，注意提交更新后就不能修改了。（现在想改美国还得等几天了）。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/30/wp7应用开发笔记17-提交应用/" data-id="b84dm3mxkrz5xkxo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" href="/page/4/">Next &raquo;</a>
+    </nav>
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

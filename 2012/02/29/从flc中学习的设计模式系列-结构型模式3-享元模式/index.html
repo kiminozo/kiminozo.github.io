@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>从FLC中学习的设计模式系列-结构型模式(3)-享元模式 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="从FLC中学习的设计模式系列-结构型模式(3)-享元模式">
+<meta name="og:url" content="http://yoursite.com/2012/02/29/从flc中学习的设计模式系列-结构型模式3-享元模式/">
+<meta name="og:image">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="享元模式是使用共享部件减少内存占用
+&nbsp;
+享元模式
+http://zh.wikipedia.org/wiki/享元模式
+享元模式（英语：Flyweight Pattern）是一种软件设计模式。它使用共享物件，用来尽可能减少内存使用量以及分享资讯给尽可能多的相似物件；它适合用于当大量物件只是重复因而导致无法令人接受的使用大量内存。通常物件中的部分状态是可以分享。常见做法是把它们放在外部数据结">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-从flc中学习的设计模式系列-结构型模式3-享元模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/29/从flc中学习的设计模式系列-结构型模式3-享元模式/" class="article-date">
+  <time datetime="2012-02-29T05:43:00.000Z" itemprop="datePublished">2月 29 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      从FLC中学习的设计模式系列-结构型模式(3)-享元模式
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>享元模式是使用共享部件减少内存占用</p>
+<p>&nbsp;</p>
+<h2 id="享元模式">享元模式</h2>
+<p><a href="http://zh.wikipedia.org/wiki/享元模式" title="http://zh.wikipedia.org/wiki/享元模式" target="_blank">http://zh.wikipedia.org/wiki/享元模式</a></p>
+<p>享元模式（英语：Flyweight Pattern）是一种软件设计模式。它使用共享物件，用来尽可能减少内存使用量以及分享资讯给尽可能多的相似物件；它适合用于当大量物件只是重复因而导致无法令人接受的使用大量内存。通常物件中的部分状态是可以分享。常见做法是把它们放在外部数据结构，当需要使用时再将它们传递给享元。</p>
+<p>典型的享元模式的例子为文书处理器中以图形结构来表示字符。一个做法是，每个字形有其字型外观, 字模 metrics, 和其它格式资讯，但这会使每个字符就耗用上千字节。取而代之的是，每个字符参照到一个共享字形物件，此物件会被其它有共同特质的字符所分享；只有每个字符（文件中或页面中）的位置才需要另外储存。</p>
+<p>&nbsp;</p>
+<p>FCL中的享元模式</p>
+<p>在绘图时常有的Brushes和Pens的各个公共属性都是享元模式的典型。</p>
+<p>注意虽然Colors类似，但Color是结构，不存在共享，所以不是享元模式</p>
+<p>&nbsp;</p>
+<p>就拿Brushes类举例：</p>
+<p>&nbsp;</p>
+<p>Brushes 类<br>实现一组预定义的 <a href="http://127.0.0.1:47873/help/1-5500/ms.help?method=page&amp;id=T%3ASYSTEM.WINDOWS.MEDIA.SOLIDCOLORBRUSH&amp;product=VS&amp;productVersion=100&amp;topicVersion=100&amp;locale=ZH-CN&amp;topicLocale=ZH-CN&amp;embedded=true" target="_blank">SolidColorBrush</a> 对象。</p>
+<p>属性有一大堆：颜色名如：<br> AliceBlue 获取具有十六进制值 #FFF0F8FF 的纯色填充颜色。&nbsp;<br> AntiqueWhite 获取具有十六进制值 #FFFAEBD7 的纯色填充颜色。&nbsp;<br> Aqua 获取具有十六进制值 #FF00FFFF 的纯色填充颜色。&nbsp;<br> Aquamarine 获取具有十六进制值 #FF7FFFD4 的纯色填充颜色。&nbsp;<br> Azure 获取具有十六进制值 #FFF0FFFF 的纯色填充颜色。&nbsp;<br> Beige 获取具有十六进制值 #FFF5F5DC 的纯色填充颜色。&nbsp;<br> Bisque 获取具有十六进制值 #FFFFE4C4 的纯色填充颜色。&nbsp;<br> Black 获取具有十六进制值 #FF000000 的纯色填充颜色。</p>
+<p>…</p>
+<p>&nbsp;</p>
+<p>下面来看看怎么使用享元</p>
+<p>假设有N个glyphs图形，需要让他们都成为黑色Black：</p>
+<p>&nbsp;</p>
+<pre class="brush: csharp; auto-links: true; collapse: false; first-line: 1; gutter: true; html-script: false; light: false; ruler: false; smart-tabs: true; tab-size: 4; toolbar: true;">glyphs1.Fill = new SolidColorBrush(Colors.Black );
+
+glyphs2.Fill = new SolidColorBrush(Colors.Black );
+
+glyphs3.Fill = new SolidColorBrush(Colors.Black );
+
+..
+
+glyphsN.Fill = new SolidColorBrush(Colors.Black );</pre>
+
+<p>&nbsp;</p>
+<p>发现SolidColorBrush严重浪费内存，使用Brushes 提供的Black共享SolidColorBrush,修改后如下：</p>
+<pre class="brush: csharp; auto-links: true; collapse: false; first-line: 1; gutter: true; html-script: false; light: false; ruler: false; smart-tabs: true; tab-size: 4; toolbar: true;">glyphs1.Fill = SolidColorBrush.Black;
+
+glyphs2.Fill = SolidColorBrush.Black;
+
+glyphs3.Fill = SolidColorBrush.Black;
+
+..
+
+glyphsN.Fill = SolidColorBrush.Black;</pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/29/从flc中学习的设计模式系列-结构型模式3-享元模式/" data-id="7qyl9ww37bmrpnwn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2012/03/05/wp7应用开发笔记-tilteffect为控件添加倾斜的触控响应效果/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          WP7应用开发笔记 TiltEffect为控件添加倾斜的触控响应效果
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/02/28/wp7应用开发笔记-继承bitmapsource并使用独立存储来缓存远程/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WP7应用开发笔记 继承BitmapSource并使用独立存储来缓存远程的图片</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

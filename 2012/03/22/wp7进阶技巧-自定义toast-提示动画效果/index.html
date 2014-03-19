@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>WP7进阶技巧 自定义Toast 提示动画效果 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="WP7进阶技巧 自定义Toast 提示动画效果">
+<meta name="og:url" content="http://yoursite.com/2012/03/22/wp7进阶技巧-自定义toast-提示动画效果/">
+<meta name="og:image">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="Coding4Fun.Phone.Toolkit 这个库大家应该比较熟悉了吧，里面有一个ToastPrompt提供了本地Toast 方式提示，非常实用。可以参考我这篇文章WP7应用开发笔记(16) 本地Toast 提示。
+但是ToastPrompt的效果比较简单，如果需要扩展就比较麻烦，下面我来说明一下如何模拟新浪微博类似的Toast。
+&nbsp;
+做之前首先看看SL的模拟效果吧：
+
+
+无法观看">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-wp7进阶技巧-自定义toast-提示动画效果" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/03/22/wp7进阶技巧-自定义toast-提示动画效果/" class="article-date">
+  <time datetime="2012-03-21T20:36:00.000Z" itemprop="datePublished">3月 22 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WP7进阶技巧 自定义Toast 提示动画效果
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Coding4Fun.Phone.Toolkit 这个库大家应该比较熟悉了吧，里面有一个ToastPrompt提供了本地Toast 方式提示，非常实用。可以参考我这篇文章<a href="http://www.cnblogs.com/kiminozo/archive/2012/01/28/2330521.html" target="_blank">WP7应用开发笔记(16) 本地Toast 提示</a>。</p>
+<p>但是ToastPrompt的效果比较简单，如果需要扩展就比较麻烦，下面我来说明一下如何模拟新浪微博类似的Toast。</p>
+<p>&nbsp;</p>
+<p>做之前首先看看SL的模拟效果吧：</p>
+<object width="450" height="200" data="data:application/x-silverlight-2," type="application/x-silverlight-2"><param name="source" value="http://files.cnblogs.com/kiminozo/ToastPrompt.xap" /><param name="minRuntimeVersion" value="4.0.50826.0" /><param name="src" value="data:application/x-silverlight-2," /></object>
+
+<p>无法观看，请下载直接下载示例<a href="http://files.cnblogs.com/kiminozo/ToastPromptDemo.rar" target="_blank"> http://files.cnblogs.com/kiminozo/ToastPromptDemo.rar </a></p>
+<p>&nbsp;&nbsp;</p>
+<h2 id="了解DialogService">了解DialogService</h2>
+<p>查看Coding4Fun的源代码，里面主要使用了DialogService类来实现的</p>
+<p><a href="http://blogs.claritycon.com/kevinmarshall/2010/10/13/wp7-page-transitions-sample/" title="http://blogs.claritycon.com/kevinmarshall/2010/10/13/wp7-page-transitions-sample/" target="_blank">http://blogs.claritycon.com/kevinmarshall/2010/10/13/wp7-page-transitions-sample/</a></p>
+<p>DialogService的源代码请去Blog下载</p>
+<p>&nbsp;</p>
+<p>比较重要的成员是</p>
+<p>AnimationType 动画类型</p>
+<p>Child 容器内的用于控件</p>
+<p>IsBackKeyOverride 是否覆盖后退键</p>
+<p>Overlay 覆盖颜色，null的情况不会影响触控操作。</p>
+<p>Opened、Closed事件</p>
+<p>Show()、Hide() 显示、隐藏</p>
+<p>&nbsp;</p>
+<h2 id="修改DialogService">修改DialogService</h2>
+<p>需要自定义效果 需要修改Coding4Fun的源代码，</p>
+<p>请去<a href="http://coding4fun.codeplex.com/releases/view/79749" title="http://coding4fun.codeplex.com/releases/view/79749" target="_blank">http://coding4fun.codeplex.com/releases/view/79749</a>下载。</p>
+<p>&nbsp;</p>
+<p>添加效果最重要的是增加AnimationType</p>
+<p>默认只有2种Slide，Coding4Fun代码里面增加了2种SlideHorizontal</p>
+<p>枚举如下</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">enum</span> AnimationTypes<br>        {<br>            Slide,<br>            SlideHorizontal,<br>            Swivel,<br>            SwivelHorizontal,<br>            Vetical<span style="color: #008000;">//</span><span style="color: #008000;">new </span><span style="color: #008000;"><br></span>        }</pre><br></div>
+
+<p>为了实现我需要的效果，我添加了一种名叫Vetical的动画类型。</p>
+<p>&nbsp;</p>
+<p>为这个类型添加2个Storyboard</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> VeticalInStoryboard =<br>             <span style="color: #800000;">@”</span><span style="color: #800000;">&lt;Storyboard  xmlns=””<a href="http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;&quot;&amp;gt" target="_blank">http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;&quot;&amp;gt</a>;<br>                 &lt;DoubleAnimationUsingKeyFrames Storyboard.TargetProperty=””(UIElement.RenderTransform).(TranslateTransform.Y)””&gt;<br>                      &lt;EasingDoubleKeyFrame KeyTime=””0”” Value=””-50””/&gt;<br>                      &lt;EasingDoubleKeyFrame KeyTime=””0:0:2”” Value=””0””&gt;<br>                      &lt;EasingDoubleKeyFrame.EasingFunction&gt;<br>                         &lt;ExponentialEase EasingMode=””EaseInOut”” Exponent=””6””/&gt;<br>                     &lt;/EasingDoubleKeyFrame.EasingFunction&gt;<br>                     &lt;/EasingDoubleKeyFrame&gt;<br>                 &lt;/DoubleAnimationUsingKeyFrames&gt;<br>                 &lt;DoubleAnimation Storyboard.TargetProperty=””(UIElement.Opacity)”” From=””0”” To=””1”” Duration=””0:0:2””<br>                             Storyboard.TargetName=””LayoutRoot””&gt;<br>                 &lt;DoubleAnimation.EasingFunction&gt;<br>                          &lt;ExponentialEase EasingMode=””EaseOut”” Exponent=””6””/&gt;<br>                &lt;/DoubleAnimation.EasingFunction&gt;<br>                &lt;/DoubleAnimation&gt;<br>           &lt;/Storyboard&gt;</span><span style="color: #800000;">“</span>;<br><br>     <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> VeticalOutStoryboard =<br>             <span style="color: #800000;">@”</span><span style="color: #800000;">&lt;Storyboard  xmlns=””<a href="http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;&quot;&amp;gt" target="_blank">http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;&quot;&amp;gt</a>;<br>                 &lt;DoubleAnimationUsingKeyFrames Storyboard.TargetProperty=””(UIElement.RenderTransform).(TranslateTransform.Y)””&gt;<br>                      &lt;EasingDoubleKeyFrame KeyTime=””0”” Value=””0””/&gt;<br>                      &lt;EasingDoubleKeyFrame KeyTime=””0:0:1”” Value=””-50””&gt;<br>                      &lt;EasingDoubleKeyFrame.EasingFunction&gt;<br>                         &lt;ExponentialEase EasingMode=””EaseInOut”” Exponent=””6””/&gt;<br>                     &lt;/EasingDoubleKeyFrame.EasingFunction&gt;<br>                     &lt;/EasingDoubleKeyFrame&gt;<br>                 &lt;/DoubleAnimationUsingKeyFrames&gt;<br>                 &lt;DoubleAnimation Storyboard.TargetProperty=””(UIElement.Opacity)”” From=””1”” To=””0”” Duration=””0:0:1””<br>                             Storyboard.TargetName=””LayoutRoot””&gt;<br>                 &lt;DoubleAnimation.EasingFunction&gt;<br>                          &lt;ExponentialEase EasingMode=””EaseIn”” Exponent=””6””/&gt;<br>                &lt;/DoubleAnimation.EasingFunction&gt;<br>                &lt;/DoubleAnimation&gt;<br>           &lt;/Storyboard&gt;</span><span style="color: #800000;">“</span>;</pre><br></div>
+
+<p>找到Show()的代码，在switch中添加</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">case</span> AnimationTypes.Vetical:<br>                      storyboard = XamlReader.Load(VeticalInStoryboard) <span style="color: #0000ff;">as</span> Storyboard;<br>                      _overlay.RenderTransform = <span style="color: #0000ff;">new</span> TranslateTransform();<br>                      <span style="color: #0000ff;">break</span>; </pre><br></div>
+
+<p>Hide()同理</p>
+<p>&nbsp;</p>
+<p>然后找到Coding4Fun的ToastPrompt类，修改Show()里面的</p>
+<div class="cnblogs_code"><br><pre>AnimationType = DialogService.AnimationTypes.Vetical,</pre><br></div>
+
+<p>&nbsp;</p>
+<p>如下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Show()<br>{<br>           ..<br><br>            dialogService = <span style="color: #0000ff;">new</span> DialogService<br>            {<br>                AnimationType = DialogService.AnimationTypes.Vetical,<br>                Child = <span style="color: #0000ff;">this</span>,<br>                IsBackKeyOverride = <span style="color: #0000ff;">true</span><br>            };<br><br>         …<br><br>  }</pre><br></div>
+
+<p>&nbsp;</p>
+<p>当然也可以使用面向对象的知识多态化ToastPrompt，这里就不详细描述了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/03/22/wp7进阶技巧-自定义toast-提示动画效果/" data-id="3eefbeoh7gyupr2m" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2012/03/25/bangumi-番組計劃-wp手机客户端发布/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Bangumi 番組計劃 WP手机客户端发布
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/03/19/wp7自定义控件-tabswitch控件/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WP7自定义控件 TabSwitch控件</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title">
+<meta name="og:url" content="http://yoursite.com/page/2/">
+<meta name="og:image">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-wp7应用开发笔记-tilteffect为控件添加倾斜的触控响应效果" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/03/05/wp7应用开发笔记-tilteffect为控件添加倾斜的触控响应效果/" class="article-date">
+  <time datetime="2012-03-04T17:34:00.000Z" itemprop="datePublished">3月 5 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/03/05/wp7应用开发笔记-tilteffect为控件添加倾斜的触控响应效果/">WP7应用开发笔记 TiltEffect为控件添加倾斜的触控响应效果</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>写篇短博客的称赞一下 slToolkit 里的TiltEffect。</p>
+<p>在触控界面设计里面，对触控的响应是非常重要的，点击后控件作出一定的倾斜响应效果，有助于提高体验。</p>
+<p>在Silverlight里面有xyz的倾斜轴可以自己实现这个效果。&nbsp;</p>
+<p>不过 Toolkit更简单只要在容器里面添加附加属性 slToolkit:TiltEffect.IsTiltEnabled=”True” &nbsp;就OK了。</p>
+<p>太强大了，我不得不佩服一下。&nbsp;</p>
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/03/05/wp7应用开发笔记-tilteffect为控件添加倾斜的触控响应效果/" data-id="ecropvlkgxfypaoh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-从flc中学习的设计模式系列-结构型模式3-享元模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/29/从flc中学习的设计模式系列-结构型模式3-享元模式/" class="article-date">
+  <time datetime="2012-02-29T05:43:00.000Z" itemprop="datePublished">2月 29 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/29/从flc中学习的设计模式系列-结构型模式3-享元模式/">从FLC中学习的设计模式系列-结构型模式(3)-享元模式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>享元模式是使用共享部件减少内存占用</p>
+<p>&nbsp;</p>
+<h2 id="享元模式">享元模式</h2>
+<p><a href="http://zh.wikipedia.org/wiki/享元模式" title="http://zh.wikipedia.org/wiki/享元模式" target="_blank">http://zh.wikipedia.org/wiki/享元模式</a></p>
+<p>享元模式（英语：Flyweight Pattern）是一种软件设计模式。它使用共享物件，用来尽可能减少内存使用量以及分享资讯给尽可能多的相似物件；它适合用于当大量物件只是重复因而导致无法令人接受的使用大量内存。通常物件中的部分状态是可以分享。常见做法是把它们放在外部数据结构，当需要使用时再将它们传递给享元。</p>
+<p>典型的享元模式的例子为文书处理器中以图形结构来表示字符。一个做法是，每个字形有其字型外观, 字模 metrics, 和其它格式资讯，但这会使每个字符就耗用上千字节。取而代之的是，每个字符参照到一个共享字形物件，此物件会被其它有共同特质的字符所分享；只有每个字符（文件中或页面中）的位置才需要另外储存。</p>
+<p>&nbsp;</p>
+<p>FCL中的享元模式</p>
+<p>在绘图时常有的Brushes和Pens的各个公共属性都是享元模式的典型。</p>
+<p>注意虽然Colors类似，但Color是结构，不存在共享，所以不是享元模式</p>
+<p>&nbsp;</p>
+<p>就拿Brushes类举例：</p>
+<p>&nbsp;</p>
+<p>Brushes 类<br>实现一组预定义的 <a href="http://127.0.0.1:47873/help/1-5500/ms.help?method=page&amp;id=T%3ASYSTEM.WINDOWS.MEDIA.SOLIDCOLORBRUSH&amp;product=VS&amp;productVersion=100&amp;topicVersion=100&amp;locale=ZH-CN&amp;topicLocale=ZH-CN&amp;embedded=true" target="_blank">SolidColorBrush</a> 对象。</p>
+<p>属性有一大堆：颜色名如：<br> AliceBlue 获取具有十六进制值 #FFF0F8FF 的纯色填充颜色。&nbsp;<br> AntiqueWhite 获取具有十六进制值 #FFFAEBD7 的纯色填充颜色。&nbsp;<br> Aqua 获取具有十六进制值 #FF00FFFF 的纯色填充颜色。&nbsp;<br> Aquamarine 获取具有十六进制值 #FF7FFFD4 的纯色填充颜色。&nbsp;<br> Azure 获取具有十六进制值 #FFF0FFFF 的纯色填充颜色。&nbsp;<br> Beige 获取具有十六进制值 #FFF5F5DC 的纯色填充颜色。&nbsp;<br> Bisque 获取具有十六进制值 #FFFFE4C4 的纯色填充颜色。&nbsp;<br> Black 获取具有十六进制值 #FF000000 的纯色填充颜色。</p>
+<p>…</p>
+<p>&nbsp;</p>
+<p>下面来看看怎么使用享元</p>
+<p>假设有N个glyphs图形，需要让他们都成为黑色Black：</p>
+<p>&nbsp;</p>
+<pre class="brush: csharp; auto-links: true; collapse: false; first-line: 1; gutter: true; html-script: false; light: false; ruler: false; smart-tabs: true; tab-size: 4; toolbar: true;">glyphs1.Fill = new SolidColorBrush(Colors.Black );
+
+glyphs2.Fill = new SolidColorBrush(Colors.Black );
+
+glyphs3.Fill = new SolidColorBrush(Colors.Black );
+
+..
+
+glyphsN.Fill = new SolidColorBrush(Colors.Black );</pre>
+
+<p>&nbsp;</p>
+<p>发现SolidColorBrush严重浪费内存，使用Brushes 提供的Black共享SolidColorBrush,修改后如下：</p>
+<pre class="brush: csharp; auto-links: true; collapse: false; first-line: 1; gutter: true; html-script: false; light: false; ruler: false; smart-tabs: true; tab-size: 4; toolbar: true;">glyphs1.Fill = SolidColorBrush.Black;
+
+glyphs2.Fill = SolidColorBrush.Black;
+
+glyphs3.Fill = SolidColorBrush.Black;
+
+..
+
+glyphsN.Fill = SolidColorBrush.Black;</pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/29/从flc中学习的设计模式系列-结构型模式3-享元模式/" data-id="7qyl9ww37bmrpnwn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记-继承bitmapsource并使用独立存储来缓存远程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/28/wp7应用开发笔记-继承bitmapsource并使用独立存储来缓存远程/" class="article-date">
+  <time datetime="2012-02-28T07:05:00.000Z" itemprop="datePublished">2月 28 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/28/wp7应用开发笔记-继承bitmapsource并使用独立存储来缓存远程/">WP7应用开发笔记 继承BitmapSource并使用独立存储来缓存远程的图片</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>作为Web App访问远程图片是经常的遇到功能，Wp本身提供了Image 很好的支持通过图片的Uri显示图片</p>
+<p>public ImageSource Source { get; set; }</p>
+<p>&lt;Image Source=”<a href="https://www.google.com/intl/en_com/images/srpr/logo3w.png" title="https://www.google.com/intl/en_com/images/srpr/logo3w.png" target="_blank">https://www.google.com/intl/en_com/images/srpr/logo3w.png</a>“ /&gt;</p>
+<p>为了减少网络流量，需要将图片缓存到本地数据存储中。复习一下WP的本地数据存储：</p>
+<h2 id="&nbsp;">&nbsp;</h2>
+<h2 id="Windows_Phone_本地数据存储">Windows Phone 本地数据存储</h2>
+<p>Windows Phone 应用程序可以使用独立存储将数据储存到手机本地。应用程序可以通过三种方式储存数据：</p>
+<ol>
+<li><strong>设置</strong>：使用 IsolatedStorageSettings 类将数据存储为键/值对。</li>
+<li><strong>文件和文件夹</strong>：使用 IsolatedStorageFile 类存储文件和文件夹。</li>
+<li><strong>本地数据库</strong>：7.1新增，只能支持LINQ TO SQL ，不能写SQL语句。</li>
+</ol>
+<p>&nbsp;</p>
+<h2 id="本地存储图片">本地存储图片</h2>
+<p>首先图片应该选择IsolatedStorageFile来存储：</p>
+<p>WP提供了一个叫IsolatedStorageFileStream的Stream和FileStream操作一样</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> fileStream = isolatedStorageFile.OpenFile(filePath, FileMode.OpenOrCreate, FileAccess.Write))<br>{<br>       stream.CopyTo(fileStream);<br>}</pre><br></div>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2 id="缓存的思路">缓存的思路</h2>
+<p><a href="http://images.cnblogs.com/cnblogs_com/kiminozo/201202/201202282303009289.png" target="_blank"><img src="http://images.cnblogs.com/cnblogs_com/kiminozo/201202/201202282303026549.png" alt="image" title="image"></a></p>
+<p>&nbsp;</p>
+<p>现在是思路是首先检查是否被缓存里，首先定义一个公用的缓存文件夹，在静态构造函数中创建文件夹</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> CacheDirectory = <span style="color: #800000;">“</span><span style="color: #800000;">CachedImages</span><span style="color: #800000;">“</span>;<br><br>        <span style="color: #0000ff;">static</span> StorageCachedImage()<br>        {<br><br>            <span style="color: #008000;">//</span><span style="color: #008000;">创建缓存目录 </span><span style="color: #008000;"><br></span>            <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())<br>            {<br>                <span style="color: #0000ff;">if</span> (!isolatedStorageFile.DirectoryExists(CacheDirectory))<br>                {<br>                    isolatedStorageFile.CreateDirectory(CacheDirectory);<br>                }<br>            }<br>        }</pre><br></div>
+
+<p>然后将Url转换成文件名，我的方法比较简单直接替换&rsquo;/&rsquo;符号。使用FileExists判断文件是否存在</p>
+<div class="cnblogs_code"><br><pre><span style="color: #008000;">//</span><span style="color: #008000;">文件路径 </span><span style="color: #008000;"><br></span>filePath = Path.Combine(CacheDirectory, uriSource.AbsolutePath.TrimStart(<span style="color: #800000;">‘</span><span style="color: #800000;">/</span><span style="color: #800000;">‘</span>).Replace(<span style="color: #800000;">‘</span><span style="color: #800000;">/</span><span style="color: #800000;">‘</span>, <span style="color: #800000;">‘</span><span style="color: #800000;">_</span><span style="color: #800000;">‘</span>));<br><br><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>       </span><span style="color: #808080;">///</span><span style="color: #008000;"> 打开缓存源<br>       </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span> <span style="color: #808080;"><br></span>       <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> OpenCatchSource()<br>       {<br>           <span style="color: #0000ff;">bool</span> exist;<br>           <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())<br>           {<br>               exist = isolatedStorageFile.FileExists(filePath);<br>           }<br>           <span style="color: #0000ff;">if</span> (exist)<br>           {<br>               SetCacheStreamSource();<br>           }<br>           <span style="color: #0000ff;">else</span><br>           {<br>               SetWebStreamSource();<br>           }<br>       } </pre><br></div>
+
+<p>如果没有缓存则通过Uri下载图片并保存到IsolatedStorageFile。</p>
+<p>使用httpWebRequest实现下载，使用IsolatedStorageFileStream保存图片</p>
+<div class="cnblogs_code"><br><pre><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>       </span><span style="color: #808080;">///</span><span style="color: #008000;"> 下载Uri中的图片<br>       </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span> <span style="color: #808080;"><br></span>       <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> SetWebStreamSource()<br>       {<br>           <span style="color: #0000ff;">var</span> httpWebRequest = (HttpWebRequest)WebRequest.Create(uriSource);<br>           httpWebRequest.AllowReadStreamBuffering = <span style="color: #0000ff;">true</span>;<br>           httpWebRequest.BeginGetResponse(ResponseCallBack, httpWebRequest);<br>       }<br><br>       <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>       </span><span style="color: #808080;">///</span><span style="color: #008000;"> 下载回调<br>       </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>       </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”asyncResult”&gt;&lt;/param&gt;</span> <span style="color: #808080;"><br></span>       <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> ResponseCallBack(IAsyncResult asyncResult)<br>       {<br>           <span style="color: #0000ff;">var</span> httpWebRequest = asyncResult.AsyncState <span style="color: #0000ff;">as</span> HttpWebRequest;<br>           <span style="color: #0000ff;">if</span>(httpWebRequest == <span style="color: #0000ff;">null</span>)<span style="color: #0000ff;">return</span>;<br>           <span style="color: #0000ff;">try</span><br>           {<br>               <span style="color: #0000ff;">var</span> response = httpWebRequest.EndGetResponse(asyncResult);<br>               <span style="color: #0000ff;">using</span>(<span style="color: #0000ff;">var</span> stream = response.GetResponseStream())<br>               <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())<br>               <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> fileStream = isolatedStorageFile.OpenFile<br>                   (filePath, FileMode.OpenOrCreate, FileAccess.Write))<br>               {<br>                   stream.CopyTo(fileStream);<span style="color: #008000;">//</span><span style="color: #008000;">保存到本地 </span><span style="color: #008000;"><br></span>               }<br>               Dispatcher.BeginInvoke(SetCacheStreamSource);<br>           }<br>           <span style="color: #0000ff;">catch</span>(Exception err)<br>           {<br>               Debug.WriteLine(err.Message);<br>           }<br>       } </pre><br></div>
+
+<p>保存到本地后下载，用IsolatedStorageFileStream打开本地图像流，并通过父类的SetSource设置图片流。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> SetCacheStreamSource()<br>       {<br>           <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())<br>           <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> stream = isolatedStorageFile.OpenFile(filePath, FileMode.Open, FileAccess.Read))<br>           {<br>               SetSource(stream);<br>           } </pre><br></div>
+
+<p>&nbsp;</p>
+<p>完整代码如下：</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('b3b79a5b-f57a-4d8c-9859-8635be8d8975')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_b3b79a5b-f57a-4d8c-9859-8635be8d8975" class="cnblogs_code_hide"><br><pre><span style="color: #0000ff;">using</span> System;<br><span style="color: #0000ff;">using</span> System.Diagnostics;<br><span style="color: #0000ff;">using</span> System.IO;<br><span style="color: #0000ff;">using</span> System.IO.IsolatedStorage;<br><span style="color: #0000ff;">using</span> System.Net;<br><span style="color: #0000ff;">using</span> System.Windows.Media.Imaging;<br><br><span style="color: #0000ff;">namespace</span> KimiStudio.Controls<br>{<br>    <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>    </span><span style="color: #808080;">///</span><span style="color: #008000;"> 独立存储缓存的图片源<br>    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">sealed</span> <span style="color: #0000ff;">class</span> StorageCachedImage : BitmapSource<br>    {<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> Uri uriSource;<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">string</span> filePath;<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> CacheDirectory = <span style="color: #800000;">“</span><span style="color: #800000;">CachedImages</span><span style="color: #800000;">“</span>;<br><br>        <span style="color: #0000ff;">static</span> StorageCachedImage()<br>        {<br><br>            <span style="color: #008000;">//</span><span style="color: #008000;">创建缓存目录</span><span style="color: #008000;"><br></span>            <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())<br>            {<br>                <span style="color: #0000ff;">if</span> (!isolatedStorageFile.DirectoryExists(CacheDirectory))<br>                {<br>                    isolatedStorageFile.CreateDirectory(CacheDirectory);<br>                }<br>            }<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 创建一个独立存储缓存的图片源<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”uriSource”&gt;&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> StorageCachedImage(Uri uriSource)<br>        {<br>            <span style="color: #0000ff;">this</span>.uriSource = uriSource;<br><br>            <span style="color: #008000;">//</span><span style="color: #008000;">文件路径</span><span style="color: #008000;"><br></span>            filePath = Path.Combine(CacheDirectory, uriSource.AbsolutePath.TrimStart(<span style="color: #800000;">‘</span><span style="color: #800000;">/</span><span style="color: #800000;">‘</span>).Replace(<span style="color: #800000;">‘</span><span style="color: #800000;">/</span><span style="color: #800000;">‘</span>, <span style="color: #800000;">‘</span><span style="color: #800000;">_</span><span style="color: #800000;">‘</span>));<br>            OpenCatchSource();<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 打开缓存源<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> OpenCatchSource()<br>        {<br>            <span style="color: #0000ff;">bool</span> exist;<br>            <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())<br>            {<br>                exist = isolatedStorageFile.FileExists(filePath);<br>            }<br>            <span style="color: #0000ff;">if</span> (exist)<br>            {<br>                SetCacheStreamSource();<br>            }<br>            <span style="color: #0000ff;">else</span><br>            {<br>                SetWebStreamSource();<br>            }<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 设置缓存流到图片<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> SetCacheStreamSource()<br>        {<br>            <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())<br>            <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> stream = isolatedStorageFile.OpenFile(filePath, FileMode.Open, FileAccess.Read))<br>            {<br>                SetSource(stream);<br>            }<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 下载Uri中的图片<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> SetWebStreamSource()<br>        {<br>            <span style="color: #0000ff;">var</span> httpWebRequest = (HttpWebRequest)WebRequest.Create(uriSource);<br>            httpWebRequest.AllowReadStreamBuffering = <span style="color: #0000ff;">true</span>;<br>            httpWebRequest.BeginGetResponse(ResponseCallBack, httpWebRequest);<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 下载回调<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”asyncResult”&gt;&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> ResponseCallBack(IAsyncResult asyncResult)<br>        {<br>            <span style="color: #0000ff;">var</span> httpWebRequest = asyncResult.AsyncState <span style="color: #0000ff;">as</span> HttpWebRequest;<br>            <span style="color: #0000ff;">if</span>(httpWebRequest == <span style="color: #0000ff;">null</span>)<span style="color: #0000ff;">return</span>;<br>            <span style="color: #0000ff;">try</span><br>            {<br>                <span style="color: #0000ff;">var</span> response = httpWebRequest.EndGetResponse(asyncResult);<br>                <span style="color: #0000ff;">using</span>(<span style="color: #0000ff;">var</span> stream = response.GetResponseStream())<br>                <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> isolatedStorageFile = IsolatedStorageFile.GetUserStoreForApplication())<br>                <span style="color: #0000ff;">using</span> (<span style="color: #0000ff;">var</span> fileStream = isolatedStorageFile.OpenFile<br>                    (filePath, FileMode.OpenOrCreate, FileAccess.Write))<br>                {<br>                    stream.CopyTo(fileStream);<br>                }<br>                Dispatcher.BeginInvoke(SetCacheStreamSource);<br>            }<br>            <span style="color: #0000ff;">catch</span>(Exception err)<br>            {<br>                Debug.WriteLine(err.Message);<br>            }<br>        }<br>    }<br><br>}</pre><br></div><br></div>
+
+<p>&nbsp;</p>
+<h2 id="测试">测试</h2>
+<p>定义一个Image</p>
+<p>Uri uriSource = new Uri(@&rdquo;<a href="https://www.google.com/intl/en_com/images/srpr/logo3w.png" title="https://www.google.com/intl/en_com/images/srpr/logo3w.png" target="_blank">https://www.google.com/intl/en_com/images/srpr/logo3w.png</a>&rdquo;);</p>
+<p>image1.ImageSource = new StorageCachedImage(uriSource);</p>
+<p>&nbsp;</p>
+<p>用IsoStoreSpy查看（这里是我APP实际的图)</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/kiminozo/201202/201202282303081561.jpg" target="_blank"><img src="http://images.cnblogs.com/cnblogs_com/kiminozo/201202/201202282303122527.jpg" alt="%Z7VL7E~500N8AI$NFO2Q]T" title="%Z7VL7E~500N8AI$NFO2Q]T"></a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/28/wp7应用开发笔记-继承bitmapsource并使用独立存储来缓存远程/" data-id="nsnrwrh4lyc79115" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-用代理类包装异步调用方法实现异步命令" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/27/用代理类包装异步调用方法实现异步命令/" class="article-date">
+  <time datetime="2012-02-27T01:18:00.000Z" itemprop="datePublished">2月 27 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/27/用代理类包装异步调用方法实现异步命令/">用代理类包装异步调用方法实现异步命令</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>C#开发中经常需要使用使用异步操作，特别是Windows phone和Silverlight下层的很多IO相关的访问都是异步的。<br>标准异步方法一般都是Begin[Invoke]和End[Invoke]的一对方法，用法就不多说了。</p>
+<p>我最近在写用命令模式常用的HttpRequest操作，就想将命令包装成异步方法，<br>想了很久使用了下面的方式包装异步：</p>
+<p>首先是常规的异步调用时序：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012022717155572.png" alt=""></p>
+<p>现在使用包装使用了2个类一个用于包装AsyncCallback，一个用于包装IAsyncResult，来包装这个时序。<br>类的代码如下:</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>    </span><span style="color: #808080;">///</span><span style="color: #008000;"> 异步回调代理<br>    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> AsyncCallbackDelegate<br>    {<br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 需要代理的异步回调<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> AsyncCallback asyncCallback;<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 原始调用对象<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">object</span> Delegate { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span>; }<br><br>        <span style="color: #0000ff;">public</span> AsyncResultDelegate Result { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span>; }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 构造 异步回调代理<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”asyncCallback”&gt;</span><span style="color: #008000;">需要代理的异步回调</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> AsyncCallbackDelegate(AsyncCallback asyncCallback)<br>        {<br>            <span style="color: #0000ff;">this</span>.asyncCallback = asyncCallback;<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 包装后的异步回调<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”asyncResult”&gt;&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> AsyncCallBack(IAsyncResult asyncResult)<br>        {<br>            <span style="color: #008000;">//</span><span style="color: #008000;">用AsyncResultDelegate包装asyncResult</span><span style="color: #008000;"><br></span>            <span style="color: #0000ff;">var</span> asyncResultDelegate = <span style="color: #0000ff;">new</span> AsyncResultDelegate(asyncResult) { Delegate = Delegate };<br>            asyncCallback(asyncResultDelegate);<span style="color: #008000;">//</span><span style="color: #008000;">调用原始异步回调</span><span style="color: #008000;"><br></span>        }<br>    }</pre><br></div>
+
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>    </span><span style="color: #808080;">///</span><span style="color: #008000;"> 异步状态代理<br>    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> AsyncResultDelegate : IAsyncResult<br>    {<br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 原始异步状态<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> IAsyncResult asyncResult;<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 原始调用对象<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">object</span> Delegate { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span>; }<br><br>        <span style="color: #0000ff;">public</span> AsyncResultDelegate(IAsyncResult asyncResult)<br>        {<br>            <span style="color: #0000ff;">this</span>.asyncResult = asyncResult;<br>        }<br><br>        <span style="color: #0000ff;">#region</span> 装饰模式包装<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">object</span> AsyncState<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> AsyncResult.AsyncState; }<br>        }<br><br>        <span style="color: #0000ff;">public</span> System.Threading.WaitHandle AsyncWaitHandle<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> AsyncResult.AsyncWaitHandle; }<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> CompletedSynchronously<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> AsyncResult.CompletedSynchronously; }<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> IsCompleted<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> AsyncResult.IsCompleted; }<br>        }<br><br>        <span style="color: #0000ff;">public</span> IAsyncResult AsyncResult<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> asyncResult; }<br>        }<br>        <span style="color: #0000ff;">#endregion</span><br>    }</pre><br></div>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>包装后的调用时序：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012022717194217.png" alt=""></p>
+<p>演示代码AddCommand 用于使用代理包装异步执行a+b返回结果</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> AddCommand<br>    {<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">int</span> a;<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">int</span> b;<br><br>        <span style="color: #0000ff;">public</span> AddCommand(<span style="color: #0000ff;">int</span> a, <span style="color: #0000ff;">int</span> b)<br>        {<br>            <span style="color: #0000ff;">this</span>.a = a;<br>            <span style="color: #0000ff;">this</span>.b = b;<br>        }<br><br>        <span style="color: #0000ff;">public</span> IAsyncResult BeginInvoke(AsyncCallback asyncCallback, <span style="color: #0000ff;">object</span> state)<br>        {<br>            Func&lt;<span style="color: #0000ff;">int</span>, <span style="color: #0000ff;">int</span>, <span style="color: #0000ff;">int</span>&gt; addFunc = (x, y) =&gt; x + y;<span style="color: #008000;">//</span><span style="color: #008000;">测试用的原始异步调用对象</span><span style="color: #008000;"><br></span><br>            AsyncCallback callbackDelegate = asyncCallback;<br>            <span style="color: #0000ff;">if</span> (asyncCallback != <span style="color: #0000ff;">null</span>)<br>            {<br>                <span style="color: #008000;">//</span><span style="color: #008000;">用AsyncCallbackDelegate包装AsyncCallback</span><span style="color: #008000;"><br></span>                <span style="color: #0000ff;">var</span> tmp = <span style="color: #0000ff;">new</span> AsyncCallbackDelegate(asyncCallback) { Delegate = addFunc };<br>                callbackDelegate = tmp.AsyncCallBack;<br>            }<br>            <span style="color: #0000ff;">var</span> asyncResult = addFunc.BeginInvoke(a, b, callbackDelegate, state);<br>            <span style="color: #008000;">//</span><span style="color: #008000;">用AsyncResultDelegate包装asyncResult</span><span style="color: #008000;"><br></span>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span> AsyncResultDelegate(asyncResult) { Delegate = addFunc };<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">int</span> EndInovke(IAsyncResult result)<br>        {<br>            <span style="color: #0000ff;">var</span> asyncResultDelegate = (AsyncResultDelegate)result;<span style="color: #008000;">//</span><span style="color: #008000;">还原AsyncResultDelegate</span><span style="color: #008000;"><br></span>            Func&lt;<span style="color: #0000ff;">int</span>, <span style="color: #0000ff;">int</span>, <span style="color: #0000ff;">int</span>&gt; addFunc = (Func&lt;<span style="color: #0000ff;">int</span>, <span style="color: #0000ff;">int</span>, <span style="color: #0000ff;">int</span>&gt;)asyncResultDelegate.Delegate;<span style="color: #008000;">//</span><span style="color: #008000;">获得原始对象</span><span style="color: #008000;"><br></span>            <span style="color: #0000ff;">return</span> addFunc.EndInvoke(asyncResultDelegate.AsyncResult);<span style="color: #008000;">//</span><span style="color: #008000;">传入原始AsyncResult</span><span style="color: #008000;"><br></span>        }<br>    }</pre><br></div>
+
+<p>&nbsp;</p>
+<p>调用AddCommand 支持2种调用方式</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">class</span> Program<br>    {<br>        <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> Main(<span style="color: #0000ff;">string</span>[] args)<br>        {<br>            <span style="color: #008000;">//</span><span style="color: #008000;">主线程等待后调用EndInovke</span><span style="color: #008000;"><br></span>            {<br>                AddCommand invoker = <span style="color: #0000ff;">new</span> AddCommand(<span style="color: #800080;">1</span>, <span style="color: #800080;">2</span>);<br>                <span style="color: #0000ff;">var</span> async = invoker.BeginInvoke(<span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>);<br>                async.AsyncWaitHandle.WaitOne();<br>                <span style="color: #0000ff;">int</span> result = invoker.EndInovke(async);<br>                Console.WriteLine(result);<br>            }<br><br>            <span style="color: #008000;">//</span><span style="color: #008000;">由CallBack调用EndInovke</span><span style="color: #008000;"><br></span>            {<br>                AddCommand invoker = <span style="color: #0000ff;">new</span> AddCommand(<span style="color: #800080;">5</span>, <span style="color: #800080;">9</span>);<br>                <span style="color: #0000ff;">var</span> async = invoker.BeginInvoke(CallBack, invoker);<br>                async.AsyncWaitHandle.WaitOne();<br>            }<br>            Console.ReadLine();<br>        }<br><br>        <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> CallBack(IAsyncResult asyncResult)<br>        {<br>            AddCommand invoker = asyncResult.AsyncState <span style="color: #0000ff;">as</span> AddCommand;<br>            <span style="color: #0000ff;">int</span> result = invoker.EndInovke(asyncResult);<br>            Console.WriteLine(result);<br>        }<br><br>    }</pre><br></div>
+
+<p>&nbsp;</p>
+<p>varcolor: #0000ff;</p>
+<p>/spanspan style=</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/27/用代理类包装异步调用方法实现异步命令/" data-id="3zzf7bugejvrvgu0" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-解决log4net在-net-4-0-clientprofile下无法使用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/22/解决log4net在-net-4-0-clientprofile下无法使用/" class="article-date">
+  <time datetime="2012-02-22T05:11:00.000Z" itemprop="datePublished">2月 22 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/22/解决log4net在-net-4-0-clientprofile下无法使用/">解决log4net在.net 4.0 ClientProfile下无法使用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>log4net在.net 4.0 ClientProfile无法使用，原因是</p>
+<p>log4net里面有AspNetTraceAppender、AspNetPatternConverter等使用了System.Web，而 ClientProfile没有包含这个命名空间。</p>
+<p>解决办法很简单</p>
+<p>下载&nbsp; log4net的源代码，将 ClientProfile不支持的类全部去掉，重新编译就可以了。</p>
+<p>&nbsp;</p>
+<p>我这里已经编译好了一个：</p>
+<p><a href="http://files.cnblogs.com/kiminozo/log4net.ClientProfile.zip" target="_blank">http://files.cnblogs.com/kiminozo/log4net.ClientProfile.zip</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/22/解决log4net在-net-4-0-clientprofile下无法使用/" data-id="imlo2d4gn29yf75t" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-从flc中学习的设计模式系列-结构型模式2-装饰" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/22/从flc中学习的设计模式系列-结构型模式2-装饰/" class="article-date">
+  <time datetime="2012-02-22T04:43:00.000Z" itemprop="datePublished">2月 22 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/22/从flc中学习的设计模式系列-结构型模式2-装饰/">从FLC中学习的设计模式系列-结构型模式(2)-装饰</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>装饰模式是通过包装类动态地往一个类中添加新的行为</p>
+<p>&nbsp;</p>
+<h2 id="装饰模式">装饰模式</h2>
+<p><a href="http://zh.wikipedia.org/wiki/修饰模式" title="http://zh.wikipedia.org/wiki/修饰模式" target="_blank">http://zh.wikipedia.org/wiki/修饰模式</a></p>
+<p>通过使用修饰模式，可以在运行时扩充一个类的功能。原理是：增加一个修饰类包裹原来的类，包裹的方式一般是通过在将原来的对象作为修饰类的构造函数的参数。装饰类实现新的功能，但是，在不需要用到新功能的地方，它可以直接调用原来的类中的方法。修饰类必须和原来的类有相同的接口。</p>
+<p>修饰模式是类继承的另外一种选择。类继承在编译时候增加行为，而装饰模式是在运行时增加行为。</p>
+<p>&nbsp;</p>
+<h2 id="FCL中的装饰模式">FCL中的装饰模式</h2>
+<p>在流处理中装饰模式非常常用，典型的就是GZipStream</p>
+<p>提供用于压缩和解压缩流的方法和属性。</p>
+<p>结构如下：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/kiminozo/201202/201202222042442002.jpg" title="7VJRRCT[MXXCZCQ77%{`FPG[4]" target="_blank">![7VJRRCT[MXXCZCQ77%{`FPG[4]</a>](<a href="http://images.cnblogs.com/cnblogs_com/kiminozo/201202/201202222042437466.jpg" target="_blank">http://images.cnblogs.com/cnblogs_com/kiminozo/201202/201202222042437466.jpg</a>)</p>
+<p>其中GZipStream 既继承了Stream 又组合了Stream ，相当于一个包装，并在这个包装上提供了压缩等方法。</p>
+<p>&nbsp;</p>
+<pre class="brush: csharp; auto-links: true; collapse: false; first-line: 1; gutter: true; html-script: false; light: false; ruler: false; smart-tabs: true; tab-size: 4; toolbar: true;">using (FileStream outFile =  File.Create(fi.FullName + ".gz"))
+{
+     using (GZipStream Compress = 
+               new GZipStream(outFile,CompressionMode.Compress))
+      {
+
+             // 写入.Compress 流
+             inFile.CopyTo(Compress);           
+        }
+ }</pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/22/从flc中学习的设计模式系列-结构型模式2-装饰/" data-id="zukswcnv6fsrfmpy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-从flc中学习的设计模式系列-结构型模式1-适配器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/22/从flc中学习的设计模式系列-结构型模式1-适配器/" class="article-date">
+  <time datetime="2012-02-22T04:29:00.000Z" itemprop="datePublished">2月 22 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/22/从flc中学习的设计模式系列-结构型模式1-适配器/">从FLC中学习的设计模式系列-结构型模式(1)-适配器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>适配器模式是让一个接口兼容并适应另一个通用的接口的模式。</p>
+<p>&nbsp;</p>
+<h2 id="适配器模式">适配器模式</h2>
+<p><a href="http://zh.wikipedia.org/wiki/适配器模式" title="http://zh.wikipedia.org/wiki/适配器模式" target="_blank">http://zh.wikipedia.org/wiki/适配器模式</a></p>
+<p>适配器模式（英语：adapter pattern）有时候也称包装样式或者包装。将一个类的接口转接成用户所期待的。一个适配使得因接口不兼容而不能在一起工作的类工作在一起，做法是将类别自己的接口包裹在一个已存在的类中。</p>
+<p>&nbsp;</p>
+<h2 id="FCL中的适配器模式">FCL中的适配器模式</h2>
+<p>比较典型的是WindowsFormsHost 类</p>
+<p>允许在 WPF 页面上承载 Windows Forms控件的元素。</p>
+<p>也就是将Windows Forms控件适配为Wpf的FrameworkElement</p>
+<p>结构如下：</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012022220282210.jpg" alt=""></p>
+<p>示例代码：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">WindowsFormsHost</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">　　&lt;</span><span style="color: #800000;">wf:MaskedTextBox </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”mtbDate”</span><span style="color: #ff0000;"> Mask</span><span style="color: #0000ff;">=”00/00/0000”</span><span style="color: #0000ff;">/&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">WindowsFormsHost</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/22/从flc中学习的设计模式系列-结构型模式1-适配器/" data-id="himp1j3gzsi18jer" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-从flc中学习的设计模式系列-创建型模式5-原型" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/21/从flc中学习的设计模式系列-创建型模式5-原型/" class="article-date">
+  <time datetime="2012-02-21T05:13:00.000Z" itemprop="datePublished">2月 21 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/21/从flc中学习的设计模式系列-创建型模式5-原型/">从FLC中学习的设计模式系列-创建型模式(5)-原型</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原型模式就是由对象创建当前自身的副本的模式。副本是指深拷贝的内存空间，一般用于比较复杂的对象。</p>
+<p>&nbsp;</p>
+<h2 id="原型模式">原型模式</h2>
+<p><a href="http://zh.wikipedia.org/wiki/原型模式" title="http://zh.wikipedia.org/wiki/原型模式" target="_blank">http://zh.wikipedia.org/wiki/原型模式</a></p>
+<p>原型模式是创建型模式的一种,其特点在于通过&ldquo;复制&rdquo;一个已经存在的实例来返回新的实例,而不是新建实例。被复制的实例就是我们所称的&ldquo;原型&rdquo;，这个原型是可定制的。</p>
+<p>原型模式多用于创建复杂的或者耗时的实例，因为这种情况下，复制一个已经存在的实例使程序运行更高效；或者创建值相等，只是命名不一样的同类数据。</p>
+<p>&nbsp;</p>
+<h2 id="FLC中的原型模式">FLC中的原型模式</h2>
+<p>DataTable.Clone方法 是典型的原型应用。克隆 DataTable 的结构，包括所有 DataTable 架构和约束。</p>
+<pre class="brush: csharp; auto-links: true; collapse: false; first-line: 1; gutter: true; html-script: false; light: false; ruler: false; smart-tabs: true; tab-size: 4; toolbar: true;">DataTable table = new DataTable();
+//...
+DataTable cloneTable = table.Clone();
+//..</pre>
+
+<p>table 和cloneTable 可以分别修改，互不影响。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/21/从flc中学习的设计模式系列-创建型模式5-原型/" data-id="qi983d3h87oh1xsh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-从flc中学习的设计模式系列-创建型模式4-建造者" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/21/从flc中学习的设计模式系列-创建型模式4-建造者/" class="article-date">
+  <time datetime="2012-02-21T04:59:00.000Z" itemprop="datePublished">2月 21 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/21/从flc中学习的设计模式系列-创建型模式4-建造者/">从FLC中学习的设计模式系列-创建型模式(4)-建造者</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Builder建造者模式 ，它可以将复杂对象的建造过程抽象分割出来。</p>
+<p>&nbsp;</p>
+<h2 id="建造者模式">建造者模式</h2>
+<p><a href="http://zh.wikipedia.org/wiki/生成器_(设计模式" target="_blank">http://zh.wikipedia.org/wiki/生成器_(设计模式)</a> “<a href="http://zh.wikipedia.org/wiki/生成器_(设计模式" target="_blank">http://zh.wikipedia.org/wiki/生成器_(设计模式</a>)”)</p>
+<p>建造模式，是一种对象构建模式。它可以将复杂对象的建造过程抽象出来（抽象类别），使这个抽象过程的不同实现方法可以构造出不同表现（属性）的对象。</p>
+<p>&nbsp;</p>
+<h2 id="FLC中的建造者模式">FLC中的建造者模式</h2>
+<p>最常用的是StringBuilder 它是简化的建造者模式</p>
+<p>使用方法如下：</p>
+<pre class="brush: csharp; auto-links: true; collapse: false; first-line: 1; gutter: true; html-script: false; light: false; ruler: false; smart-tabs: true; tab-size: 4; toolbar: true;">StringBuilder stringBuilder =new StringBuilder();
+stringBuilder.Append("Hello");
+stringBuilder.Append(' ');
+stringBuilder.Append(123);
+string result = stringBuilder.ToString();
+Console.WriteLine(result);</pre>
+
+<p>&nbsp;</p>
+<p>还有一个是SqlConnectionStringBuilder 为创建和管理由 <a href="http://127.0.0.1:47873/help/1-1524/ms.help?method=page&amp;id=T%3ASYSTEM.DATA.SQLCLIENT.SQLCONNECTION&amp;product=VS&amp;productVersion=100&amp;topicVersion=100&amp;locale=ZH-CN&amp;topicLocale=ZH-CN&amp;embedded=true" target="_blank">SqlConnection</a> 类使用的连接字符串的内容提供了一种简单方法。</p>
+<pre class="brush: csharp; auto-links: true; collapse: false; first-line: 1; gutter: true; html-script: false; light: false; ruler: false; smart-tabs: true; tab-size: 4; toolbar: true;">SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+builder.DataSource = "(local)";
+builder.InitialCatalog = "MyDatabase";
+builder.UserID = "sa";
+builder.Password = "123456";
+Console.WriteLine(builder.ConnectionString);</pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/21/从flc中学习的设计模式系列-创建型模式4-建造者/" data-id="e7dkblfp5fi9v4ag" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-从flc中学习的设计模式系列-创建型模式3-工厂方法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/02/15/从flc中学习的设计模式系列-创建型模式3-工厂方法/" class="article-date">
+  <time datetime="2012-02-15T04:36:00.000Z" itemprop="datePublished">2月 15 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/02/15/从flc中学习的设计模式系列-创建型模式3-工厂方法/">从FLC中学习的设计模式系列-创建型模式(3)-工厂方法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>工厂方法是一组方法， 他们针对不同条件返回不同的类实例，这些类一般有共同的父类。</p>
+<p>&nbsp;</p>
+<h2 id="工厂方法模式">工厂方法模式</h2>
+<p>来自： <a href="http://zh.wikipedia.org/wiki/工厂方法模式" title="http://zh.wikipedia.org/wiki/工厂方法模式" target="_blank">http://zh.wikipedia.org/wiki/工厂方法模式</a></p>
+<p>工厂方法模式 是一种面向对象的设计模式。通过调用不同的方法返回需要的类，而不是去实例化具体的类。 对实例创建进行了包装。 工厂方法是一组方法， 他们针对不同条件返回不同的类实例，这些类一般有共同的父类。</p>
+<p>工厂方法模式实施一种按需分配的策略， 即传入参数进行选择， 工厂方法根据参数进行选择，返回具体的实例。</p>
+<p>&nbsp;</p>
+<h2 id="FLC中的工厂方法模式">FLC中的工厂方法模式</h2>
+<p>在FLC中比较典型的就是WebRequest.Create(Uri &nbsp;requestUri)方法</p>
+<p>MSDN的介绍如下：</p>
+<p>Create 方法将运行时确定的 WebRequest 类的子代作为与 requestUri 最接近的注册匹配项返回。</p>
+<p>当以 <a href="http:// 或" target="_blank">http:// 或</a> <a href="https://开头的" target="_blank">https://开头的</a> URI 在 requestUri 中传递时，由 Create 返回一个 HttpWebRequest。</p>
+<p>如果改为传递以 <a href="ftp:// 开头的">ftp:// 开头的</a> URI，则 Create 方法将返回 FtpWebRequest 实例。</p>
+<p>如果改为传递以 file:// 开头的 URI，则 Create 方法将返回 FileWebRequest 实例。</p>
+<p>&nbsp;</p>
+<p>类图大致如下：</p>
+<p>因为WebRequest 本身也作为了工厂类，为了区别我画了2次。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012021520203341.jpg" alt=""></p>
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/02/15/从flc中学习的设计模式系列-创建型模式3-工厂方法/" data-id="bjc7ipulxuyweqz1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" href="/page/3/">Next &raquo;</a>
+    </nav>
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

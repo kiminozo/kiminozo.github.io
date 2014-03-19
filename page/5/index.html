@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title">
+<meta name="og:url" content="http://yoursite.com/page/5/">
+<meta name="og:image">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-wp7应用开发笔记6-服务器设计" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/25/wp7应用开发笔记6-服务器设计/" class="article-date">
+  <time datetime="2012-01-25T00:12:00.000Z" itemprop="datePublished">1月 25 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/25/wp7应用开发笔记6-服务器设计/">WP7应用开发笔记(6) 服务器设计</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="TCP服务器">TCP服务器</h2>
+<p>服务器类图</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012515474676.jpg" alt=""></p>
+<p>这里模仿了WebFrom的IHttpHandler，我设计了一个ITcpHandler提供给ServiceListener让外部解析。实现类是KeyMethodHandler。</p>
+<p>报文TcpContext包含了TcpRequest和TcpResponse，TcpRequest和消息报文结构相同，增加了从Socket获取的TcpEndpoint，TcpResponse仅仅只是回调状态和消息（暂时没有使用）。</p>
+<p>ServiceListener、BufferManager、SocketAsyncEventArgsPool和MDSN上标准的例子接近，原则上都是为了重用Buffer和SocketAsyncEventArgs对象，节约内存开销。</p>
+<p>&nbsp;</p>
+<p>回顾一下SocketAsyncEventArgs方式的Socket代码写法</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">var</span> e = <span style="color: #0000ff;">new</span> SocketAsyncEventArgs();<br>e.Completed += <span style="color: #0000ff;">this</span>.OnAccept;<br>e.AcceptSocket = <span style="color: #0000ff;">null</span>;<br><br>…<br><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> ProcessAccept(SocketAsyncEventArgs e){<br>…<br><span style="color: #0000ff;">bool</span> willRaiseEvent = <span style="color: #0000ff;">this</span>.listener.AcceptAsync(e);<br><span style="color: #0000ff;">if</span> (!willRaiseEvent)<br>{<br>      <span style="color: #0000ff;">this</span>.OnAccept(<span style="color: #0000ff;">null</span>, e);<br>}<br>}<br><br>…<br><br><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> OnAccept(<span style="color: #0000ff;">object</span> sender, SocketAsyncEventArgs e)<br> {<br><br>            <span style="color: #0000ff;">try</span><br>            {<br>                <span style="color: #0000ff;">if</span> (e.SocketError != SocketError.Success)<br>                {<br>                    …<br>                    <span style="color: #0000ff;">return</span>;<br>                }<br>                Socket client = e.AcceptSocket;<br>                <span style="color: #0000ff;">if</span> (client == <span style="color: #0000ff;">null</span>)<br>                {<br>                    …<br>                    <span style="color: #0000ff;">return</span>;<br>                }<br>                <span style="color: #0000ff;">var</span> asyncEventArg = eventPool.Pop();<br>                <span style="color: #0000ff;">if</span> (asyncEventArg == <span style="color: #0000ff;">null</span>)<br>                {<br>                    …<br>                    <span style="color: #0000ff;">return</span>;<br>                }<br>                <span style="color: #0000ff;">var</span> token = (AsyncUserToken)asyncEventArg.UserToken;<br>                token.Socket = client;<br>                token.EndPoint = (IPEndPoint)client.RemoteEndPoint;<br>                <span style="color: #0000ff;">bool</span> willRaiseEvent = client.ReceiveAsync(asyncEventArg);<br>                <span style="color: #0000ff;">if</span> (!willRaiseEvent)<br>                {<br>                    <span style="color: #0000ff;">this</span>.ProcessReceive(asyncEventArg);<br>                }<br>            }<br>            <span style="color: #0000ff;">catch</span> (Exception err)<br>            {<br>                Debug.Print(<span style="color: #800000;">“</span><span style="color: #800000;">Accept exception,{0}</span><span style="color: #800000;">“</span>, err);<br>            }<br>            <span style="color: #0000ff;">finally</span><br>            {<br>                e.AcceptSocket = <span style="color: #0000ff;">null</span>;<br>                <span style="color: #0000ff;">this</span>.ProcessAccept(e);<br>            }<br>        }</pre><br></div>
+
+<p>&nbsp;</p>
+<h2 id="命令解析">命令解析</h2>
+<p>命令解析的类图</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012516100932.jpg" alt=""></p>
+<p>KeyMethodHandler包含了2个ICommand接口，分别的实现是KeyboardCommand用于触发直接按键事件，另外一个是MediaCommand 用于触发媒体按键。这2个类都包含了IKeyboardHook接口，实现是KeyboardHook用于调用系统接口。</p>
+<p>媒体按键一般都组合快捷键，而且可以配置，配置类就是MediaMethodConfig.</p>
+<p>&nbsp;</p>
+<p>调用系统接口触发键盘的实现：</p>
+<p><pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">interface</span> IKeyBoardHook<br>    {<br>        <span class="kwrd">void</span> PressKey(Keys keyCode);<br>        <span class="kwrd">void</span> PressKey(Keys[] keyCode);<br>    }</p>
+<pre><code><span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>public<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>sealed<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>class<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoardHook : IKeyBoardHook
+{
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>readonly<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoardHook instance = <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>new<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoardHook();
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>public<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoardHook Instance
+    {
+        get { <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>return<span class="tag">&lt;/<span class="title">span</span>&gt;</span> instance; }
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoardHook()
+    {
+
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>enum<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyBoard
+    {
+        KeyDown = 0x0001,
+        KeyUp = 0x0002
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>public<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>void<span class="tag">&lt;/<span class="title">span</span>&gt;</span> PressKey(Keys keyCode)
+    {
+        PressKey(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>new<span class="tag">&lt;/<span class="title">span</span>&gt;</span>[] { keyCode });
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>public<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>void<span class="tag">&lt;/<span class="title">span</span>&gt;</span> PressKey(Keys[] keyCodes)
+    {
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>if<span class="tag">&lt;/<span class="title">span</span>&gt;</span> (keyCodes == <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>null<span class="tag">&lt;/<span class="title">span</span>&gt;</span> || keyCodes.Length == 0) <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>return<span class="tag">&lt;/<span class="title">span</span>&gt;</span>;
+
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>int<span class="tag">&lt;/<span class="title">span</span>&gt;</span> length = keyCodes.Length;
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>for<span class="tag">&lt;/<span class="title">span</span>&gt;</span> (<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>int<span class="tag">&lt;/<span class="title">span</span>&gt;</span> i = 0; i &amp;lt; length; i++)
+        {
+            PutDownKey(keyCodes[i]);
+        }
+        Thread.SpinWait(5000);
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>for<span class="tag">&lt;/<span class="title">span</span>&gt;</span> (<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>int<span class="tag">&lt;/<span class="title">span</span>&gt;</span> i = length - 1; i &amp;gt;= 0; i--)
+        {
+            ReceiveKey(keyCodes[i]);
+        }
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>void<span class="tag">&lt;/<span class="title">span</span>&gt;</span> PutDownKey(Keys keyCode)
+    {
+        KeyboardEvent((<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>byte<span class="tag">&lt;/<span class="title">span</span>&gt;</span>)keyCode, 0, KeyBoard.KeyDown, 0);
+    }
+
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>void<span class="tag">&lt;/<span class="title">span</span>&gt;</span> ReceiveKey(Keys keyCode)
+    {
+        KeyboardEvent((<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>byte<span class="tag">&lt;/<span class="title">span</span>&gt;</span>)keyCode, 0, KeyBoard.KeyUp, 0);
+    }
+
+    [DllImport(<span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"str"</span>&gt;</span>"user32.dll"<span class="tag">&lt;/<span class="title">span</span>&gt;</span>, CharSet = CharSet.Auto, EntryPoint = <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"str"</span>&gt;</span>"keybd_event"<span class="tag">&lt;/<span class="title">span</span>&gt;</span>)]
+    <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>private<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>static<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>extern<span class="tag">&lt;/<span class="title">span</span>&gt;</span> <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>void<span class="tag">&lt;/<span class="title">span</span>&gt;</span> KeyboardEvent(
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>byte<span class="tag">&lt;/<span class="title">span</span>&gt;</span> bVk,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>byte<span class="tag">&lt;/<span class="title">span</span>&gt;</span> bScan,
+        KeyBoard dwFlags,
+        <span class="tag">&lt;<span class="title">span</span> <span class="attribute">class</span>=<span class="value">"kwrd"</span>&gt;</span>int<span class="tag">&lt;/<span class="title">span</span>&gt;</span> dwExtraInfo
+        );
+}<span class="tag">&lt;/<span class="title">pre</span>&gt;</span>
+</code></pre><style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/25/wp7应用开发笔记6-服务器设计/" data-id="4hob4r30ur0i32gn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记5-通信设计" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/25/wp7应用开发笔记5-通信设计/" class="article-date">
+  <time datetime="2012-01-24T23:21:00.000Z" itemprop="datePublished">1月 25 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/25/wp7应用开发笔记5-通信设计/">WP7应用开发笔记(5) 通信设计</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="WP7支持的通信方式">WP7支持的通信方式</h2>
+<h3 id="1-_HTTP协议">1. HTTP协议</h3>
+<p>主要是由WebClient或HttpWebRequest两个类提供，直接封装HTTP协议访问Web站点。最常用的通信方式。</p>
+<h4 id="2-_WCF">2. WCF</h4>
+<p>WCF作为MS大力推广的通信方案非常强大，但是到了WP7上就变成了太监，只支持简单的BasicHttpBinding而且还有非常多的限制。</p>
+<h4 id="3_Socket">3 Socket</h4>
+<p>7.1SDK里新增的通信方式，支持TCP和UDP但只能使用异步的SocketAsyncEventArgs事件方式，也有不少限制。</p>
+<p>&nbsp;</p>
+<h2 id="选择通信方式">选择通信方式</h2>
+<p>因为同时需要考虑到服务器端的实现，在服务器端尽量精简，最好不要有什么IIS之类大型依赖。</p>
+<p>对应是服务器端实现方式如下：</p>
+<table style="width: 400px;" border="0" cellspacing="0" cellpadding="2"><br><tbody><br><tr><br><td valign="top" width="200">HTTP协议</td><br><td valign="top" width="200">HttpListener</td><br></tr><br><tr><br><td valign="top" width="200">WCF</td><br><td valign="top" width="200">Wcf应用程序宿主</td><br></tr><br><tr><br><td valign="top" width="200">Socket</td><br><td valign="top" width="200">Socket</td><br></tr><br></tbody><br></table>
+
+<p>由于我使用的是Win7 HttpListener和BasicHttpBinding在监听外网IP时都需要管理员身份验证，这点很不友好，我每次开程序都提示一下，不爽。所以决定使用Socket。</p>
+<p>&nbsp;</p>
+<h2 id="SOCKET协议选择">SOCKET协议选择</h2>
+<p>而Socket分为TCP和UDP，为了稳定选择了有重传功能和回复的TCP（其实UDP也不是什么问题）。</p>
+<p>TCP需要3次握手来维持链接，但是按照&ldquo;偶尔连接&rdquo;(Occasionally Connect)的设计准则，我不能让手机一直保持连接，而且断线检查也是个麻烦事。</p>
+<p>所以决定采用HTTP1.0类似的短链接方式，就是连上、发一条消息、然后断开的流程（暂时没有回复）</p>
+<p>&nbsp;</p>
+<h2 id="&nbsp;">&nbsp;</h2>
+<h2 id="应用层消息报文设计">应用层消息报文设计</h2>
+<p>这个程序比较简单设计的报文也很简单，</p>
+<p>因为内网传输不需要考虑身份验证，加密、完整性等，而且短链接不会遇到粘包和拆包之类的，真是太轻松了。</p>
+<p>报文结构如下</p>
+<table style="width: 516px;" border="0" cellspacing="0" cellpadding="2"><br><tbody><br><tr><br><td valign="top" width="133">Length</td><br><td valign="top" width="133">长度</td><br><td valign="top" width="248">4字节 int</td><br></tr><br><tr><br><td valign="top" width="133">Action</td><br><td valign="top" width="133">动作</td><br><td valign="top" width="248">32字节 UTF8编码</td><br></tr><br><tr><br><td valign="top" width="133">Context</td><br><td valign="top" width="133">内容</td><br><td valign="top" width="248">长度由Length描述 UTF8编码</td><br></tr><br></tbody><br></table>
+
+<p>&nbsp;</p>
+<p>Length表示Context的长度，报文本身长度为Length+4+32</p>
+<p>Action目前只有&rdquo;TAP&rdquo;按键 一种</p>
+<p>Context表示按键的类型 有2种分类</p>
+<ul>
+<li>一种是&nbsp; Keyboard 直接对应键盘的键名称</li>
+<li>另一种是 Media 媒体控制用 包括TogglePlayPause（播放暂停）、Forward（前进）、Backward（后退）IncreaseVolume（提高音量）等</li>
+</ul>
+<p>表示方式是&ldquo;Media.TogglePlayPause&rdquo;</p>
+<p>&nbsp;Media 协议表</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('2bd41a58-b229-48ec-9f1d-985b6ff0a4dc')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_2bd41a58-b229-48ec-9f1d-985b6ff0a4dc" class="cnblogs_code_hide"><br><pre><span style="color: #0000ff;">namespace</span> VirtualKeyboard.Contract<br>{<br>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">class</span> KeyMethods<br>    {<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> KeyboardPackage = <span style="color: #800000;">“</span><span style="color: #800000;">Keyboard</span><span style="color: #800000;">“</span>;<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> MediaPackage = <span style="color: #800000;">“</span><span style="color: #800000;">Media</span><span style="color: #800000;">“</span>;<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">class</span> Keyboard<br>        {<br>            <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> KeyboardPre = KeyboardPackage + <span style="color: #800000;">“</span><span style="color: #800000;">.</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> Enter<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> Enter = KeyboardPre + <span style="color: #800000;">“</span><span style="color: #800000;">Enter</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> Esc<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> Esc = KeyboardPre + <span style="color: #800000;">“</span><span style="color: #800000;">Esc</span><span style="color: #800000;">“</span>;<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">class</span> Media<br>        {<br>            <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> MediaPre = MediaPackage + <span style="color: #800000;">“</span><span style="color: #800000;">.</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;">  切换播放暂停<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> TogglePlayPause = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">TogglePlayPause</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 快进<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> FastForward = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">FastForward</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 快退<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> FastBackward = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">FastBackward</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 大步快进<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> VeryFastForward = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">VeryFastForward</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 大步快退<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> VeryFastBackward = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">VeryFastBackward</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 前进<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> Forward = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">Forward</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 前退<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> Backward = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">Backward</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 提高音量<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> IncreaseVolume = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">IncreaseVolume</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 降低音量<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> DecreaseVolume = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">DecreaseVolume</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 静音<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> MuteVolume = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">MuteVolume</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 上一集<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> PreviousTrack = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">PreviousTrack</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 下一集<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> NextTrack = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">NextTrack </span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 停止<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> Stop = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">Stop</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 全屏<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">string</span> FullScreen = MediaPre + <span style="color: #800000;">“</span><span style="color: #800000;">FullScreen</span><span style="color: #800000;">“</span>;<br>        }<br>    }<br>}</pre><br></div><br></div>
+
+<p>&nbsp;</p>
+<h2 id="客户端通信代码实现">客户端通信代码实现</h2>
+<div class="cnblogs_code" onclick="cnblogs_code_show('d090f4c1-f4b2-4799-a721-28e61fa311c4')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_d090f4c1-f4b2-4799-a721-28e61fa311c4" class="cnblogs_code_hide"><br><pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> SendCommandCompletedEventArgs : EventArgs<br>    {<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> Success { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">internal</span> <span style="color: #0000ff;">set</span>; }<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> ErrMessage { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">internal</span> <span style="color: #0000ff;">set</span>; }<br>    }<br><br>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> Client<br>    {<br>        <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">int</span> ActionSize = <span style="color: #800080;">32</span>;<br>        <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">int</span> BufferSize = <span style="color: #800080;">1024</span>;<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">event</span> EventHandler&lt;SendCommandCompletedEventArgs&gt; SendCommandCompleted;<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> OnSendCommandCompleted(SendCommandCompletedEventArgs e)<br>        {<br>            EventHandler&lt;SendCommandCompletedEventArgs&gt; handler = SendCommandCompleted;<br>            <span style="color: #0000ff;">if</span> (handler != <span style="color: #0000ff;">null</span>) handler(<span style="color: #0000ff;">this</span>, e);<br>        }<br><br>        <span style="color: #0000ff;">public</span> Client()<br>        {<br><br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> SendCommandAsync(EndPoint endPoint, <span style="color: #0000ff;">string</span> action, <span style="color: #0000ff;">string</span> command)<br>        {<br>            <span style="color: #0000ff;">var</span> actionBuffer = Encoding.UTF8.GetBytes(action);<br>            <span style="color: #0000ff;">var</span> contextBuffer = Encoding.UTF8.GetBytes(command);<br><br>            <span style="color: #0000ff;">var</span> bufferSize = contextBuffer.Length + ActionSize + <span style="color: #800080;">4</span>;<br>            <span style="color: #0000ff;">var</span> lengthBuffer = BitConverter.GetBytes(contextBuffer.Length);<br><br>            <span style="color: #0000ff;">var</span> buffer = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">byte</span>[BufferSize];<br>            <span style="color: #0000ff;">int</span> offset = <span style="color: #800080;">0</span>;<br>            Array.Copy(lengthBuffer, <span style="color: #800080;">0</span>, buffer, offset, lengthBuffer.Length);<br>            offset += <span style="color: #800080;">4</span>;<br>            Array.Clear(buffer, offset, ActionSize);<br>            Array.Copy(actionBuffer, <span style="color: #800080;">0</span>, buffer, offset, actionBuffer.Length);<br>            offset += ActionSize;<br>            Array.Copy(contextBuffer, <span style="color: #800080;">0</span>, buffer, offset, contextBuffer.Length);<br><br>            <span style="color: #0000ff;">var</span> socketAsyncEventArgs = <span style="color: #0000ff;">new</span> SocketAsyncEventArgs<br>                                           {<br>                                               UserToken =<br>                                                   <span style="color: #0000ff;">new</span> Socket(AddressFamily.InterNetwork, SocketType.Stream,<br>                                                              ProtocolType.Tcp)<br>                                           };<br>            socketAsyncEventArgs.Completed += AsyncCompleted;<br>            socketAsyncEventArgs.SetBuffer(buffer, <span style="color: #800080;">0</span>, bufferSize);<br>            socketAsyncEventArgs.RemoteEndPoint = endPoint;<br>            ProcessConnect(socketAsyncEventArgs);<br>        }<br><br>        <span style="color: #0000ff;">#region</span> Private<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> ProcessConnect(SocketAsyncEventArgs e)<br>        {<br>            <span style="color: #0000ff;">var</span> socket = (Socket)e.UserToken;<br>            <span style="color: #0000ff;">bool</span> willRaiseEvent = socket.ConnectAsync(e);<br>            <span style="color: #0000ff;">if</span> (!willRaiseEvent)<br>            {<br>                ConnectCompleted(e);<br>            }<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> ProcessSend(SocketAsyncEventArgs e)<br>        {<br>            <span style="color: #0000ff;">var</span> socket = (Socket)e.UserToken;<br>            <span style="color: #0000ff;">bool</span> willRaiseEvent = socket.SendAsync(e);<br>            <span style="color: #0000ff;">if</span> (!willRaiseEvent)<br>            {<br>                SendCompleted(e);<br>            }<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> AsyncCompleted(<span style="color: #0000ff;">object</span> sender, SocketAsyncEventArgs e)<br>        {<br>            <span style="color: #0000ff;">switch</span> (e.LastOperation)<br>            {<br>                <span style="color: #0000ff;">case</span> SocketAsyncOperation.Connect:<br>                    ConnectCompleted(e);<br>                    <span style="color: #0000ff;">break</span>;<br>                <span style="color: #0000ff;">case</span> SocketAsyncOperation.Send:<br>                    SendCompleted(e);<br>                    <span style="color: #0000ff;">break</span>;<br>                <span style="color: #0000ff;">case</span> SocketAsyncOperation.Receive:<br>                    ReceiveCompleted(e);<br>                    <span style="color: #0000ff;">break</span>;<br>                <span style="color: #0000ff;">default</span>:<br>                    <span style="color: #0000ff;">return</span>;<br>            }<br><br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> ReceiveCompleted(SocketAsyncEventArgs e)<br>        {<br>        }<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> ConnectCompleted(SocketAsyncEventArgs e)<br>        {<br>            <span style="color: #0000ff;">if</span> (e.SocketError == SocketError.Success)<br>            {<br>                ProcessSend(e);<br>            }<br>            <span style="color: #0000ff;">else</span><br>            {<br>                OnSendCommandCompleted(<span style="color: #0000ff;">new</span> SendCommandCompletedEventArgs { Success = <span style="color: #0000ff;">false</span>, ErrMessage = <span style="color: #800000;">“</span><span style="color: #800000;">接收器无法连接</span><span style="color: #800000;">“</span> });<br>            }<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> SendCompleted(SocketAsyncEventArgs e)<br>        {<br>            <span style="color: #0000ff;">var</span> socket = (Socket)e.UserToken;<br>            socket.Close();<br>            <span style="color: #0000ff;">if</span> (e.SocketError == SocketError.Success)<br>            {<br>                OnSendCommandCompleted(<span style="color: #0000ff;">new</span> SendCommandCompletedEventArgs { Success = <span style="color: #0000ff;">true</span> });<br>            }<br>            <span style="color: #0000ff;">else</span><br>            {<br>                OnSendCommandCompleted(<span style="color: #0000ff;">new</span> SendCommandCompletedEventArgs { Success = <span style="color: #0000ff;">false</span>, ErrMessage = <span style="color: #800000;">“</span><span style="color: #800000;">发送命令失败</span><span style="color: #800000;">“</span> });<br>            }<br><br>        }<br>        <span style="color: #0000ff;">#endregion</span><br><br>    }</pre><br></div><br></div>
+
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/25/wp7应用开发笔记5-通信设计/" data-id="qsoci29mexjgxiq8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记4-圆形滑动控件实现" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/25/wp7应用开发笔记4-圆形滑动控件实现/" class="article-date">
+  <time datetime="2012-01-24T22:38:00.000Z" itemprop="datePublished">1月 25 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/25/wp7应用开发笔记4-圆形滑动控件实现/">WP7应用开发笔记(4) 圆形滑动控件实现</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="控件功能分析">控件功能分析</h2>
+<p>圆形控件 能识别顺时针、逆时针滑动的手势，并能识别滑动速度。</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012514421733.jpg" alt=""></p>
+<p>&nbsp;</p>
+<h2 id="系统提供的相关事件">系统提供的相关事件</h2>
+<table style="width: 401px;" border="0" cellspacing="0" cellpadding="2"><br><tbody><br><tr><br><td valign="top" width="192">OnManipulationStarted</td><br><td valign="top" width="107">滑动开始</td><br><td valign="top" width="100">手按下</td><br></tr><br><tr><br><td valign="top" width="192">OnManipulationDelta</td><br><td valign="top" width="107">滑动中</td><br><td valign="top" width="100">手按住并移动</td><br></tr><br><tr><br><td valign="top" width="192">OnManipulationCompleted</td><br><td valign="top" width="109">滑动完成</td><br><td valign="top" width="132">手放开</td><br></tr><br></tbody><br></table>
+
+<p>这3个事件是实现滑动的必要事件，因为EventArgs提供了手的XY坐标已经移动速度，</p>
+<p>不过遗憾要识别顺时针需要自己实现。</p>
+<p>&nbsp;</p>
+<h2 id="识别顺时针滑动">识别顺时针滑动</h2>
+<p>识别了顺时针，反之就能识别逆时针，但如何识别顺时针滑动呢，</p>
+<p>其实这个问题困扰了我不少时间，首先看看默认的坐标轴结构图：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012514372424.jpg" alt=""></p>
+<p>用红色刷子表示手势，貌似没有找到突破口，光从X和Y的变化没有什么参考的地方。</p>
+<p>&nbsp;</p>
+<p>必须要换一下思路，将坐标轴移动到圆心，方向不变（Y向下和数学的有点区别）</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012514375588.jpg" alt=""></p>
+<p>同样用红色刷子表示手势，光从X和Y的变化貌似也没有什么参考的地方，但是在不同区间却又一定的规律。</p>
+<p>我们来看看顺时针滑动的X和Y的变化规律</p>
+<table style="width: 400px;" border="0" cellspacing="0" cellpadding="2"><br><tbody><br><tr><br><td valign="top" width="133">区间1</td><br><td valign="top" width="133">X 增大</td><br><td valign="top" width="133">Y 减少</td><br></tr><br><tr><br><td valign="top" width="133">区间2</td><br><td valign="top" width="133">X 增大</td><br><td valign="top" width="133">Y 增大</td><br></tr><br><tr><br><td valign="top" width="133">区间3</td><br><td valign="top" width="133">X 减少</td><br><td valign="top" width="133">Y 减少</td><br></tr><br><tr><br><td valign="top" width="133">区间4</td><br><td valign="top" width="133">X 减少</td><br><td valign="top" width="133">Y 增大</td><br></tr><br></tbody><br></table>
+
+<p>恩，这样就基本可以识别方向了，但是写起来有点麻烦，有没有更好的方法呢。</p>
+<p>这时我丢了N年的几何突然捡回了，我一直纠结X和Y，不是还有角度这个概念么，</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012514381432.jpg" alt=""></p>
+<p>一直坐冷板凳的Math出场了里面有个Atan函数可以求出反三角函数。</p>
+<p>角度公式如下：var angle = Math.Atan(x / y) * 180.0 / Math.PI;</p>
+<p>接下来通过区间就可以确定角度的方向，这些大问题解决了。突然感慨数学的重要。</p>
+<p>当然还有一些细节问题可以参考代码的实现</p>
+<p>&nbsp;</p>
+<h2 id="控件代码实现">控件代码实现</h2>
+<p>XAML:</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('2371278f-a7f1-4c57-9e18-46381cba5213')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_2371278f-a7f1-4c57-9e18-46381cba5213" class="cnblogs_code_hide"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">UserControl<br>    </span><span style="color: #ff0000;">xmlns</span><span style="color: #0000ff;">=”<a href="http://schemas.microsoft.com/winfx/2006/xaml/presentation" target="_blank">http://schemas.microsoft.com/winfx/2006/xaml/presentation</a>“</span><span style="color: #ff0000;"><br>    xmlns:x</span><span style="color: #0000ff;">=”<a href="http://schemas.microsoft.com/winfx/2006/xaml" target="_blank">http://schemas.microsoft.com/winfx/2006/xaml</a>“</span><span style="color: #ff0000;"><br>    xmlns:d</span><span style="color: #0000ff;">=”<a href="http://schemas.microsoft.com/expression/blend/2008" target="_blank">http://schemas.microsoft.com/expression/blend/2008</a>“</span><span style="color: #ff0000;"><br>    xmlns:mc</span><span style="color: #0000ff;">=”<a href="http://schemas.openxmlformats.org/markup-compatibility/2006" target="_blank">http://schemas.openxmlformats.org/markup-compatibility/2006</a>“</span><span style="color: #ff0000;"><br>    xmlns:local</span><span style="color: #0000ff;">=”clr-namespace:VirtualKeyboard.Controls”</span><span style="color: #ff0000;"><br>    mc:Ignorable</span><span style="color: #0000ff;">=”d”</span><span style="color: #ff0000;"><br>    x:Class</span><span style="color: #0000ff;">=”VirtualKeyboard.Controls.LoopControl”</span><span style="color: #ff0000;"><br>    d:DesignWidth</span><span style="color: #0000ff;">=”340”</span><span style="color: #ff0000;"> d:DesignHeight</span><span style="color: #0000ff;">=”340”</span><span style="color: #0000ff;">&gt;</span><br><br>    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Canvas</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Ellipse </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”bigEllipse”</span><span style="color: #ff0000;"> Height</span><span style="color: #0000ff;">=”340”</span><span style="color: #ff0000;"> Width</span><span style="color: #0000ff;">=”340”</span><span style="color: #ff0000;"> Canvas.Left</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> Canvas.Top</span><span style="color: #0000ff;">=”0”</span><span style="color: #ff0000;"> StrokeThickness</span><span style="color: #0000ff;">=”4”</span><span style="color: #ff0000;"> Stroke</span><span style="color: #0000ff;">=”White”</span><span style="color: #ff0000;"> Fill</span><span style="color: #0000ff;">=”#FF7A7A7A”</span> <span style="color: #0000ff;">/&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">local:RoundButton </span><span style="color: #ff0000;">x:Name</span><span style="color: #0000ff;">=”centerButton”</span><span style="color: #ff0000;">  Height</span><span style="color: #0000ff;">=”150”</span><span style="color: #ff0000;"> Width</span><span style="color: #0000ff;">=”150”</span><span style="color: #ff0000;"> Canvas.Left</span><span style="color: #0000ff;">=”95”</span><span style="color: #ff0000;"> Canvas.Top</span><span style="color: #0000ff;">=”95”</span><span style="color: #ff0000;"> ImageSource</span><span style="color: #0000ff;">=”/VirtualKeyboard.Controls;component/Icons/word.ok.png”</span><span style="color: #ff0000;"> Background</span><span style="color: #0000ff;">=”#FF1D1D1D”</span><span style="color: #0000ff;">/&gt;</span><br>    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Canvas</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">UserControl</span><span style="color: #0000ff;">&gt;</span></pre><br></div><br></div>
+
+<p>&nbsp;为了方便中间加入了一个圆形的OK按钮，这个按钮的实现将在后面的篇幅中实现，如果有兴趣练习可以直接去掉<span style="color: #800000;">local:RoundButton </span></p>
+<p>C#</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('fe2e0bd7-c25e-4903-b504-7343a748af7a')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_fe2e0bd7-c25e-4903-b504-7343a748af7a" class="cnblogs_code_hide"><br><pre>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">partial</span> <span style="color: #0000ff;">class</span> LoopControl<br>    {<br>        <span style="color: #0000ff;">#region</span> Const<br>        <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">double</span> BigRadius = <span style="color: #800080;">200.0</span>;<br>        <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">double</span> SmailRadius = <span style="color: #800080;">70.0</span>;<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> TimeSpan deltaSpan = <span style="color: #0000ff;">new</span> TimeSpan(<span style="color: #800080;">0</span>, <span style="color: #800080;">0</span>, <span style="color: #800080;">0</span>, <span style="color: #800080;">0</span>, <span style="color: #800080;">200</span>);<br>        <span style="color: #0000ff;">#endregion</span><br><br>        <span style="color: #0000ff;">#region</span> Private<br>        <span style="color: #0000ff;">private</span> DateTime startTime;<br>        <span style="color: #0000ff;">private</span> Angle startAngle;<br>        <span style="color: #0000ff;">#endregion</span><br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">event</span> RoutedEventHandler CenterClick<br>        {<br>            add { centerButton.Click += value; }<br>            remove { centerButton.Click -= value; }<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">event</span> EventHandler&lt;LoopGlideEventArg&gt; LoopGlide;<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> OnLoopGlide(LoopGlideEventArg e)<br>        {<br>            EventHandler&lt;LoopGlideEventArg&gt; handler = LoopGlide;<br>            <span style="color: #0000ff;">if</span> (handler != <span style="color: #0000ff;">null</span>) handler(<span style="color: #0000ff;">this</span>, e);<br>        }<br><br>        <span style="color: #0000ff;">public</span> LoopControl()<br>        {<br>            <span style="color: #008000;">//</span><span style="color: #008000;"> 为初始化变量所必需</span><span style="color: #008000;"><br></span>            InitializeComponent();<br>        }<br><br>        <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> OnManipulationStarted(ManipulationStartedEventArgs e)<br>        {<br>            startTime = DateTime.Now;<br>            startAngle = ToAngle(e.ManipulationOrigin);<br>            <span style="color: #0000ff;">base</span>.OnManipulationStarted(e);<br>        }<br><br>        <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> OnManipulationDelta(ManipulationDeltaEventArgs e)<br>        {<br>            <span style="color: #0000ff;">if</span> (IsInCenter(e.ManipulationOrigin)) <span style="color: #0000ff;">return</span>;<br><br>            <span style="color: #0000ff;">var</span> now = DateTime.Now;<br>            <span style="color: #0000ff;">if</span> (now - startTime &gt; deltaSpan)<br>            {<br>                GetDirection(e.ManipulationOrigin);<br>                startTime = now;<br>                startAngle = ToAngle(e.ManipulationOrigin);<br>            }<br>            <span style="color: #0000ff;">base</span>.OnManipulationDelta(e);<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> GetDirection(Point point)<br>        {<br>            <span style="color: #0000ff;">var</span> angle = ToAngle(point);<br>            <span style="color: #0000ff;">var</span> angleDistance = startAngle - angle;<br>            OnLoopGlide(<span style="color: #0000ff;">new</span> LoopGlideEventArg(angleDistance.Distance));<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 求角度<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”point”&gt;&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;&lt;/returns&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> Angle ToAngle(Point point)<br>        {<br>            <span style="color: #0000ff;">var</span> xPoint = ToXPoint(point);<br>            <span style="color: #0000ff;">var</span> x = xPoint.X;<br>            <span style="color: #0000ff;">var</span> y = xPoint.Y;<br>            <span style="color: #0000ff;">var</span> angle = Math.Atan(x / y) <em> <span style="color: #800080;">180.0</span> / Math.PI;<br>            <span style="color: #0000ff;">if</span> (!(y &lt; <span style="color: #800080;">0.0</span>))<br>            {<br>                angle += <span style="color: #800080;">180.0</span>;<br>            }<br>            <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (x &gt; <span style="color: #800080;">0.0</span>)<br>            {<br>                angle += <span style="color: #800080;">360.0</span>;<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span> Angle(angle);<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 变化坐标<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”point”&gt;&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;&lt;/returns&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> Point ToXPoint(Point point)<br>        {<br>            <span style="color: #0000ff;">var</span> x = point.X - BigRadius;<br>            <span style="color: #0000ff;">var</span> y = point.Y - BigRadius;<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span> Point(x, y);<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">bool</span> IsInCenter(Point point)<br>        {<br>            <span style="color: #0000ff;">var</span> xPoint = ToXPoint(point);<br>            <span style="color: #0000ff;">var</span> radius = Math.Sqrt(xPoint.X </em> xPoint.X + xPoint.Y * xPoint.Y);<br>            <span style="color: #0000ff;">return</span> radius &lt; SmailRadius;<br>        }<br><br>        <span style="color: #0000ff;">#region</span> Private Struct<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 角度<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">struct</span> Angle : IEquatable&lt;Angle&gt;<br>        {<br>            <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">double</span> value;<br>            <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">const</span> <span style="color: #0000ff;">double</span> Epsilon = <span style="color: #800080;">0.1</span>;<br><br>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">double</span> Value<br>            {<br>                <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> value; }<br>            }<br><br>            <span style="color: #0000ff;">public</span> Angle(<span style="color: #0000ff;">double</span> value)<br>            {<br>                <span style="color: #0000ff;">if</span> (value &gt; <span style="color: #800080;">360.0</span> || value &lt; <span style="color: #800080;">0</span>)<br>                {<br>                    <span style="color: #0000ff;">throw</span> <span style="color: #0000ff;">new</span> ArgumentOutOfRangeException(<span style="color: #800000;">“</span><span style="color: #800000;">value</span><span style="color: #800000;">“</span>, <span style="color: #800000;">“</span><span style="color: #800000;">value must between 0 and 360</span><span style="color: #800000;">“</span>);<br>                }<br>                <span style="color: #0000ff;">this</span>.value = value;<br>            }<br><br>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">string</span> ToString()<br>            {<br>                <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">string</span>.Format(<span style="color: #800000;">“</span><span style="color: #800000;">{0:N2}</span><span style="color: #800000;">“</span>, value);<br>            }<br><br>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> AngleDistance <span style="color: #0000ff;">operator</span> -(Angle angle1, Angle angle2)<br>            {<br>                <span style="color: #0000ff;">double</span> angleDistance = angle1.value - angle2.value;<br>                <span style="color: #0000ff;">if</span> (angleDistance &gt; <span style="color: #800080;">180.0</span>)<br>                {<br>                    angleDistance -= <span style="color: #800080;">360</span>;<br>                }<br>                <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (angleDistance &lt; -<span style="color: #800080;">180.0</span>)<br>                {<br>                    angleDistance += <span style="color: #800080;">360</span>;<br>                }<br>                <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span> AngleDistance(angleDistance);<br>            }<br><br>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> Equals(<span style="color: #0000ff;">object</span> obj)<br>            {<br>                <span style="color: #0000ff;">if</span> (obj <span style="color: #0000ff;">is</span> Angle)<br>                {<br>                    <span style="color: #0000ff;">return</span> Equals((Angle)obj);<br>                }<br>                <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>;<br>            }<br><br>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">int</span> GetHashCode()<br>            {<br>                <span style="color: #0000ff;">return</span> <span style="color: #800080;">360</span> ^ value.GetHashCode();<br>            }<br><br>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> Equals(Angle other)<br>            {<br>                <span style="color: #0000ff;">return</span> Math.Abs(value - other.value) &lt; Epsilon;<br>            }<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 夹角<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">struct</span> AngleDistance<br>        {<br>            <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">double</span> angleDistance;<br><br>            <span style="color: #0000ff;">public</span> AngleDistance(<span style="color: #0000ff;">double</span> angleDistance)<br>            {<br>                <span style="color: #0000ff;">this</span>.angleDistance = angleDistance;<br>            }<br><br>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">double</span> Distance<br>            {<br>                <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> angleDistance; }<br>            }<br><br>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">string</span> ToString()<br>            {<br>                <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">string</span>.Format(<span style="color: #800000;">“</span><span style="color: #800000;">{0:N2}</span><span style="color: #800000;">“</span>, angleDistance);<br>            }<br><br>            <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>            </span><span style="color: #808080;">///</span><span style="color: #008000;"> 顺时针<br>            </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>            <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> Clockwise<br>            {<br>                <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> angleDistance &gt; <span style="color: #800080;">0</span>; }<br>            }<br>        }<br>        <span style="color: #0000ff;">#endregion</span><br><br>    }</pre><br></div><br></div>
+
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/25/wp7应用开发笔记4-圆形滑动控件实现/" data-id="ukd7nxtg621orgm2" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记3-界面设计" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/25/wp7应用开发笔记3-界面设计/" class="article-date">
+  <time datetime="2012-01-24T21:55:00.000Z" itemprop="datePublished">1月 25 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/25/wp7应用开发笔记3-界面设计/">WP7应用开发笔记(3) 界面设计</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="界面设计">界面设计</h1>
+<p>回顾一下按钮清单：</p>
+<table style="width: 400px;" border="0" cellspacing="0" cellpadding="2"><br><tbody><br><tr><br><td valign="top" width="133">播放控制</td><br><td valign="top" width="133">播放/暂停</td><br><td valign="top" width="133">Space</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">停止</td><br><td valign="top" width="133">F4</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快进</td><br><td valign="top" width="133">Right</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快退</td><br><td valign="top" width="133">Left</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快进X2</td><br><td valign="top" width="133">Control+Right</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快退X2</td><br><td valign="top" width="133">Control+Left</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快进X3</td><br><td valign="top" width="133">Alt+Right</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快退X3</td><br><td valign="top" width="133">Alt+Left</td><br></tr><br><tr><br><td valign="top" width="133">音量</td><br><td valign="top" width="133">放大</td><br><td valign="top" width="133">Up</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">缩小</td><br><td valign="top" width="133">Down</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">静音</td><br><td valign="top" width="133">M</td><br></tr><br><tr><br><td valign="top" width="133">节目</td><br><td valign="top" width="133">下一个</td><br><td valign="top" width="133">PageDown</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">上一个</td><br><td valign="top" width="133">PageUp</td><br></tr><br></tbody><br></table>
+
+<p>基本上就是把这些按钮布置到480*800的屏幕上。</p>
+<p>&nbsp;</p>
+<h2 id="快进按钮设计">快进按钮设计</h2>
+<p>不过有个地方有点不舒服，就是快进、快退居然有3套，而且功能相似只是速度不同，如果像这样摆放6个按钮一定很不爽。</p>
+<p>之前再说点题外话，就是为什么没有用拖动进度条的方式。因为实现起来比较麻烦，需要API或者Windows消息。加上现在播放器大部分有断点续播，我不能设计进度条为从0开始。</p>
+<p>继续说快进，虽然我没有做过触控设备的开发，不过好歹我用了几个月的Omnia7，还是知道这里应该利用一下触屏设备的特性来完成。</p>
+<p>触控设备的功能之一就是滑动，而且还能获取方向和速度，方向决定了进或退，而速度决定了进退的比率。恩，不错就这样。</p>
+<p>下面的问题是这个控件的外观，那么我又有2种方案：</p>
+<p>1 长方形 左、右滑动</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012513542834.jpg" alt=""></p>
+<p>2 圆形 顺时针、逆时针滑动（IPod拿来主义）</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012513544631.jpg" alt=""></p>
+<p>为了操纵的连贯性我选择了圆形，不知道是否侵权，反正研究用嘛～</p>
+<p>&nbsp;</p>
+<h2 id="总体布局">总体布局</h2>
+<p>根据WP7的一些设计原则，多用图标少文字和一些图标大小的要求，大概规划出了界面的设计</p>
+<p>，操作图标源于生活中的遥控器，基本上都能认识。</p>
+<p>草图如下：(鼠绘比较丑见笑了)</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012513545996.jpg" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/25/wp7应用开发笔记3-界面设计/" data-id="shftcyjrv2x1n1nv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记2-思考" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/25/wp7应用开发笔记2-思考/" class="article-date">
+  <time datetime="2012-01-24T21:14:00.000Z" itemprop="datePublished">1月 25 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/25/wp7应用开发笔记2-思考/">WP7应用开发笔记(2) 思考</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="思考">思考</h1>
+<p>既然决定了开发一款手机遥控器，那么首先确定开发的功能和实现方式。</p>
+<p>实现方式暂定以在PC端模拟键盘的方式触发快捷键。</p>
+<p>&nbsp;</p>
+<h2 id="功能需求">功能需求</h2>
+<p>首先是遥控器上的按钮。首先是我用的播放器是PotPlayer64，常用的就是快进、后退、播放/暂停、下一文件、音量等。</p>
+<p>参考了自己的电视遥控器，感觉换台什么的为主，在这里实用性不强，我也不需要换台。</p>
+<p>然后是DVD遥控器，播放操作基本还是可以，不过上下左右之类的貌似也没有什么用。</p>
+<p>总结了一下，还是简单的设计，不常用的这个版本先不实现。</p>
+<p>下面是按钮清单和对应的播放器快捷键：</p>
+<table style="width: 400px;" border="0" cellspacing="0" cellpadding="2"><br><tbody><br><tr><br><td valign="top" width="133">播放控制</td><br><td valign="top" width="133">播放/暂停</td><br><td valign="top" width="133">Space</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">停止</td><br><td valign="top" width="133">F4</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快进</td><br><td valign="top" width="133">Right</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快退</td><br><td valign="top" width="133">Left</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快进X2</td><br><td valign="top" width="133">Control+Right</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快退X2</td><br><td valign="top" width="133">Control+Left</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快进X3</td><br><td valign="top" width="133">Alt+Right</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">快退X3</td><br><td valign="top" width="133">Alt+Left</td><br></tr><br><tr><br><td valign="top" width="133">音量</td><br><td valign="top" width="133">放大</td><br><td valign="top" width="133">Up</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">缩小</td><br><td valign="top" width="133">Down</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">静音</td><br><td valign="top" width="133">M</td><br></tr><br><tr><br><td valign="top" width="133">节目</td><br><td valign="top" width="133">下一个</td><br><td valign="top" width="133">PageDown</td><br></tr><br><tr><br><td valign="top" width="133">&nbsp;</td><br><td valign="top" width="133">上一个</td><br><td valign="top" width="133">PageUp</td><br></tr><br></tbody><br></table>
+
+<p>&nbsp;</p>
+<h2 id="实现方式">实现方式</h2>
+<p>前面说过我决定实现方式以在PC端模拟键盘的方式触发快捷键。还有2种候选方式是调用AP和调用Windows消息，</p>
+<p>为什么这么选择模拟键盘呢？首先是兼容问题，现在国内的播放器市场很复杂，各种播放器都有人在用。提供API的播放器很少，我知道的貌似只有VLC之类的。Windows消息方式实在太复杂，效果估计和模拟键盘的方式差不多。</p>
+<p>&nbsp;</p>
+<p>那么模拟键盘又是怎么实现的呢？首先看看通信结构</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012513151372.jpg" alt=""></p>
+<p>手机要访问电脑首先需要在电脑上开发一个接收消息的服务器，然后服务器解析消息命令转换成触发键盘消息，正好User32的API里面提供了键盘事件的接口。那么流程就很简单了：</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012513140847.jpg" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/25/wp7应用开发笔记2-思考/" data-id="j4az5doa04288ulq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wp7应用开发笔记1-序言" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/25/wp7应用开发笔记1-序言/" class="article-date">
+  <time datetime="2012-01-24T20:32:00.000Z" itemprop="datePublished">1月 25 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2012/01/25/wp7应用开发笔记1-序言/">WP7应用开发笔记(1) 序言</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言">前言</h2>
+<p>几个月前买了一部三星的Omnia7，对WP7的系统特别有好感，加上本身就是.net个程序员，想着以后也可以自己开发点小程序。1月初公司里某项目正在搞令人恶心的CMMI3标准，我天天都在开会或者写概要设计和详细设计的文档，没怎么碰代码感觉手生，决定回家学习WP7开发。</p>
+<p>&nbsp;</p>
+<h2 id="学习的过程">学习的过程</h2>
+<p>学习的过程嘛，现在WP7的学习资源真的很少，买了一本《Windows Phone 7 高级编程》，其实我一直不怎么喜欢红皮书，感觉都是点到位置，只教方法不教原理，这本也让我很失望，不过拿来入门还是将就一下，至少能从中学习到WP7的一些大概情况。</p>
+<p>其次嘛，MSDN还是最好的在线学习的地方，Windows Phone 开发已经有中文版了，而且文档也更新到7.1了（<a href="http://msdn.microsoft.com/zh-cn/library/ff402535(v=VS.92" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff402535(v=VS.92).aspx</a>.aspx “<a href="http://msdn.microsoft.com/zh-cn/library/ff402535(v=VS.92).aspx&quot;)），7.0到7.1更新不少啊。" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff402535(v=VS.92).aspx&quot;)），7.0到7.1更新不少啊。</a></p>
+<p>再次就是这里cnblog、stack overflow，再找点开源软件来读代码也是一种学习方式。</p>
+<p>嘛，经过一个月的业余时间学习和已经应用的开发，勉强算半吊子入门了。</p>
+<p>&nbsp;</p>
+<h2 id="开发应用程序的契机">开发应用程序的契机</h2>
+<p>虽然想用一个APP来练手，但是该选择怎样的APP却很烦恼，有时候一个好的想法往往来自于突然的灵感。</p>
+<p>&ldquo;Windows Phone 为谁而制造？&rdquo;Mircosoft的回答是为那些 Life Maximizer(尽情享受生活的人)而设计的。</p>
+<p>手机APP的特点是小巧和便携，APP应该是便利生活的工具，无论是多么小的工具都有其价值所在。</p>
+<p>不小心说远了，便利生活要从便利自己开始，先决定写一个APP来帮助解决一个自己的烦恼：</p>
+<p>我晚上喜欢躺在床上在电脑上看电视剧、动漫之类，因为连续要看几集经常需要跳过主题曲或者片尾曲，以及换台，还要调节音量之类的。但是冬天到了，最近天气非常冷，不想把手伸过去敲键盘，如果能在有个遥控器就好了。</p>
+<p>叮！突然灵机一动，为什么不在手机上写一个APP的遥控器呢！</p>
+<p>于是我开始了手机遥控器的应用开发之旅。下面我准备把我这个应用开发的过程在这里给大家分享。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/25/wp7应用开发笔记1-序言/" data-id="nr5jhqtrvzcipew9" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-emit进阶-创建自定义委托delegate" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2011/12/20/emit进阶-创建自定义委托delegate/" class="article-date">
+  <time datetime="2011-12-19T23:04:00.000Z" itemprop="datePublished">12月 20 2011</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2011/12/20/emit进阶-创建自定义委托delegate/">Emit进阶 创建自定义委托Delegate</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>随着上次对Emit的研究，对MSIL和Emit有了进一步了解，不过为了更好地实现Aop需要自己定义委托，但是Emit定义委托就没有类这么容易理解，在多次对照IL代码后，终于成功的实现了自定义委托Delegate。</p>
+<p>首先来看看一般的委托定义方法。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">delegate</span> <span style="color: #0000ff;">string</span> MyDelegate(<span style="color: #0000ff;">string</span> message);</pre><br></div>
+
+<p>MSDN定义，委托是一种数据结构，它引用静态方法或引用类实例及该类的实例方法。</p>
+<p>但是委托的本质是一个由系统自动生成的类，我们首先看看IL里面的MyDelegate的结构</p>
+<p><img src="http://pic002.cnblogs.com/images/2011/25121/2011122014442844.jpg" alt=""></p>
+<p>可以看到实际上MyDelegate是继承自MulticastDelegate的类</p>
+<p>MSIL表示方式如下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">.class</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">auto</span> <span style="color: #0000ff;">ansi</span> sealed EmitDemo.DelegateDemo.MyDelegate<br>       <span style="color: #0000ff;">extends</span> [mscorlib]System.MulticastDelegate<br>{<br>} <span style="color: #008000;">//</span><span style="color: #008000;"> end of class EmitDemo.DelegateDemo.MyDelegate</span><span style="color: #008000;"><br></span><br><br><span style="color: #0000ff;">.method</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">hidebysig</span> <span style="color: #0000ff;">specialname</span> <span style="color: #0000ff;">rtspecialname</span><br>        <span style="color: #0000ff;">instance</span> <span style="color: #0000ff;">void</span>  .ctor(<span style="color: #0000ff;">object</span> <span style="color: #800000;">‘</span><span style="color: #800000;">object</span><span style="color: #800000;">‘</span>,<br>                             <span style="color: #0000ff;">native</span> int <span style="color: #800000;">‘</span><span style="color: #800000;">method</span><span style="color: #800000;">‘</span>) runtime <span style="color: #0000ff;">managed</span><br>{<br>} <span style="color: #008000;">//</span><span style="color: #008000;"> end of method MyDelegate::.ctor</span><span style="color: #008000;"><br></span><br><span style="color: #0000ff;">.method</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">hidebysig</span> newslot <span style="color: #0000ff;">virtual</span><br>        <span style="color: #0000ff;">instance</span> <span style="color: #0000ff;">string</span>  Invoke(<span style="color: #0000ff;">string</span> message) runtime <span style="color: #0000ff;">managed</span><br>{<br>} <span style="color: #008000;">//</span><span style="color: #008000;"> end of method MyDelegate::Invoke</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p>不考虑异步调用，实际的类大概是这样的表示形式，但是C#并不允许直接继承MulticastDelegate，所以编译是无法通过的。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> MyDelegate:MulticastDelegate<br>    {<br>        <span style="color: #0000ff;">public</span> MyDelegate(<span style="color: #0000ff;">object</span> target,IntPtr method)<br>            :<span style="color: #0000ff;">base</span>(target,method)<br>        {<br><br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">string</span> Invoke(<span style="color: #0000ff;">string</span> message){}<br>    }</pre><br></div>
+
+<p>接下来仿照这个定义来实现委托类</p>
+<p>首先是moduleBuilder 经常使用Emit的应该很熟悉了</p>
+<div class="cnblogs_code"><br><pre>           <span style="color: #0000ff;">string</span> name = <span style="color: #800000;">“</span><span style="color: #800000;">MyDelegateDemo</span><span style="color: #800000;">“</span>;<br>            <span style="color: #0000ff;">string</span> fileName = name + <span style="color: #800000;">“</span><span style="color: #800000;">.dll</span><span style="color: #800000;">“</span>;<br>            var assemblyName = <span style="color: #0000ff;">new</span> AssemblyName(name);<br>            var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName,<br>                                                                                AssemblyBuilderAccess.RunAndSave);<br>            var moduleBuilder = assemblyBuilder.DefineDynamicModule(name, fileName);</pre><br></div>
+
+<p>接下来是定义类，要点是修饰参数要一致，基类是MulticastDelegate</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #008000;">//</span><span style="color: #008000;">public auto ansi sealed</span><span style="color: #008000;"><br></span>            var delegateBuilder = moduleBuilder.DefineType(<span style="color: #800000;">“</span><span style="color: #800000;">MyDelegate</span><span style="color: #800000;">“</span>,<br>                                     TypeAttributes.Public | TypeAttributes.AutoLayout | TypeAttributes.AnsiClass |<br>                                     TypeAttributes.Sealed, typeof(MulticastDelegate));</pre><br></div>
+
+<p>在设置构造函数，修饰参数也要一致，函数参数为object和IntPtr</p>
+<p>最重要的是最后一句设置方法实现标志为runtime</p>
+<div class="cnblogs_code"><br><pre>  <span style="color: #008000;">//</span><span style="color: #008000;">            .method public hidebysig specialname rtspecialname </span><span style="color: #008000;"><br></span>            <span style="color: #008000;">//</span><span style="color: #008000;">        instance void  .ctor(object ‘object’,</span><span style="color: #008000;"><br></span>            <span style="color: #008000;">//</span><span style="color: #008000;">                             native int ‘method’) runtime managed</span><span style="color: #008000;"><br></span>            <span style="color: #008000;">//</span><span style="color: #008000;">{</span><span style="color: #008000;"><br></span>            <span style="color: #008000;">//</span><span style="color: #008000;">} // end of method MyDelegate::.ctor</span><span style="color: #008000;"><br></span><br>            var constructorBuilder = delegateBuilder.DefineConstructor(<br>                MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName |<br>                MethodAttributes.RTSpecialName,<br>                CallingConventions.Standard, <span style="color: #0000ff;">new</span>[] { typeof(<span style="color: #0000ff;">object</span>), typeof(IntPtr) }<br>                );<br>            constructorBuilder.SetImplementationFlags(MethodImplAttributes.Runtime);</pre><br></div>
+
+<p>然后是定义方法Invoke，这里定义的返回值和参数都是string 可以根据需要调整。</p>
+<p>同样修饰要一致，最后也要设置方法实现标志为Runtime</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #008000;">//</span><span style="color: #008000;">            .method public hidebysig newslot virtual </span><span style="color: #008000;"><br></span>            <span style="color: #008000;">//</span><span style="color: #008000;">        instance string  Invoke(string message) runtime managed</span><span style="color: #008000;"><br></span>            <span style="color: #008000;">//</span><span style="color: #008000;">{</span><span style="color: #008000;"><br></span>            <span style="color: #008000;">//</span><span style="color: #008000;">} // end of method MyDelegate::Invoke</span><span style="color: #008000;"><br></span>            var resultType = typeof(<span style="color: #0000ff;">string</span>);<br>            var paramTypes = <span style="color: #0000ff;">new</span>[] { typeof(<span style="color: #0000ff;">string</span>) };<br>            var methodBuilder = delegateBuilder.DefineMethod(<span style="color: #800000;">“</span><span style="color: #800000;">Invoke</span><span style="color: #800000;">“</span>,<br>                                          MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot |<br>                                          MethodAttributes.Virtual,<br>                                          CallingConventions.Standard, resultType, paramTypes);<br>            methodBuilder.SetImplementationFlags(MethodImplAttributes.Runtime);</pre><br></div>
+
+<p>&nbsp;</p>
+<p>最后创建类型，好了，定义完成了。</p>
+<div class="cnblogs_code"><br><pre>var delegateType = delegateBuilder.CreateType();</pre><br></div>
+
+<p>接下来就需要调用测试一下了。</p>
+<p>注意不能用Activator.CreateInstance()来初始化代理而是Delegate.CreateDelegate。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> MyClass<br>    {<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> MyMethod(<span style="color: #0000ff;">string</span> message)<br>        {<br>            Console.WriteLine(message);<br>            return message;<br>        }<br><br>    }</pre><br></div>
+
+<p>&nbsp;</p>
+<p>调用</p>
+<div class="cnblogs_code"><br><pre> MyClass myClass = <span style="color: #0000ff;">new</span> MyClass();<br>            var myDelegate = Delegate.CreateDelegate(delegateType, myClass, <span style="color: #800000;">“</span><span style="color: #800000;">MyMethod</span><span style="color: #800000;">“</span>);<br>            myDelegate.DynamicInvoke(<span style="color: #800000;">“</span><span style="color: #800000;">Hello World!</span><span style="color: #800000;">“</span>);</pre><br></div>
+
+<p>结果 Hello World!</p>
+<p>OK 成功了。</p>
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2011/12/20/emit进阶-创建自定义委托delegate/" data-id="1vvww94ioel7kepe" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-emit实现简单的aop" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2011/12/17/emit实现简单的aop/" class="article-date">
+  <time datetime="2011-12-17T00:03:00.000Z" itemprop="datePublished">12月 17 2011</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2011/12/17/emit实现简单的aop/">Emit实现简单的Aop</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在研究Emit，发现其实Emit很简单，但是IL很难，还好以前学习过汇编研究了很久才把指令搞清楚.</p>
+<p>首先就来看看需要实现一个简单的Aop需要的类:</p>
+<p>&nbsp;</p>
+<p>首先是拦截器,这里仿照Wcf的IParameterInspector定义了一个简单的接口，不支持ref和out参数。</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>    </span><span style="color: #808080;">///</span><span style="color: #008000;"> 拦截器接口<br>    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">interface</span> IInterceptor<br>    {<br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 方法调用前<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”operationName”&gt;</span><span style="color: #008000;">方法名</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”inputs”&gt;</span><span style="color: #008000;">参数</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;</span><span style="color: #008000;">状态对象，用于调用后传入</span><span style="color: #808080;">&lt;/returns&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">object</span> BeforeCall(<span style="color: #0000ff;">string</span> operationName, <span style="color: #0000ff;">object</span>[] inputs);<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 方法调用后<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”operationName”&gt;</span><span style="color: #008000;">方法名</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”returnValue”&gt;</span><span style="color: #008000;">结果</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”correlationState”&gt;</span><span style="color: #008000;">状态对象</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">void</span> AfterCall(<span style="color: #0000ff;">string</span> operationName, <span style="color: #0000ff;">object</span> returnValue, <span style="color: #0000ff;">object</span> correlationState);<br>    }</pre><br></div>
+
+<p>创建一个简单的实现来测试</p>
+<div class="cnblogs_code"><br><pre>  <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> StandardInterceptor : IInterceptor<br>    {<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">object</span> BeforeCall(<span style="color: #0000ff;">string</span> operationName, <span style="color: #0000ff;">object</span>[] inputs)<br>        {<br>            Console.WriteLine(<span style="color: #800000;">“</span><span style="color: #800000;">Before call :{0}</span><span style="color: #800000;">“</span>, operationName);<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">null</span>;<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> AfterCall(<span style="color: #0000ff;">string</span> operationName, <span style="color: #0000ff;">object</span> returnValue, <span style="color: #0000ff;">object</span> correlationState)<br>        {<br>            Console.WriteLine(<span style="color: #800000;">“</span><span style="color: #800000;">After call :{0} resule: {1}</span><span style="color: #800000;">“</span>, operationName, returnValue??<span style="color: #800000;">“</span><span style="color: #800000;">Null</span><span style="color: #800000;">“</span>);<br>        }<br>    }</pre><br></div>
+
+<p>简单工厂模式定义拦截器工厂</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> DefaultInterceptorFactory<br>    {<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> IInterceptor Create(Type type)<br>        {<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">new</span> StandardInterceptor();<br>        }<br>    }</pre><br></div>
+
+<p>接下来定义一个测试类型</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> Animal<br>    {<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">virtual</span> <span style="color: #0000ff;">string</span> Speak(<span style="color: #0000ff;">string</span> msg)<br>        {<br>            Console.WriteLine(<span style="color: #800000;">“</span><span style="color: #800000;">Animal.Speak:{0}</span><span style="color: #800000;">“</span>, msg);<br>            <span style="color: #0000ff;">return</span> msg;<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">virtual</span> <span style="color: #0000ff;">void</span> Speak()<br>        {<br>            Console.WriteLine(<span style="color: #800000;">“</span><span style="color: #800000;">Animal.Speak</span><span style="color: #800000;">“</span>);<br>        }<br>    }</pre><br></div>
+
+<p>Aop采用继承的方式，通过Emit构造子类，为了方便先用程序将子类编写好方便对比IL调试</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> AnimalAop : Animal<br>    {<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> IInterceptor _inspector;<br><br>        <span style="color: #0000ff;">public</span> AnimalAop()<br>        {<br>            _inspector = DefaultInterceptorFactory.Create(<span style="color: #0000ff;">typeof</span>(Animal));<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> Speak()<br>        {<br>            <span style="color: #0000ff;">object</span> correlationState = _inspector.BeforeCall(<span style="color: #800000;">“</span><span style="color: #800000;">Speak</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">null</span>);<br>            <span style="color: #0000ff;">base</span>.Speak();<br>            <span style="color: #0000ff;">object</span> result = <span style="color: #0000ff;">null</span>;<br>            _inspector.AfterCall(<span style="color: #800000;">“</span><span style="color: #800000;">Speak</span><span style="color: #800000;">“</span>, result, correlationState);<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">string</span> Speak(<span style="color: #0000ff;">string</span> msg)<br>        {<br>            <span style="color: #0000ff;">object</span> correlationState = _inspector.BeforeCall(<span style="color: #800000;">“</span><span style="color: #800000;">Speak</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">object</span>[] { msg });<br>            <span style="color: #0000ff;">var</span> result = <span style="color: #0000ff;">base</span>.Speak(msg);<br>            _inspector.AfterCall(<span style="color: #800000;">“</span><span style="color: #800000;">Speak</span><span style="color: #800000;">“</span>, result, correlationState);<br>            <span style="color: #0000ff;">return</span> result;<br>        }<br>    }</pre><br></div>
+
+<p>好了，准备工作完成了，接下来就是如何来用Emit生成这个代理对象</p>
+<p>依然是简单工厂DefaultProxyBuilder</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> T CreateProxy&lt;T&gt;()<br>        {<br>            Type classType = <span style="color: #0000ff;">typeof</span>(T);<br><br>            <span style="color: #0000ff;">string</span> name = classType.Namespace + <span style="color: #800000;">“</span><span style="color: #800000;">.Aop</span><span style="color: #800000;">“</span>;<br>            <span style="color: #0000ff;">string</span> fileName = name + <span style="color: #800000;">“</span><span style="color: #800000;">.dll</span><span style="color: #800000;">“</span>;<br><br>            AssemblyName assemblyName = <span style="color: #0000ff;">new</span> AssemblyName(name);<br>            <span style="color: #0000ff;">var</span> assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName,<br>                                                                                AssemblyBuilderAccess.RunAndSave);<br>            <span style="color: #0000ff;">var</span> moduleBuilder = assemblyBuilder.DefineDynamicModule(name, fileName);<br>            <span style="color: #0000ff;">var</span> aopType = BulidType(classType, moduleBuilder);<br><br>            assemblyBuilder.Save(fileName);<br>            <span style="color: #0000ff;">return</span> (T)Activator.CreateInstance(aopType);<br>        }</pre><br></div>
+
+<p>构建类包含了</p>
+<p>1 构建类型</p>
+<div class="cnblogs_code"><br><pre><span style="color: #008000;">//</span><span style="color: #008000;">定义类型</span><span style="color: #008000;"><br></span>            <span style="color: #0000ff;">var</span> typeBuilder = moduleBuilder.DefineType(className,<br>                                                       TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Class,<br>                                                       classType);</pre><br></div>
+
+<p>&nbsp;</p>
+<p>2&nbsp;构建拦截器字段_inspector</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #0000ff;">var</span> inspectorFieldBuilder = typeBuilder.DefineField(<span style="color: #800000;">“</span><span style="color: #800000;">_inspector</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">typeof</span> (IInterceptor),<br>                                                                FieldAttributes.Private | FieldAttributes.InitOnly);</pre><br></div>
+
+<p>&nbsp;</p>
+<p>3 构建构造函数 初始化inspector</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">var</span> ctorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.HasThis,<br>                                                                Type.EmptyTypes);<br>                <span style="color: #0000ff;">var</span> il = ctorBuilder.GetILGenerator();<br><br>                il.Emit(OpCodes.Ldarg_0);<br>                il.Emit(OpCodes.Call, classType.GetConstructor(Type.EmptyTypes));<span style="color: #008000;">//</span><span style="color: #008000;">调用base的默认ctor</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldarg_0);<br>                <span style="color: #008000;">//</span><span style="color: #008000;">将typeof(classType)压入计算堆</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldtoken, classType);<br>                il.Emit(OpCodes.Call, <span style="color: #0000ff;">typeof</span> (Type).GetMethod(<span style="color: #800000;">“</span><span style="color: #800000;">GetTypeFromHandle</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">new</span>[] {<span style="color: #0000ff;">typeof</span> (RuntimeTypeHandle)}));<br>                <span style="color: #008000;">//</span><span style="color: #008000;">调用DefaultInterceptorFactory.Create(type)</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Call, <span style="color: #0000ff;">typeof</span> (DefaultInterceptorFactory).GetMethod(<span style="color: #800000;">“</span><span style="color: #800000;">Create</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">new</span>[] {<span style="color: #0000ff;">typeof</span> (Type)}));<br>                <span style="color: #008000;">//</span><span style="color: #008000;">将结果保存到字段_inspector</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Stfld, inspectorFieldBuilder);<br>                il.Emit(OpCodes.Ret);</pre><br></div>
+
+<p>&nbsp;</p>
+<p>&nbsp;<br>4 构建方法 使用拦截器_inspector<br>首先得到父类的methodInfo 获取必要的信息</p>
+<div class="cnblogs_code"><br><pre>  <span style="color: #0000ff;">var</span> parameterInfos = methodInfo.GetParameters();<br>                <span style="color: #0000ff;">var</span> parameterTypes = parameterInfos.Select(p =&gt; p.ParameterType).ToArray();<br>                <span style="color: #0000ff;">var</span> parameterLength = parameterTypes.Length;<br>                <span style="color: #0000ff;">var</span> hasResult = methodInfo.ReturnType != VoidType;<br><br>                <span style="color: #0000ff;">var</span> methodBuilder = typeBuilder.DefineMethod(methodInfo.Name,<br>                                                             MethodAttributes.Public | MethodAttributes.Final |<br>                                                             MethodAttributes.Virtual<br>                                                             , methodInfo.ReturnType<br>                                                             , parameterTypes);</pre><br></div>
+
+<p>定义局部变量 这个顺序很重要 下面的操作要使用到</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">var</span> il = methodBuilder.GetILGenerator();<br><br>                <span style="color: #008000;">//</span><span style="color: #008000;">局部变量</span><span style="color: #008000;"><br></span>                il.DeclareLocal(<span style="color: #0000ff;">typeof</span> (<span style="color: #0000ff;">object</span>)); <span style="color: #008000;">//</span><span style="color: #008000;">correlationState</span><span style="color: #008000;"><br></span>                il.DeclareLocal(<span style="color: #0000ff;">typeof</span> (<span style="color: #0000ff;">object</span>)); <span style="color: #008000;">//</span><span style="color: #008000;">result</span><span style="color: #008000;"><br></span>                il.DeclareLocal(<span style="color: #0000ff;">typeof</span> (<span style="color: #0000ff;">object</span>[])); <span style="color: #008000;">//</span><span style="color: #008000;">parameters</span></pre><br></div>
+
+<p>首先是调用BeforeCall</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #008000;">//</span><span style="color: #008000;">BeforeCall(string operationName, object[] inputs);</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldarg_0);<br><br>                il.Emit(OpCodes.Ldfld, inspectorFieldBuilder);<span style="color: #008000;">//</span><span style="color: #008000;">获取字段_inspector</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldstr, methodInfo.Name);<span style="color: #008000;">//</span><span style="color: #008000;">参数operationName</span><span style="color: #008000;"><br></span><br>                <span style="color: #0000ff;">if</span> (parameterLength == <span style="color: #800080;">0</span>)<span style="color: #008000;">//</span><span style="color: #008000;">判断方法参数长度</span><span style="color: #008000;"><br></span>                {<br>                    il.Emit(OpCodes.Ldnull);<span style="color: #008000;">//</span><span style="color: #008000;">null -&gt; 参数 inputs</span><span style="color: #008000;"><br></span>                }<br>                <span style="color: #0000ff;">else</span><br>                {<br>                    <span style="color: #008000;">//</span><span style="color: #008000;">创建new object[parameterLength];</span><span style="color: #008000;"><br></span>                    il.Emit(OpCodes.Ldc_I4, parameterLength);<br>                    il.Emit(OpCodes.Newarr, <span style="color: #0000ff;">typeof</span>(Object));<br>                    il.Emit(OpCodes.Stloc_2);<span style="color: #008000;">//</span><span style="color: #008000;">压入局部变量2 parameters</span><span style="color: #008000;"><br></span><br>                    <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>, j = <span style="color: #800080;">1</span>; i &lt; parameterLength; i++, j++)<br>                    {<br>                        <span style="color: #008000;">//</span><span style="color: #008000;">object[i] = arg[j]</span><span style="color: #008000;"><br></span>                        il.Emit(OpCodes.Ldloc_2);<br>                        il.Emit(OpCodes.Ldc_I4, <span style="color: #800080;">0</span>);<br>                        il.Emit(OpCodes.Ldarg, j);<br>                        <span style="color: #0000ff;">if</span> (parameterTypes[i].IsValueType) il.Emit(OpCodes.Box, parameterTypes[i]);<span style="color: #008000;">//</span><span style="color: #008000;">对值类型装箱</span><span style="color: #008000;"><br></span>                        il.Emit(OpCodes.Stelem_Ref);<br>                    }<br>                    il.Emit(OpCodes.Ldloc_2);<span style="color: #008000;">//</span><span style="color: #008000;">取出局部变量2 parameters-&gt; 参数 inputs</span><span style="color: #008000;"><br></span>                }<br><br>                il.Emit(OpCodes.Callvirt, <span style="color: #0000ff;">typeof</span>(IInterceptor).GetMethod(<span style="color: #800000;">“</span><span style="color: #800000;">BeforeCall</span><span style="color: #800000;">“</span>));<span style="color: #008000;">//</span><span style="color: #008000;">调用BeforeCall</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Stloc_0);<span style="color: #008000;">//</span><span style="color: #008000;">建返回压入局部变量0 correlationState</span></pre><br></div>
+
+<p>接下来调用base的方法</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #008000;">//</span><span style="color: #008000;">Call methodInfo</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldarg_0);<br>                <span style="color: #008000;">//</span><span style="color: #008000;">获取参数表</span><span style="color: #008000;"><br></span>                <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">1</span>, length = parameterLength + <span style="color: #800080;">1</span>; i &lt; length; i++)<br>                {<br>                    il.Emit(OpCodes.Ldarg_S, i);<br>                }<br>                il.Emit(OpCodes.Call, methodInfo);<br>                <span style="color: #008000;">//</span><span style="color: #008000;">将返回值压入 局部变量1result void就压入null</span><span style="color: #008000;"><br></span>                <span style="color: #0000ff;">if</span> (!hasResult) il.Emit(OpCodes.Ldnull);<br>                <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (methodInfo.ReturnType.IsValueType) il.Emit(OpCodes.Box, methodInfo.ReturnType);<span style="color: #008000;">//</span><span style="color: #008000;">对值类型装箱</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Stloc_1);</pre><br></div>
+
+<p>下面调用AfterCall</p>
+<div class="cnblogs_code"><br><pre>  <span style="color: #008000;">//</span><span style="color: #008000;">AfterCall(string operationName, object returnValue, object correlationState);</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldarg_0);<br>                il.Emit(OpCodes.Ldfld, inspectorFieldBuilder);<span style="color: #008000;">//</span><span style="color: #008000;">获取字段_inspector</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldstr, methodInfo.Name);<span style="color: #008000;">//</span><span style="color: #008000;">参数 operationName</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldloc_1);<span style="color: #008000;">//</span><span style="color: #008000;">局部变量1 result -&gt; 参数 returnValue</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldloc_0);<span style="color: #008000;">//</span><span style="color: #008000;"> 局部变量0 correlationState -&gt; 参数 correlationState</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Callvirt, <span style="color: #0000ff;">typeof</span> (IInterceptor).GetMethod(<span style="color: #800000;">“</span><span style="color: #800000;">AfterCall</span><span style="color: #800000;">“</span>));</pre><br></div>
+
+<p>最后是返回</p>
+<div class="cnblogs_code"><br><pre><span style="color: #008000;">//</span><span style="color: #008000;">result</span><span style="color: #008000;"><br></span>                <span style="color: #0000ff;">if</span> (!hasResult)<br>                {<br>                    il.Emit(OpCodes.Ret);<br>                    <span style="color: #0000ff;">return</span>;<br>                }<br>                il.Emit(OpCodes.Ldloc_1);<span style="color: #008000;">//</span><span style="color: #008000;">非void取出局部变量1 result</span><span style="color: #008000;"><br></span>                <span style="color: #0000ff;">if</span> (methodInfo.ReturnType.IsValueType) il.Emit(OpCodes.Unbox_Any, methodInfo.ReturnType);<span style="color: #008000;">//</span><span style="color: #008000;">对值类型拆箱</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ret);</pre><br></div>
+
+<p>&nbsp;</p>
+<p>完成实现如下：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('e4ba6ae5-4fe6-48af-a6a0-371a4211e67e')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_e4ba6ae5-4fe6-48af-a6a0-371a4211e67e" class="cnblogs_code_hide"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">class</span> DefaultProxyBuilder<br>    {<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> Type VoidType = Type.GetType(<span style="color: #800000;">“</span><span style="color: #800000;">System.Void</span><span style="color: #800000;">“</span>);<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> T CreateProxy&lt;T&gt;()<br>        {<br>            Type classType = <span style="color: #0000ff;">typeof</span>(T);<br><br>            <span style="color: #0000ff;">string</span> name = classType.Namespace + <span style="color: #800000;">“</span><span style="color: #800000;">.Aop</span><span style="color: #800000;">“</span>;<br>            <span style="color: #0000ff;">string</span> fileName = name + <span style="color: #800000;">“</span><span style="color: #800000;">.dll</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #0000ff;">var</span> assemblyName = <span style="color: #0000ff;">new</span> AssemblyName(name);<br>            <span style="color: #0000ff;">var</span> assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName,<br>                                                                                AssemblyBuilderAccess.RunAndSave);<br>            <span style="color: #0000ff;">var</span> moduleBuilder = assemblyBuilder.DefineDynamicModule(name, fileName);<br>            <span style="color: #0000ff;">var</span> aopType = BulidType(classType, moduleBuilder);<br><br>            assemblyBuilder.Save(fileName);<br>            <span style="color: #0000ff;">return</span> (T)Activator.CreateInstance(aopType);<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> Type BulidType(Type classType, ModuleBuilder moduleBuilder)<br>        {<br>            <span style="color: #0000ff;">string</span> className = classType.Name + <span style="color: #800000;">“</span><span style="color: #800000;">_Proxy</span><span style="color: #800000;">“</span>;<br><br>            <span style="color: #008000;">//</span><span style="color: #008000;">定义类型</span><span style="color: #008000;"><br></span>            <span style="color: #0000ff;">var</span> typeBuilder = moduleBuilder.DefineType(className,<br>                                                       TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Class,<br>                                                       classType);<br>            <span style="color: #008000;">//</span><span style="color: #008000;">定义字段 _inspector</span><span style="color: #008000;"><br></span>            <span style="color: #0000ff;">var</span> inspectorFieldBuilder = typeBuilder.DefineField(<span style="color: #800000;">“</span><span style="color: #800000;">_inspector</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">typeof</span>(IInterceptor),<br>                                                                FieldAttributes.Private | FieldAttributes.InitOnly);<br>            <span style="color: #008000;">//</span><span style="color: #008000;">构造函数</span><span style="color: #008000;"><br></span>            BuildCtor(classType, inspectorFieldBuilder, typeBuilder);<br><br>            <span style="color: #008000;">//</span><span style="color: #008000;">构造方法</span><span style="color: #008000;"><br></span>            BuildMethod(classType, inspectorFieldBuilder, typeBuilder);<br>            Type aopType = typeBuilder.CreateType();<br>            <span style="color: #0000ff;">return</span> aopType;<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> BuildMethod(Type classType, FieldBuilder inspectorFieldBuilder, TypeBuilder typeBuilder)<br>        {<br>            <span style="color: #0000ff;">var</span> methodInfos = classType.GetMethods();<br>            <span style="color: #0000ff;">foreach</span> (<span style="color: #0000ff;">var</span> methodInfo <span style="color: #0000ff;">in</span> methodInfos)<br>            {<br>                <span style="color: #0000ff;">if</span> (!methodInfo.IsVirtual &amp;&amp; !methodInfo.IsAbstract) <span style="color: #0000ff;">continue</span>;<br>                <span style="color: #0000ff;">if</span> (methodInfo.Name == <span style="color: #800000;">“</span><span style="color: #800000;">ToString</span><span style="color: #800000;">“</span>) <span style="color: #0000ff;">continue</span>;<br>                <span style="color: #0000ff;">if</span> (methodInfo.Name == <span style="color: #800000;">“</span><span style="color: #800000;">GetHashCode</span><span style="color: #800000;">“</span>) <span style="color: #0000ff;">continue</span>;<br>                <span style="color: #0000ff;">if</span> (methodInfo.Name == <span style="color: #800000;">“</span><span style="color: #800000;">Equals</span><span style="color: #800000;">“</span>) <span style="color: #0000ff;">continue</span>;<br><br>                <span style="color: #0000ff;">var</span> parameterInfos = methodInfo.GetParameters();<br>                <span style="color: #0000ff;">var</span> parameterTypes = parameterInfos.Select(p =&gt; p.ParameterType).ToArray();<br>                <span style="color: #0000ff;">var</span> parameterLength = parameterTypes.Length;<br>                <span style="color: #0000ff;">var</span> hasResult = methodInfo.ReturnType != VoidType;<br><br>                <span style="color: #0000ff;">var</span> methodBuilder = typeBuilder.DefineMethod(methodInfo.Name,<br>                                                             MethodAttributes.Public | MethodAttributes.Final |<br>                                                             MethodAttributes.Virtual<br>                                                             , methodInfo.ReturnType<br>                                                             , parameterTypes);<br><br>                <span style="color: #0000ff;">var</span> il = methodBuilder.GetILGenerator();<br><br>                <span style="color: #008000;">//</span><span style="color: #008000;">局部变量</span><span style="color: #008000;"><br></span>                il.DeclareLocal(<span style="color: #0000ff;">typeof</span>(<span style="color: #0000ff;">object</span>)); <span style="color: #008000;">//</span><span style="color: #008000;">correlationState</span><span style="color: #008000;"><br></span>                il.DeclareLocal(<span style="color: #0000ff;">typeof</span>(<span style="color: #0000ff;">object</span>)); <span style="color: #008000;">//</span><span style="color: #008000;">result</span><span style="color: #008000;"><br></span>                il.DeclareLocal(<span style="color: #0000ff;">typeof</span>(<span style="color: #0000ff;">object</span>[])); <span style="color: #008000;">//</span><span style="color: #008000;">parameters<br><br>                </span><span style="color: #008000;">//</span><span style="color: #008000;">BeforeCall(string operationName, object[] inputs);</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldarg_0);<br><br>                il.Emit(OpCodes.Ldfld, inspectorFieldBuilder);<span style="color: #008000;">//</span><span style="color: #008000;">获取字段_inspector</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldstr, methodInfo.Name);<span style="color: #008000;">//</span><span style="color: #008000;">参数operationName</span><span style="color: #008000;"><br></span><br>                <span style="color: #0000ff;">if</span> (parameterLength == <span style="color: #800080;">0</span>)<span style="color: #008000;">//</span><span style="color: #008000;">判断方法参数长度</span><span style="color: #008000;"><br></span>                {<br>                    il.Emit(OpCodes.Ldnull);<span style="color: #008000;">//</span><span style="color: #008000;">null -&gt; 参数 inputs</span><span style="color: #008000;"><br></span>                }<br>                <span style="color: #0000ff;">else</span><br>                {<br>                    <span style="color: #008000;">//</span><span style="color: #008000;">创建new object[parameterLength];</span><span style="color: #008000;"><br></span>                    il.Emit(OpCodes.Ldc_I4, parameterLength);<br>                    il.Emit(OpCodes.Newarr, <span style="color: #0000ff;">typeof</span>(Object));<br>                    il.Emit(OpCodes.Stloc_2);<span style="color: #008000;">//</span><span style="color: #008000;">压入局部变量2 parameters</span><span style="color: #008000;"><br></span><br>                    <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>, j = <span style="color: #800080;">1</span>; i &lt; parameterLength; i++, j++)<br>                    {<br>                        <span style="color: #008000;">//</span><span style="color: #008000;">object[i] = arg[j]</span><span style="color: #008000;"><br></span>                        il.Emit(OpCodes.Ldloc_2);<br>                        il.Emit(OpCodes.Ldc_I4, <span style="color: #800080;">0</span>);<br>                        il.Emit(OpCodes.Ldarg, j);<br>                        <span style="color: #0000ff;">if</span> (parameterTypes[i].IsValueType) il.Emit(OpCodes.Box, parameterTypes[i]);<span style="color: #008000;">//</span><span style="color: #008000;">对值类型装箱</span><span style="color: #008000;"><br></span>                        il.Emit(OpCodes.Stelem_Ref);<br>                    }<br>                    il.Emit(OpCodes.Ldloc_2);<span style="color: #008000;">//</span><span style="color: #008000;">取出局部变量2 parameters-&gt; 参数 inputs</span><span style="color: #008000;"><br></span>                }<br><br>                il.Emit(OpCodes.Callvirt, <span style="color: #0000ff;">typeof</span>(IInterceptor).GetMethod(<span style="color: #800000;">“</span><span style="color: #800000;">BeforeCall</span><span style="color: #800000;">“</span>));<span style="color: #008000;">//</span><span style="color: #008000;">调用BeforeCall</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Stloc_0);<span style="color: #008000;">//</span><span style="color: #008000;">建返回压入局部变量0 correlationState<br><br>                </span><span style="color: #008000;">//</span><span style="color: #008000;">Call methodInfo</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldarg_0);<br>                <span style="color: #008000;">//</span><span style="color: #008000;">获取参数表</span><span style="color: #008000;"><br></span>                <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">1</span>, length = parameterLength + <span style="color: #800080;">1</span>; i &lt; length; i++)<br>                {<br>                    il.Emit(OpCodes.Ldarg_S, i);<br>                }<br>                il.Emit(OpCodes.Call, methodInfo);<br>                <span style="color: #008000;">//</span><span style="color: #008000;">将返回值压入 局部变量1result void就压入null</span><span style="color: #008000;"><br></span>                <span style="color: #0000ff;">if</span> (!hasResult) il.Emit(OpCodes.Ldnull);<br>                <span style="color: #0000ff;">else</span> <span style="color: #0000ff;">if</span> (methodInfo.ReturnType.IsValueType) il.Emit(OpCodes.Box, methodInfo.ReturnType);<span style="color: #008000;">//</span><span style="color: #008000;">对值类型装箱</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Stloc_1);<br><br>                <span style="color: #008000;">//</span><span style="color: #008000;">AfterCall(string operationName, object returnValue, object correlationState);</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldarg_0);<br>                il.Emit(OpCodes.Ldfld, inspectorFieldBuilder);<span style="color: #008000;">//</span><span style="color: #008000;">获取字段_inspector</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldstr, methodInfo.Name);<span style="color: #008000;">//</span><span style="color: #008000;">参数 operationName</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldloc_1);<span style="color: #008000;">//</span><span style="color: #008000;">局部变量1 result</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldloc_0);<span style="color: #008000;">//</span><span style="color: #008000;"> 局部变量0 correlationState</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Callvirt, <span style="color: #0000ff;">typeof</span>(IInterceptor).GetMethod(<span style="color: #800000;">“</span><span style="color: #800000;">AfterCall</span><span style="color: #800000;">“</span>));<br><br>                <span style="color: #008000;">//</span><span style="color: #008000;">result</span><span style="color: #008000;"><br></span>                <span style="color: #0000ff;">if</span> (!hasResult)<br>                {<br>                    il.Emit(OpCodes.Ret);<br>                    <span style="color: #0000ff;">return</span>;<br>                }<br>                il.Emit(OpCodes.Ldloc_1);<span style="color: #008000;">//</span><span style="color: #008000;">非void取出局部变量1 result</span><span style="color: #008000;"><br></span>                <span style="color: #0000ff;">if</span> (methodInfo.ReturnType.IsValueType) il.Emit(OpCodes.Unbox_Any, methodInfo.ReturnType);<span style="color: #008000;">//</span><span style="color: #008000;">对值类型拆箱</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ret);<br>            }<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> BuildCtor(Type classType, FieldBuilder inspectorFieldBuilder, TypeBuilder typeBuilder)<br>        {<br>            {<br>                <span style="color: #0000ff;">var</span> ctorBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.HasThis,<br>                                                                Type.EmptyTypes);<br>                <span style="color: #0000ff;">var</span> il = ctorBuilder.GetILGenerator();<br><br>                il.Emit(OpCodes.Ldarg_0);<br>                il.Emit(OpCodes.Call, classType.GetConstructor(Type.EmptyTypes));<span style="color: #008000;">//</span><span style="color: #008000;">调用base的默认ctor</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldarg_0);<br>                <span style="color: #008000;">//</span><span style="color: #008000;">将typeof(classType)压入计算堆</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Ldtoken, classType);<br>                il.Emit(OpCodes.Call, <span style="color: #0000ff;">typeof</span>(Type).GetMethod(<span style="color: #800000;">“</span><span style="color: #800000;">GetTypeFromHandle</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">new</span>[] { <span style="color: #0000ff;">typeof</span>(RuntimeTypeHandle) }));<br>                <span style="color: #008000;">//</span><span style="color: #008000;">调用DefaultInterceptorFactory.Create(type)</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Call, <span style="color: #0000ff;">typeof</span>(DefaultInterceptorFactory).GetMethod(<span style="color: #800000;">“</span><span style="color: #800000;">Create</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">new</span>[] { <span style="color: #0000ff;">typeof</span>(Type) }));<br>                <span style="color: #008000;">//</span><span style="color: #008000;">将结果保存到字段_inspector</span><span style="color: #008000;"><br></span>                il.Emit(OpCodes.Stfld, inspectorFieldBuilder);<br>                il.Emit(OpCodes.Ret);<br>            }<br>        }<br>    }</pre><br></div><br></div>
+
+<p>&nbsp;</p>
+<p>测试一下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">static</span> <span style="color: #0000ff;">void</span> Main(<span style="color: #0000ff;">string</span>[] args)<br>        {<br>            Animal animal = DefaultProxyBuilder.CreateProxy&lt;Animal&gt;();<br>            animal.Speak();<br>            Console.WriteLine();<br>            animal.Speak(<span style="color: #800000;">“</span><span style="color: #800000;">Hello</span><span style="color: #800000;">“</span>);<br>        }</pre><br></div>
+
+<p>打印结果：</p>
+<p>Before call :Speak</p>
+<p>Animal.Speak</p>
+<p>After call :Speak resule: Null</p>
+<p>&nbsp;</p>
+<p>Before call :Speak</p>
+<p>Animal.Speak:Hello</p>
+<p>After call :Speak resule: Hello</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2011/12/17/emit实现简单的aop/" data-id="ux3ggoomerp52szj" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-【原创】通过dlr创建私有成员访问器进行白盒测试" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2011/12/14/【原创】通过dlr创建私有成员访问器进行白盒测试/" class="article-date">
+  <time datetime="2011-12-14T01:03:00.000Z" itemprop="datePublished">12月 14 2011</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2011/12/14/【原创】通过dlr创建私有成员访问器进行白盒测试/">【原创】通过DLR创建私有成员访问器进行白盒测试</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在编写NUnit测试的时候有时候需要对非公有有成员进行测试，每个方法都通过反射还是比较麻烦而且不美观。在4.0中可以借助DLR创建一个访问器Accessor动态获取私有成员直接调用。</p>
+<p><span style="color: #888888;">动态语言运行时 (DLR) 是一种新运行时环境，它将一组适用于动态语言的服务添加到 CLR。借助于 DLR，可以更轻松地开发要在 .NET Framework 上运行的动态语言，而且向静态类型化语言添加动态功能也会更容易。</span></p>
+<p>假设有一个类Class1</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> Class1<br> {<br>         <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">int</span> Add(<span style="color: #0000ff;">int</span> a, <span style="color: #0000ff;">int</span> b)<br>        {<br>            <span style="color: #0000ff;">return</span> a + b;<br>        }<br>}</pre><br></div>
+
+<p>我希望能够这样编写测试</p>
+<div class="cnblogs_code"><br><pre>[Test]<br><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Class1AddTest()<br>{<br>      dynamic class1 = <span style="color: #0000ff;">new</span> Accessor(<span style="color: #0000ff;">typeof</span>(Class1));<br>      <span style="color: #0000ff;">int</span> result = class1.Add(<span style="color: #800080;">1</span>, <span style="color: #800080;">2</span>);<br>      Assert.That(result, Is.EqualTo(<span style="color: #800080;">3</span>));<br>}</pre><br></div>
+
+<p>现在我设计了一个Accessor类来完成这个工作 .</p>
+<p>&nbsp;</p>
+<p>下面是我的实现方式：</p>
+<p>首先要继承动态行为基类DynamicObject,先定义成员包括被代理的实例、实例包含的方法表和属性表</p>
+<div class="cnblogs_code"><br><pre><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br></span><span style="color: #808080;">///</span><span style="color: #008000;"> 实例访问器<br></span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">sealed</span> <span style="color: #0000ff;">class</span> Accessor : DynamicObject<br>{<br>     <span style="color: #0000ff;">#region</span> 成员<br>     <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>      </span><span style="color: #808080;">///</span><span style="color: #008000;"> 实例<br>     </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>     <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">object</span> instance;<br>     <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>     </span><span style="color: #808080;">///</span><span style="color: #008000;"> 方法表<br>    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>    <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> IDictionary&lt;<span style="color: #0000ff;">string</span>, IGrouping&lt;<span style="color: #0000ff;">string</span>, MethodInfo&gt;&gt; methodInfos;<br>     <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>     </span><span style="color: #808080;">///</span><span style="color: #008000;"> 属性表<br>    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>     <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> IDictionary&lt;<span style="color: #0000ff;">string</span>, PropertyInfo&gt; propertyInfos;<br>     <span style="color: #0000ff;">#endregion</span><br>}</pre><br></div>
+
+<p>为了实现成员访问必须实现对方法Method、属性Property，和索引器Index的访问</p>
+<p>首先是方法Method，</p>
+<p>方法调用有一个重要的问题就是方法重载overload的解决</p>
+<p>使用方法名作为Key用 Dictionary&lt;string, IGrouping&lt;string, MethodInfo&gt;&gt;来分组保存重载的方法</p>
+<p>方法表和属性表通过instance的Type反射出来，不过要注意包含私有方法。</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #0000ff;">public</span> Accessor(<span style="color: #0000ff;">object</span> instance)<br>        {<br>            <span style="color: #0000ff;">this</span>.instance = instance;<br>            <span style="color: #0000ff;">const</span> BindingFlags flag = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;<br>            <span style="color: #0000ff;">var</span> type = instance.GetType();<br><br>            <span style="color: #0000ff;">this</span>.methodInfos = type.GetMethods(flag)<br>                .GroupBy(p =&gt; p.Name)<br>                .ToDictionary(p =&gt; p.Key);<br>            <span style="color: #0000ff;">this</span>.propertyInfos = type.GetProperties(flag)<br>                .ToDictionary(p =&gt; p.Name);<br>        }</pre><br></div>
+
+<p>查找重载方法主要通过对比参数表实现，具体如下：</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">bool</span> CheckOverLoadParameters(MethodInfo method, <span style="color: #0000ff;">object</span>[] args)<br>{<br>            <span style="color: #0000ff;">var</span> parms = method.GetParameters();<br>            <span style="color: #0000ff;">var</span> length = parms.Length;<br>            <span style="color: #0000ff;">if</span> (length == <span style="color: #800080;">0</span> &amp;&amp; args == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>            <span style="color: #0000ff;">if</span> (length != args.Length) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>;<br><br>            <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; length; i++)<br>            {<br>                <span style="color: #0000ff;">if</span> (parms[<span style="color: #800080;">0</span>].ParameterType != args[<span style="color: #800080;">0</span>].GetType())<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>;<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>} </pre><br></div>
+
+<p>下面要做的就是重写DynamicObject的访问方法bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result) 返回值true表示此方法可用。</p>
+<p>查询到对于的MethodInfo，通过反射调用即可，具体实现如下:</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryInvokeMember(InvokeMemberBinder binder, <span style="color: #0000ff;">object</span>[] args, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            IGrouping&lt;<span style="color: #0000ff;">string</span>, MethodInfo&gt; methods;<br>            <span style="color: #0000ff;">bool</span> success = methodInfos.TryGetValue(binder.Name, <span style="color: #0000ff;">out</span> methods)<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                <span style="color: #0000ff;">var</span> method = methods.Where(p =&gt; CheckOverLoadParameters(p, args)).FirstOrDefault();<br>                <span style="color: #0000ff;">if</span> (method != <span style="color: #0000ff;">null</span>)<br>                {<br>                    result = method.Invoke(instance, args);<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>                }<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryInvokeMember(binder, args, <span style="color: #0000ff;">out</span> result);<br>        }</pre><br></div>
+
+<p>属性不能重名就比较简单了，直接从属性表获取即可</p>
+<p>属性Get操作需要重写DynamicObject的访问方法TryGetMember，Set操作需要重写DynamicObject的访问方法TrySetMember。</p>
+<p>我们都知道XXX的Get操作实际上是调用get_XXX(),所以反射调用的时候需要从propertyInfo的GetGetMethod获取Get操作的MethodInfo</p>
+<p>Get操作的具体实现如下，Set操作只是将GetGetMethod换成GetSetMethod。</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryGetMember(GetMemberBinder binder, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(binder.Name, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                <span style="color: #0000ff;">var</span> method = propertyInfo.GetGetMethod(<span style="color: #0000ff;">true</span>);<br>                <span style="color: #0000ff;">if</span> (method != <span style="color: #0000ff;">null</span>)<br>                {<br>                    result = method.Invoke(instance, <span style="color: #0000ff;">null</span>);<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>                }<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryGetMember(binder, <span style="color: #0000ff;">out</span> result);<br>        }</pre><br></div>
+
+<p>最后是索引器了，了解CLR的都知道索引器其实是get_Item属性，那么在属性表查询属性名为”Item”的即可。</p>
+<p>索引器Get操作需要重写DynamicObject的访问方法TryGetIndex，Set操作需要重写DynamicObject的访问方法TrySetIndex。</p>
+<p>代码和属性操作差不多，只是反射的时候直接调用propertyInfo的SetValue和GetValue。</p>
+<p>索引器Get操作具体实现如下：</p>
+<div class="cnblogs_code"><br><pre>  <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryGetIndex(GetIndexBinder binder, <span style="color: #0000ff;">object</span>[] indexes, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(<span style="color: #800000;">“</span><span style="color: #800000;">Item</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                result = propertyInfo.GetValue(instance, indexes);<br>                <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryGetIndex(binder, indexes, <span style="color: #0000ff;">out</span> result);<br>        }</pre><br></div>
+
+<p>&nbsp;</p>
+<p>好了这样就可以调用了，测试一下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> Class1<br> {<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">int</span> Add(<span style="color: #0000ff;">int</span> a, <span style="color: #0000ff;">int</span> b)<br>        {<br>            <span style="color: #0000ff;">return</span> a + b;<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">int</span> Add(<span style="color: #0000ff;">int</span> a, <span style="color: #0000ff;">int</span> b, <span style="color: #0000ff;">int</span> c)<br>        {<br>            <span style="color: #0000ff;">return</span> a + b + c;<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">int</span> X { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span>; }<br><br>       <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">int</span> <span style="color: #0000ff;">this</span>[<span style="color: #0000ff;">int</span> i]<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> tmp[i]; }<br>            <span style="color: #0000ff;">set</span> { tmp[i] = value; }<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">int</span>[] tmp = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">int</span>[<span style="color: #800080;">100</span>];<br>}<br><br> [TestFixture]<br>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> Class1Test<br>    {<br><br>         [Test]<br>         <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> AddTest()<br>        {<br>              dynamic class1 = <span style="color: #0000ff;">new</span> Accessor(<span style="color: #0000ff;">typeof</span>(Class1));<br>              <span style="color: #0000ff;">int</span> result = class1.Add(<span style="color: #800080;">1</span>, <span style="color: #800080;">2</span>);<br>               Assert.That(result, Is.EqualTo(<span style="color: #800080;">3</span>));<br>              <span style="color: #0000ff;">int</span> result = class1.Add(<span style="color: #800080;">1</span>, <span style="color: #800080;">2</span>, <span style="color: #800080;">3</span>);<br>              Assert.That(result, Is.EqualTo(<span style="color: #800080;">6</span>));<br>       }<br><br>        [Test]<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> XTest()<br>        {<br>            dynamic class1 = <span style="color: #0000ff;">new</span> Accessor(<span style="color: #0000ff;">typeof</span>(Class1));<br>            class1.X = <span style="color: #800080;">1</span>;<br>            Assert.That(class1.X, Is.EqualTo(<span style="color: #800080;">1</span>));<br>        }<br><br>        [Test]<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> IndexIntTest()<br>        {<br>            dynamic class1 = <span style="color: #0000ff;">new</span> Accessor(<span style="color: #0000ff;">typeof</span>(Class1));<br>            class1[<span style="color: #800080;">0</span>] = <span style="color: #800080;">1</span>;<br>            Assert.That(class1[<span style="color: #800080;">0</span>], Is.EqualTo(<span style="color: #800080;">1</span>));<br>        }<br>}</pre><br></div>
+
+<p>这样测试私有成员就方便多了。</p>
+<p>Accessor完整代码如下：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('77bb7445-f220-40ac-ac19-b347be44921e')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_77bb7445-f220-40ac-ac19-b347be44921e" class="cnblogs_code_hide"><br><pre>    <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>    </span><span style="color: #808080;">///</span><span style="color: #008000;"> 实例访问器<br>    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">sealed</span> <span style="color: #0000ff;">class</span> Accessor : DynamicObject<br>    {<br>        <span style="color: #0000ff;">#region</span> 成员<br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 实例<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">object</span> instance;<br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 方法表<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> IDictionary&lt;<span style="color: #0000ff;">string</span>, IGrouping&lt;<span style="color: #0000ff;">string</span>, MethodInfo&gt;&gt; methodInfos;<br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 属性表<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> IDictionary&lt;<span style="color: #0000ff;">string</span>, PropertyInfo&gt; propertyInfos;<br>        <span style="color: #0000ff;">#endregion</span><br><br>        <span style="color: #0000ff;">#region</span> 构造函数<br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 通过实例创建实例访问器<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”instance”&gt;</span><span style="color: #008000;">实例对象</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> Accessor(<span style="color: #0000ff;">object</span> instance)<br>        {<br>            <span style="color: #0000ff;">this</span>.instance = instance;<br>            <span style="color: #0000ff;">const</span> BindingFlags flag = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;<br>            <span style="color: #0000ff;">var</span> type = instance.GetType();<br><br>            <span style="color: #0000ff;">this</span>.methodInfos = type.GetMethods(flag)<br>                .GroupBy(p =&gt; p.Name)<br>                .ToDictionary(p =&gt; p.Key);<br>            <span style="color: #0000ff;">this</span>.propertyInfos = type.GetProperties(flag)<br>                .ToDictionary(p =&gt; p.Name);<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 通过指定实例类型的默认构造创建实例访问器<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”type”&gt;</span><span style="color: #008000;">实例类型</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> Accessor(Type type)<br>            : <span style="color: #0000ff;">this</span>(Activator.CreateInstance(type))<br>        {<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 通过指定实例类型创建实例访问器<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”type”&gt;</span><span style="color: #008000;">实例类型</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”args”&gt;</span><span style="color: #008000;">参数</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> Accessor(Type type, <span style="color: #0000ff;">params</span> <span style="color: #0000ff;">object</span>[] args)<br>            : <span style="color: #0000ff;">this</span>(Activator.CreateInstance(type, args))<br>        {<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 通过指定实例类型名创建实例访问器<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”assemblyName”&gt;</span><span style="color: #008000;">程序集名称</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”fullTypeName”&gt;</span><span style="color: #008000;">实例类型全名</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”args”&gt;</span><span style="color: #008000;">参数</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> Accessor(<span style="color: #0000ff;">string</span> assemblyName, <span style="color: #0000ff;">string</span> fullTypeName, <span style="color: #0000ff;">params</span> <span style="color: #0000ff;">object</span>[] args)<br>            : <span style="color: #0000ff;">this</span>(Activator.CreateInstance(<br>            assemblyName, fullTypeName, <span style="color: #0000ff;">false</span>,<br>            BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic,<br>            <span style="color: #0000ff;">null</span>, args, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>).Unwrap())<br>        {<br><br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 通过指定实例类型名的默认构造函数创建实例访问器<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”assemblyName”&gt;</span><span style="color: #008000;">程序集名称</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”fullTypeName”&gt;</span><span style="color: #008000;">实例类型全名</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> Accessor(<span style="color: #0000ff;">string</span> assemblyName, <span style="color: #0000ff;">string</span> fullTypeName)<br>            : <span style="color: #0000ff;">this</span>(assemblyName, fullTypeName, <span style="color: #0000ff;">null</span>)<br>        {<br><br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 检查方法重载<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”method”&gt;&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”args”&gt;&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;&lt;/returns&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">bool</span> CheckOverLoadParameters(MethodInfo method, <span style="color: #0000ff;">object</span>[] args)<br>        {<br>            <span style="color: #0000ff;">var</span> parms = method.GetParameters();<br>            <span style="color: #0000ff;">var</span> length = parms.Length;<br>            <span style="color: #0000ff;">if</span> (length == <span style="color: #800080;">0</span> &amp;&amp; args == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>            <span style="color: #0000ff;">if</span> (length != args.Length) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>;<br><br>            <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; length; i++)<br>            {<br>                <span style="color: #0000ff;">if</span> (parms[<span style="color: #800080;">0</span>].ParameterType != args[<span style="color: #800080;">0</span>].GetType())<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>;<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>        }<br>        <span style="color: #0000ff;">#endregion</span><br><br>        <span style="color: #0000ff;">#region</span> DynamicObject 访问方法重写<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryInvokeMember(InvokeMemberBinder binder, <span style="color: #0000ff;">object</span>[] args, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            IGrouping&lt;<span style="color: #0000ff;">string</span>, MethodInfo&gt; methods;<br>            <span style="color: #0000ff;">bool</span> success = methodInfos.TryGetValue(binder.Name, <span style="color: #0000ff;">out</span> methods);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                <span style="color: #0000ff;">var</span> method = methods.Where(p =&gt; CheckOverLoadParameters(p, args)).FirstOrDefault();<br>                <span style="color: #0000ff;">if</span> (method != <span style="color: #0000ff;">null</span>)<br>                {<br>                    result = method.Invoke(instance, args);<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>                }<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryInvokeMember(binder, args, <span style="color: #0000ff;">out</span> result);<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryGetMember(GetMemberBinder binder, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(binder.Name, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                <span style="color: #0000ff;">var</span> method = propertyInfo.GetGetMethod(<span style="color: #0000ff;">true</span>);<br>                <span style="color: #0000ff;">if</span> (method != <span style="color: #0000ff;">null</span>)<br>                {<br>                    result = method.Invoke(instance, <span style="color: #0000ff;">null</span>);<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>                }<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryGetMember(binder, <span style="color: #0000ff;">out</span> result);<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TrySetMember(SetMemberBinder binder, <span style="color: #0000ff;">object</span> value)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(binder.Name, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                <span style="color: #0000ff;">var</span> method = propertyInfo.GetSetMethod(<span style="color: #0000ff;">true</span>);<br>                <span style="color: #0000ff;">if</span> (method != <span style="color: #0000ff;">null</span>)<br>                {<br>                    method.Invoke(instance, <span style="color: #0000ff;">new</span>[] { value });<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>                }<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TrySetMember(binder, value);<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryGetIndex(GetIndexBinder binder, <span style="color: #0000ff;">object</span>[] indexes, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(<span style="color: #800000;">“</span><span style="color: #800000;">Item</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                result = propertyInfo.GetValue(instance, indexes);<br>                <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryGetIndex(binder, indexes, <span style="color: #0000ff;">out</span> result);<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TrySetIndex(SetIndexBinder binder, <span style="color: #0000ff;">object</span>[] indexes, <span style="color: #0000ff;">object</span> value)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(<span style="color: #800000;">“</span><span style="color: #800000;">Item</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                propertyInfo.SetValue(instance, value, indexes);<br>                <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TrySetIndex(binder, indexes, value);<br>        }<br>        <span style="color: #0000ff;">#endregion</span><br><br>    }</pre><br></div><br></div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2011/12/14/【原创】通过dlr创建私有成员访问器进行白盒测试/" data-id="7w077bysh806fe46" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-三行代码实现阿拉伯数字转中文大小写" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2011/08/29/三行代码实现阿拉伯数字转中文大小写/" class="article-date">
+  <time datetime="2011-08-29T00:54:00.000Z" itemprop="datePublished">8月 29 2011</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2011/08/29/三行代码实现阿拉伯数字转中文大小写/">三行代码实现阿拉伯数字转中文大小写</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div class="cnblogs_Highlighter"><br><pre class="brush:csharp;gutter:false;">  static string ConvertToChinese(double x)<br><br>  {<br><br>    string s = x.ToString(“#L#E#D#C#K#E#D#C#J#E#D#C#I#E#D#C#H#E#D#C#G#E#D#C#F#E#D#C#.0B0A”);<br><br>    string d = Regex.Replace(s, @”((?&lt;=-|^)[^1-9]<em>)|((?’z’0)[0A-E]</em>((?=[1-9])|(?’-z’(?=[F-L.]|$))))|((?’b’[F-L])(?’z’0)[0A-L]*((?=[1-9])|(?’-z’(?=[.]|$))))”, “${b}${z}”);<br><br>    return Regex.Replace(d, “.”, delegate(Match m) { return “负元空零壹贰叁肆伍陆柒捌玖空空空空空空空分角拾佰仟萬億兆京垓秭穰”[m.Value[0] - ‘-‘].ToString(); });<br><br>  }<br></pre><br></div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2011/08/29/三行代码实现阿拉伯数字转中文大小写/" data-id="bewywc8pbu7hi0oo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" href="/page/6/">Next &raquo;</a>
+    </nav>
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

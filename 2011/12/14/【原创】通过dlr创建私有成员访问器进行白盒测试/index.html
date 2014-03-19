@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>【原创】通过DLR创建私有成员访问器进行白盒测试 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="【原创】通过DLR创建私有成员访问器进行白盒测试">
+<meta name="og:url" content="http://yoursite.com/2011/12/14/【原创】通过dlr创建私有成员访问器进行白盒测试/">
+<meta name="og:image" content="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="在编写NUnit测试的时候有时候需要对非公有有成员进行测试，每个方法都通过反射还是比较麻烦而且不美观。在4.0中可以借助DLR创建一个访问器Accessor动态获取私有成员直接调用。
+动态语言运行时 (DLR) 是一种新运行时环境，它将一组适用于动态语言的服务添加到 CLR。借助于 DLR，可以更轻松地开发要在 .NET Framework 上运行的动态语言，而且向静态类型化语言添加动态功能也会更">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-【原创】通过dlr创建私有成员访问器进行白盒测试" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2011/12/14/【原创】通过dlr创建私有成员访问器进行白盒测试/" class="article-date">
+  <time datetime="2011-12-14T01:03:00.000Z" itemprop="datePublished">12月 14 2011</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      【原创】通过DLR创建私有成员访问器进行白盒测试
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在编写NUnit测试的时候有时候需要对非公有有成员进行测试，每个方法都通过反射还是比较麻烦而且不美观。在4.0中可以借助DLR创建一个访问器Accessor动态获取私有成员直接调用。</p>
+<p><span style="color: #888888;">动态语言运行时 (DLR) 是一种新运行时环境，它将一组适用于动态语言的服务添加到 CLR。借助于 DLR，可以更轻松地开发要在 .NET Framework 上运行的动态语言，而且向静态类型化语言添加动态功能也会更容易。</span></p>
+<p>假设有一个类Class1</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> Class1<br> {<br>         <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">int</span> Add(<span style="color: #0000ff;">int</span> a, <span style="color: #0000ff;">int</span> b)<br>        {<br>            <span style="color: #0000ff;">return</span> a + b;<br>        }<br>}</pre><br></div>
+
+<p>我希望能够这样编写测试</p>
+<div class="cnblogs_code"><br><pre>[Test]<br><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Class1AddTest()<br>{<br>      dynamic class1 = <span style="color: #0000ff;">new</span> Accessor(<span style="color: #0000ff;">typeof</span>(Class1));<br>      <span style="color: #0000ff;">int</span> result = class1.Add(<span style="color: #800080;">1</span>, <span style="color: #800080;">2</span>);<br>      Assert.That(result, Is.EqualTo(<span style="color: #800080;">3</span>));<br>}</pre><br></div>
+
+<p>现在我设计了一个Accessor类来完成这个工作 .</p>
+<p>&nbsp;</p>
+<p>下面是我的实现方式：</p>
+<p>首先要继承动态行为基类DynamicObject,先定义成员包括被代理的实例、实例包含的方法表和属性表</p>
+<div class="cnblogs_code"><br><pre><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br></span><span style="color: #808080;">///</span><span style="color: #008000;"> 实例访问器<br></span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">sealed</span> <span style="color: #0000ff;">class</span> Accessor : DynamicObject<br>{<br>     <span style="color: #0000ff;">#region</span> 成员<br>     <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>      </span><span style="color: #808080;">///</span><span style="color: #008000;"> 实例<br>     </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>     <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">object</span> instance;<br>     <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>     </span><span style="color: #808080;">///</span><span style="color: #008000;"> 方法表<br>    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>    <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> IDictionary&lt;<span style="color: #0000ff;">string</span>, IGrouping&lt;<span style="color: #0000ff;">string</span>, MethodInfo&gt;&gt; methodInfos;<br>     <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>     </span><span style="color: #808080;">///</span><span style="color: #008000;"> 属性表<br>    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>     <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> IDictionary&lt;<span style="color: #0000ff;">string</span>, PropertyInfo&gt; propertyInfos;<br>     <span style="color: #0000ff;">#endregion</span><br>}</pre><br></div>
+
+<p>为了实现成员访问必须实现对方法Method、属性Property，和索引器Index的访问</p>
+<p>首先是方法Method，</p>
+<p>方法调用有一个重要的问题就是方法重载overload的解决</p>
+<p>使用方法名作为Key用 Dictionary&lt;string, IGrouping&lt;string, MethodInfo&gt;&gt;来分组保存重载的方法</p>
+<p>方法表和属性表通过instance的Type反射出来，不过要注意包含私有方法。</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #0000ff;">public</span> Accessor(<span style="color: #0000ff;">object</span> instance)<br>        {<br>            <span style="color: #0000ff;">this</span>.instance = instance;<br>            <span style="color: #0000ff;">const</span> BindingFlags flag = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;<br>            <span style="color: #0000ff;">var</span> type = instance.GetType();<br><br>            <span style="color: #0000ff;">this</span>.methodInfos = type.GetMethods(flag)<br>                .GroupBy(p =&gt; p.Name)<br>                .ToDictionary(p =&gt; p.Key);<br>            <span style="color: #0000ff;">this</span>.propertyInfos = type.GetProperties(flag)<br>                .ToDictionary(p =&gt; p.Name);<br>        }</pre><br></div>
+
+<p>查找重载方法主要通过对比参数表实现，具体如下：</p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">bool</span> CheckOverLoadParameters(MethodInfo method, <span style="color: #0000ff;">object</span>[] args)<br>{<br>            <span style="color: #0000ff;">var</span> parms = method.GetParameters();<br>            <span style="color: #0000ff;">var</span> length = parms.Length;<br>            <span style="color: #0000ff;">if</span> (length == <span style="color: #800080;">0</span> &amp;&amp; args == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>            <span style="color: #0000ff;">if</span> (length != args.Length) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>;<br><br>            <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; length; i++)<br>            {<br>                <span style="color: #0000ff;">if</span> (parms[<span style="color: #800080;">0</span>].ParameterType != args[<span style="color: #800080;">0</span>].GetType())<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>;<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>} </pre><br></div>
+
+<p>下面要做的就是重写DynamicObject的访问方法bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result) 返回值true表示此方法可用。</p>
+<p>查询到对于的MethodInfo，通过反射调用即可，具体实现如下:</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryInvokeMember(InvokeMemberBinder binder, <span style="color: #0000ff;">object</span>[] args, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            IGrouping&lt;<span style="color: #0000ff;">string</span>, MethodInfo&gt; methods;<br>            <span style="color: #0000ff;">bool</span> success = methodInfos.TryGetValue(binder.Name, <span style="color: #0000ff;">out</span> methods)<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                <span style="color: #0000ff;">var</span> method = methods.Where(p =&gt; CheckOverLoadParameters(p, args)).FirstOrDefault();<br>                <span style="color: #0000ff;">if</span> (method != <span style="color: #0000ff;">null</span>)<br>                {<br>                    result = method.Invoke(instance, args);<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>                }<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryInvokeMember(binder, args, <span style="color: #0000ff;">out</span> result);<br>        }</pre><br></div>
+
+<p>属性不能重名就比较简单了，直接从属性表获取即可</p>
+<p>属性Get操作需要重写DynamicObject的访问方法TryGetMember，Set操作需要重写DynamicObject的访问方法TrySetMember。</p>
+<p>我们都知道XXX的Get操作实际上是调用get_XXX(),所以反射调用的时候需要从propertyInfo的GetGetMethod获取Get操作的MethodInfo</p>
+<p>Get操作的具体实现如下，Set操作只是将GetGetMethod换成GetSetMethod。</p>
+<div class="cnblogs_code"><br><pre> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryGetMember(GetMemberBinder binder, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(binder.Name, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                <span style="color: #0000ff;">var</span> method = propertyInfo.GetGetMethod(<span style="color: #0000ff;">true</span>);<br>                <span style="color: #0000ff;">if</span> (method != <span style="color: #0000ff;">null</span>)<br>                {<br>                    result = method.Invoke(instance, <span style="color: #0000ff;">null</span>);<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>                }<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryGetMember(binder, <span style="color: #0000ff;">out</span> result);<br>        }</pre><br></div>
+
+<p>最后是索引器了，了解CLR的都知道索引器其实是get_Item属性，那么在属性表查询属性名为”Item”的即可。</p>
+<p>索引器Get操作需要重写DynamicObject的访问方法TryGetIndex，Set操作需要重写DynamicObject的访问方法TrySetIndex。</p>
+<p>代码和属性操作差不多，只是反射的时候直接调用propertyInfo的SetValue和GetValue。</p>
+<p>索引器Get操作具体实现如下：</p>
+<div class="cnblogs_code"><br><pre>  <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryGetIndex(GetIndexBinder binder, <span style="color: #0000ff;">object</span>[] indexes, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(<span style="color: #800000;">“</span><span style="color: #800000;">Item</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                result = propertyInfo.GetValue(instance, indexes);<br>                <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryGetIndex(binder, indexes, <span style="color: #0000ff;">out</span> result);<br>        }</pre><br></div>
+
+<p>&nbsp;</p>
+<p>好了这样就可以调用了，测试一下：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> Class1<br> {<br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">int</span> Add(<span style="color: #0000ff;">int</span> a, <span style="color: #0000ff;">int</span> b)<br>        {<br>            <span style="color: #0000ff;">return</span> a + b;<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">int</span> Add(<span style="color: #0000ff;">int</span> a, <span style="color: #0000ff;">int</span> b, <span style="color: #0000ff;">int</span> c)<br>        {<br>            <span style="color: #0000ff;">return</span> a + b + c;<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">int</span> X { <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span>; }<br><br>       <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">int</span> <span style="color: #0000ff;">this</span>[<span style="color: #0000ff;">int</span> i]<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> tmp[i]; }<br>            <span style="color: #0000ff;">set</span> { tmp[i] = value; }<br>        }<br><br>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">int</span>[] tmp = <span style="color: #0000ff;">new</span> <span style="color: #0000ff;">int</span>[<span style="color: #800080;">100</span>];<br>}<br><br> [TestFixture]<br>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> Class1Test<br>    {<br><br>         [Test]<br>         <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> AddTest()<br>        {<br>              dynamic class1 = <span style="color: #0000ff;">new</span> Accessor(<span style="color: #0000ff;">typeof</span>(Class1));<br>              <span style="color: #0000ff;">int</span> result = class1.Add(<span style="color: #800080;">1</span>, <span style="color: #800080;">2</span>);<br>               Assert.That(result, Is.EqualTo(<span style="color: #800080;">3</span>));<br>              <span style="color: #0000ff;">int</span> result = class1.Add(<span style="color: #800080;">1</span>, <span style="color: #800080;">2</span>, <span style="color: #800080;">3</span>);<br>              Assert.That(result, Is.EqualTo(<span style="color: #800080;">6</span>));<br>       }<br><br>        [Test]<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> XTest()<br>        {<br>            dynamic class1 = <span style="color: #0000ff;">new</span> Accessor(<span style="color: #0000ff;">typeof</span>(Class1));<br>            class1.X = <span style="color: #800080;">1</span>;<br>            Assert.That(class1.X, Is.EqualTo(<span style="color: #800080;">1</span>));<br>        }<br><br>        [Test]<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> IndexIntTest()<br>        {<br>            dynamic class1 = <span style="color: #0000ff;">new</span> Accessor(<span style="color: #0000ff;">typeof</span>(Class1));<br>            class1[<span style="color: #800080;">0</span>] = <span style="color: #800080;">1</span>;<br>            Assert.That(class1[<span style="color: #800080;">0</span>], Is.EqualTo(<span style="color: #800080;">1</span>));<br>        }<br>}</pre><br></div>
+
+<p>这样测试私有成员就方便多了。</p>
+<p>Accessor完整代码如下：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('77bb7445-f220-40ac-ac19-b347be44921e')"><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span class="cnblogs_code_collapse">View Code </span><br><div id="cnblogs_code_open_77bb7445-f220-40ac-ac19-b347be44921e" class="cnblogs_code_hide"><br><pre>    <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>    </span><span style="color: #808080;">///</span><span style="color: #008000;"> 实例访问器<br>    </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">sealed</span> <span style="color: #0000ff;">class</span> Accessor : DynamicObject<br>    {<br>        <span style="color: #0000ff;">#region</span> 成员<br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 实例<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> <span style="color: #0000ff;">object</span> instance;<br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 方法表<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> IDictionary&lt;<span style="color: #0000ff;">string</span>, IGrouping&lt;<span style="color: #0000ff;">string</span>, MethodInfo&gt;&gt; methodInfos;<br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 属性表<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> IDictionary&lt;<span style="color: #0000ff;">string</span>, PropertyInfo&gt; propertyInfos;<br>        <span style="color: #0000ff;">#endregion</span><br><br>        <span style="color: #0000ff;">#region</span> 构造函数<br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 通过实例创建实例访问器<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”instance”&gt;</span><span style="color: #008000;">实例对象</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> Accessor(<span style="color: #0000ff;">object</span> instance)<br>        {<br>            <span style="color: #0000ff;">this</span>.instance = instance;<br>            <span style="color: #0000ff;">const</span> BindingFlags flag = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;<br>            <span style="color: #0000ff;">var</span> type = instance.GetType();<br><br>            <span style="color: #0000ff;">this</span>.methodInfos = type.GetMethods(flag)<br>                .GroupBy(p =&gt; p.Name)<br>                .ToDictionary(p =&gt; p.Key);<br>            <span style="color: #0000ff;">this</span>.propertyInfos = type.GetProperties(flag)<br>                .ToDictionary(p =&gt; p.Name);<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 通过指定实例类型的默认构造创建实例访问器<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”type”&gt;</span><span style="color: #008000;">实例类型</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> Accessor(Type type)<br>            : <span style="color: #0000ff;">this</span>(Activator.CreateInstance(type))<br>        {<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 通过指定实例类型创建实例访问器<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”type”&gt;</span><span style="color: #008000;">实例类型</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”args”&gt;</span><span style="color: #008000;">参数</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> Accessor(Type type, <span style="color: #0000ff;">params</span> <span style="color: #0000ff;">object</span>[] args)<br>            : <span style="color: #0000ff;">this</span>(Activator.CreateInstance(type, args))<br>        {<br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 通过指定实例类型名创建实例访问器<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”assemblyName”&gt;</span><span style="color: #008000;">程序集名称</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”fullTypeName”&gt;</span><span style="color: #008000;">实例类型全名</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”args”&gt;</span><span style="color: #008000;">参数</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> Accessor(<span style="color: #0000ff;">string</span> assemblyName, <span style="color: #0000ff;">string</span> fullTypeName, <span style="color: #0000ff;">params</span> <span style="color: #0000ff;">object</span>[] args)<br>            : <span style="color: #0000ff;">this</span>(Activator.CreateInstance(<br>            assemblyName, fullTypeName, <span style="color: #0000ff;">false</span>,<br>            BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic,<br>            <span style="color: #0000ff;">null</span>, args, <span style="color: #0000ff;">null</span>, <span style="color: #0000ff;">null</span>).Unwrap())<br>        {<br><br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 通过指定实例类型名的默认构造函数创建实例访问器<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”assemblyName”&gt;</span><span style="color: #008000;">程序集名称</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”fullTypeName”&gt;</span><span style="color: #008000;">实例类型全名</span><span style="color: #808080;">&lt;/param&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">public</span> Accessor(<span style="color: #0000ff;">string</span> assemblyName, <span style="color: #0000ff;">string</span> fullTypeName)<br>            : <span style="color: #0000ff;">this</span>(assemblyName, fullTypeName, <span style="color: #0000ff;">null</span>)<br>        {<br><br>        }<br><br>        <span style="color: #808080;">///</span> <span style="color: #808080;">&lt;summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span><span style="color: #008000;"> 检查方法重载<br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;/summary&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”method”&gt;&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;param name=”args”&gt;&lt;/param&gt;</span><span style="color: #008000;"><br>        </span><span style="color: #808080;">///</span> <span style="color: #808080;">&lt;returns&gt;&lt;/returns&gt;</span><span style="color: #808080;"><br></span>        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">bool</span> CheckOverLoadParameters(MethodInfo method, <span style="color: #0000ff;">object</span>[] args)<br>        {<br>            <span style="color: #0000ff;">var</span> parms = method.GetParameters();<br>            <span style="color: #0000ff;">var</span> length = parms.Length;<br>            <span style="color: #0000ff;">if</span> (length == <span style="color: #800080;">0</span> &amp;&amp; args == <span style="color: #0000ff;">null</span>) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>            <span style="color: #0000ff;">if</span> (length != args.Length) <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>;<br><br>            <span style="color: #0000ff;">for</span> (<span style="color: #0000ff;">int</span> i = <span style="color: #800080;">0</span>; i &lt; length; i++)<br>            {<br>                <span style="color: #0000ff;">if</span> (parms[<span style="color: #800080;">0</span>].ParameterType != args[<span style="color: #800080;">0</span>].GetType())<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">false</span>;<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>        }<br>        <span style="color: #0000ff;">#endregion</span><br><br>        <span style="color: #0000ff;">#region</span> DynamicObject 访问方法重写<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryInvokeMember(InvokeMemberBinder binder, <span style="color: #0000ff;">object</span>[] args, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            IGrouping&lt;<span style="color: #0000ff;">string</span>, MethodInfo&gt; methods;<br>            <span style="color: #0000ff;">bool</span> success = methodInfos.TryGetValue(binder.Name, <span style="color: #0000ff;">out</span> methods);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                <span style="color: #0000ff;">var</span> method = methods.Where(p =&gt; CheckOverLoadParameters(p, args)).FirstOrDefault();<br>                <span style="color: #0000ff;">if</span> (method != <span style="color: #0000ff;">null</span>)<br>                {<br>                    result = method.Invoke(instance, args);<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>                }<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryInvokeMember(binder, args, <span style="color: #0000ff;">out</span> result);<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryGetMember(GetMemberBinder binder, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(binder.Name, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                <span style="color: #0000ff;">var</span> method = propertyInfo.GetGetMethod(<span style="color: #0000ff;">true</span>);<br>                <span style="color: #0000ff;">if</span> (method != <span style="color: #0000ff;">null</span>)<br>                {<br>                    result = method.Invoke(instance, <span style="color: #0000ff;">null</span>);<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>                }<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryGetMember(binder, <span style="color: #0000ff;">out</span> result);<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TrySetMember(SetMemberBinder binder, <span style="color: #0000ff;">object</span> value)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(binder.Name, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                <span style="color: #0000ff;">var</span> method = propertyInfo.GetSetMethod(<span style="color: #0000ff;">true</span>);<br>                <span style="color: #0000ff;">if</span> (method != <span style="color: #0000ff;">null</span>)<br>                {<br>                    method.Invoke(instance, <span style="color: #0000ff;">new</span>[] { value });<br>                    <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>                }<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TrySetMember(binder, value);<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TryGetIndex(GetIndexBinder binder, <span style="color: #0000ff;">object</span>[] indexes, <span style="color: #0000ff;">out</span> <span style="color: #0000ff;">object</span> result)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(<span style="color: #800000;">“</span><span style="color: #800000;">Item</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                result = propertyInfo.GetValue(instance, indexes);<br>                <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TryGetIndex(binder, indexes, <span style="color: #0000ff;">out</span> result);<br>        }<br><br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">bool</span> TrySetIndex(SetIndexBinder binder, <span style="color: #0000ff;">object</span>[] indexes, <span style="color: #0000ff;">object</span> value)<br>        {<br>            PropertyInfo propertyInfo;<br>            <span style="color: #0000ff;">bool</span> success = propertyInfos.TryGetValue(<span style="color: #800000;">“</span><span style="color: #800000;">Item</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">out</span> propertyInfo);<br>            <span style="color: #0000ff;">if</span> (success)<br>            {<br>                propertyInfo.SetValue(instance, value, indexes);<br>                <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;<br>            }<br>            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">base</span>.TrySetIndex(binder, indexes, value);<br>        }<br>        <span style="color: #0000ff;">#endregion</span><br><br>    }</pre><br></div><br></div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2011/12/14/【原创】通过dlr创建私有成员访问器进行白盒测试/" data-id="7w077bysh806fe46" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2011/12/17/emit实现简单的aop/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Emit实现简单的Aop
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2011/08/29/三行代码实现阿拉伯数字转中文大小写/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">三行代码实现阿拉伯数字转中文大小写</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

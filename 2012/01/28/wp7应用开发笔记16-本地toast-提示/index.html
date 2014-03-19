@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>WP7应用开发笔记(16) 本地Toast 提示 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="WP7应用开发笔记(16) 本地Toast 提示">
+<meta name="og:url" content="http://yoursite.com/2012/01/28/wp7应用开发笔记16-本地toast-提示/">
+<meta name="og:image" content="http://i.msdn.microsoft.com/dynimg/IC539609.jpg">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="Toast 通知简介
+Toast 通知是推送通知的三种类型的其中一种。
+Toast 通知显示在屏幕的顶部，用于通知用户某个事件，如新闻或天气警报。除非用户通过向右轻拂关闭通知，否则 Toast 将显示大约 10 秒钟。如果用户点按 Toast，则会启动发送该 Toast 通知的应用程序。
+Toast 通知的元素如下：
+
+标题。紧挨着应用程序图标之后显示的黑体字字符串。在 XML 架构中，该字符串定">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-wp7应用开发笔记16-本地toast-提示" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/28/wp7应用开发笔记16-本地toast-提示/" class="article-date">
+  <time datetime="2012-01-27T22:07:00.000Z" itemprop="datePublished">1月 28 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WP7应用开发笔记(16) 本地Toast 提示
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Toast_通知简介">Toast 通知简介</h2>
+<p>Toast 通知是推送通知的三种类型的其中一种。</p>
+<p>Toast 通知显示在屏幕的顶部，用于通知用户某个事件，如新闻或天气警报。除非用户通过向右轻拂关闭通知，否则 Toast 将显示大约 10 秒钟。如果用户点按 Toast，则会启动发送该 Toast 通知的应用程序。</p>
+<p>Toast 通知的元素如下：</p>
+<ul>
+<li><p>标题。紧挨着应用程序图标之后显示的黑体字字符串。在 XML 架构中，该字符串定义为 Text1 属性。</p>
+</li>
+<li><p>内容。紧挨着&ldquo;标题&rdquo;之后显示的非黑体字字符串。在 XML 架构中，该字符串定义为 Text2 属性。</p>
+</li>
+<li><p>参数。如果用户点按 Toast，则将参数值传递给您的应用程序，而不进行显示。该参数可以指示应用程序应该启动到的页面。该参数还包含传递到应用程序的名称-值对。在 XML 架构中，该字符串定义为 Param 属性。</p>
+</li>
+</ul>
+<p>显示效果如下：</p>
+<p><img src="http://i.msdn.microsoft.com/dynimg/IC539609.jpg" alt=""></p>
+<p>&nbsp;</p>
+<h2 id="本地Toast_提示">本地Toast 提示</h2>
+<p>有时候我们需要显示一些提示信息可以使用Toast提示来直观的呈现，但是Toast提示必须使用推送通知。这样不是很方便，有没有办法不通过推送通知直接呈现出Toast通知的效果呢？</p>
+<p>我寻找了很久在SDK里面好像暂时没有官方的实现方式，不过开源项目<a href="http://www.windowsphonegeek.com/tips/new-coding4fun-phone-toolkit-v1-2-officially-released" target="_blank">Coding4Fun.Phone.Toolkit</a> 里的ToastPrompt就实现了这个效果，而且使用很简单。不过因为是本地的Toast提示不能在App外部呈现。</p>
+<p>&nbsp;</p>
+<p>先声明一下：下面的部分内容摘自 <a href="http://www.windowsphonegeek.com/articles/WP7-Toast-Prompt-in-depth" target="_blank">WP7 ToastPrompt in depth</a></p>
+<h3 id="使用ToastPrompt">使用ToastPrompt</h3>
+<p>首先下载<a href="http://www.windowsphonegeek.com/tips/new-coding4fun-phone-toolkit-v1-2-officially-released" target="_blank">Coding4Fun.Phone.Toolkit</a> 引用到项目中。</p>
+<p>&nbsp;</p>
+<p>ToastPrompt呈现效果有横向和纵向</p>
+<p>&nbsp;</p>
+<p><img src="http://www.windowsphonegeek.com/upload/articles/66-1_thumb.png" alt=""><img src="http://www.windowsphonegeek.com/upload/articles/66-2_2.png" alt=""></p>
+<p>&nbsp;</p>
+<p>代码如下，用法和Message有点像：</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> Button_Click(<span style="color: #0000ff;">object</span> sender, RoutedEventArgs e)<br>{<br>    ToastPrompt toast = <span style="color: #0000ff;">new</span> ToastPrompt(); <span style="color: #008000;">//</span><span style="color: #008000;">实例化 </span><span style="color: #008000;"><br></span><br>    toast.Title = <span style="color: #800000;">“</span><span style="color: #800000;">ToastPrompt</span><span style="color: #800000;">“</span>; <span style="color: #008000;">//</span><span style="color: #008000;">设置标题 </span><span style="color: #008000;"><br></span>    toast.Message = <span style="color: #800000;">“</span><span style="color: #800000;">Some message</span><span style="color: #800000;">“</span>; <span style="color: #008000;">//</span><span style="color: #008000;">设置正文消息 </span><span style="color: #008000;"><br></span>    toast.FontSize = <span style="color: #800080;">50</span>; <span style="color: #008000;">//</span><span style="color: #008000;">设置文本大小(可选) </span><span style="color: #008000;"><br></span>    toast.TextOrientation = System.Windows.Controls.Orientation.Vertical; <span style="color: #008000;">//</span><span style="color: #008000;">设置呈现为纵向 </span><span style="color: #008000;"><br></span>    toast.ImageSource = <span style="color: #0000ff;">new</span> BitmapImage(<span style="color: #0000ff;">new</span> Uri(<span style="color: #800000;">“</span><span style="color: #800000;">ApplicationIcon.png</span><span style="color: #800000;">“</span>, UriKind.RelativeOrAbsolute));    <span style="color: #008000;">//</span><span style="color: #008000;">设置 标题前的图片(可选) </span><span style="color: #008000;"><br></span>   toast.Background = <span style="color: #0000ff;">new</span> SolidColorBrush(Colors.LightGray); <span style="color: #008000;">//</span><span style="color: #008000;">背景色(可选) </span><span style="color: #008000;"><br></span>   toast.Foreground = <span style="color: #0000ff;">new</span> SolidColorBrush(Colors.Red); <span style="color: #008000;">//</span><span style="color: #008000;">前景色(可选)</span><span style="color: #008000;"><br></span><br><br>    toast.Completed += toast_Completed; <span style="color: #008000;">//</span><span style="color: #008000;">Toast显示完毕后触发事件(可选) </span><span style="color: #008000;"><br></span>    toast.Show();<br>}<br><br><span style="color: #0000ff;">void</span> toast_Completed(<span style="color: #0000ff;">object</span> sender, PopUpEventArgs&lt;<span style="color: #0000ff;">string</span>, PopUpResult&gt; e)<br>{<br>    <span style="color: #008000;">//</span><span style="color: #008000;">TODO:Toast显示完毕后事件处理 </span><span style="color: #008000;"><br></span>}</pre><br></div>
+
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/28/wp7应用开发笔记16-本地toast-提示/" data-id="b6nurjgrvkbk6dpg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2012/01/30/wp7应用开发笔记17-提交应用/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          WP7应用开发笔记(17) 提交应用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/01/28/wp7应用开发笔记15-推送通知/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WP7应用开发笔记(15) 推送通知</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>

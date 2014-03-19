@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>WP7应用开发笔记(13) MVVM | Kiminozo&#39;s Tech Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="og:type" content="blog">
+<meta name="og:title" content="WP7应用开发笔记(13) MVVM">
+<meta name="og:url" content="http://yoursite.com/2012/01/27/wp7应用开发笔记13-mvvm/">
+<meta name="og:image" content="http://pic002.cnblogs.com/images/2012/25121/2012012715284472.png">
+<meta name="og:site_name" content="Kiminozo's Tech Blog">
+<meta name="og:description" content="Model-View-ViewModel 设计模式
+MVVM这个模式在WPF和Silverlight开发中已经非常流行了，因为WP7的应用开发也是Silverlight的，MVVM的一样可以适用。
+虽然MVVM有不少明确的定义，但是我也没有找到比较统一的来描述它，所以大概说一下我的总结：
+&nbsp;
+MVVM和MVC、MVP一样都是为了分离呈现和业务为目标的设计模式，MVVM使用了WPF系列库特">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-wp7应用开发笔记13-mvvm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2012/01/27/wp7应用开发笔记13-mvvm/" class="article-date">
+  <time datetime="2012-01-26T23:37:00.000Z" itemprop="datePublished">1月 27 2012</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/未分类/">未分类</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      WP7应用开发笔记(13) MVVM
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Model-View-ViewModel_设计模式">Model-View-ViewModel 设计模式</h2>
+<p>MVVM这个模式在WPF和Silverlight开发中已经非常流行了，因为WP7的应用开发也是Silverlight的，MVVM的一样可以适用。</p>
+<p>虽然MVVM有不少明确的定义，但是我也没有找到比较统一的来描述它，所以大概说一下我的总结：</p>
+<p>&nbsp;</p>
+<p>MVVM和MVC、MVP一样都是为了分离呈现和业务为目标的设计模式，MVVM使用了WPF系列库特有的绑定机制从视图层移除绝大部分的业务处理和业务数据提供的逻辑。于独立的视图模型层更有利于测试。</p>
+<p>大概结构如下：</p>
+<p>&nbsp;</p>
+<p><img src="http://pic002.cnblogs.com/images/2012/25121/2012012715284472.png" alt=""></p>
+<p>&nbsp;</p>
+<p>View更关注界面的呈现，ViewModel更关注业务处理，Model作为之间交互的模型数据。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2 id="MVVM的绑定_<span_style="color:_#000000;">Binding</span>">MVVM的绑定 <span style="color: #000000;">Binding</span></h2>
+<p>WPF和Silverlight提供了强大的绑定功能，为MVVM提供了必要的基础：</p>
+<h3 id="1_数据来源">1 数据来源</h3>
+<p>在使用绑定之前，需要有基础的数据的来源，如CLR 对象和 XML 形式，</p>
+<p>在MVVM里就应该这个View视图对于的ViewModel视图模型。</p>
+<p>将ViewModel对象设定到视图根元素的FrameworkElement. DataContext 属性 上完成数据来源的设置，根元素一般就是</p>
+<p>phone:PhoneApplicationPage 。</p>
+<p>代码很简单</p>
+<pre class="csharpcode"><span class="kwrd">public</span> <span class="kwrd">partial</span> <span class="kwrd">class</span> MainPageView
+ {
+        <span class="rem">// 构造函数</span>
+        <span class="kwrd">public</span> MainPageView()
+        {
+            InitializeComponent();
+            DataContext = <span class="kwrd">new</span> MainPageViewModel();
+        }
+}</pre>
+<style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+
+&nbsp;
+
+### 2 数据绑定
+
+数据绑定是在应用程序 UI 与业务逻辑之间建立连接的过程。如果绑定具有正确设置并且数据提供正确通知，则当数据更改其值时，绑定到数据的元素会自动反映更改。
+
+![](http://i.msdn.microsoft.com/dynimg/IC106529.png)
+
+在MVVM里，简单的说就是能够让视图View和视图模型ViewModel的数据能够动态同步更新，并且支持更新的方法。
+
+实现同步更新需要让ViewModel实现INotifyPropertyChanged接口
+
+<span style="font-family: Verdana;">&nbsp;</span>&nbsp;
+
+<div class="cnblogs_code">
+<pre>  <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">interface</span> INotifyPropertyChanged
+  {
+        <span style="color: #008000;">//</span><span style="color: #008000;">     在更改属性值时发生。</span><span style="color: #008000;">
+</span>        <span style="color: #0000ff;">event</span> PropertyChangedEventHandler PropertyChanged;
+  }</pre>
+</div>
+
+&nbsp;
+
+<span style="font-family: Verdana;">PropertyChangedEventArgs的定义如下：</span>
+
+<style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+
+<span style="font-family: Verdana;">&nbsp;</span>
+
+<div class="cnblogs_code">
+<pre>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> PropertyChangedEventArgs : EventArgs
+    {
+        <span style="color: #008000;">//</span><span style="color: #008000;"> propertyName: 已更改的属性的名称。</span><span style="color: #008000;">
+</span>        <span style="color: #0000ff;">public</span> PropertyChangedEventArgs(<span style="color: #0000ff;">string</span> propertyName);
+
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> PropertyName { <span style="color: #0000ff;">get</span>; }
+    }</pre>
+</div>
+
+&nbsp;
+
+<span style="font-family: Verdana;">只需要在ViewModel的属性更新时触发PropertyChanged并传入更改的属性名称就可以了。</span>
+
+<span style="font-family: Verdana;"><span style="font-family: Verdana;">完整示例：</span></span>
+
+&nbsp;
+
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> DemoCustomer  : INotifyPropertyChanged
+{
+
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">event</span> PropertyChangedEventHandler PropertyChanged;
+
+    <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> NotifyPropertyChanged(String info)
+    {
+        <span style="color: #0000ff;">if</span> (PropertyChanged != <span style="color: #0000ff;">null</span>)
+        {
+            PropertyChanged(<span style="color: #0000ff;">this</span>, <span style="color: #0000ff;">new</span> PropertyChangedEventArgs(info));
+        }
+    }
+
+    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">string</span> CustomerName
+    {
+        <span style="color: #0000ff;">get</span>
+        {
+            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">this</span>.customerNameValue;
+        }
+
+        <span style="color: #0000ff;">set</span>
+        {
+            <span style="color: #0000ff;">if</span> (value != <span style="color: #0000ff;">this</span>.customerNameValue)
+            {
+                <span style="color: #0000ff;">this</span>.customerNameValue = value;
+                NotifyPropertyChanged(<span style="color: #800000;">"</span><span style="color: #800000;">CustomerName</span><span style="color: #800000;">"</span>);
+            }
+        }
+    }
+}</pre>
+</div>
+
+<span style="font-family: Verdana;">
+</span>
+
+<span style="font-family: Verdana;">在XAML里面添加下面的代码就可以实现数据绑定</span>
+
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">TextBox </span><span style="color: #ff0000;">Text</span><span style="color: #0000ff;">="</span><span style="color: #808000;">{Binding Path=CustomerName, Mode=TwoWay}</span><span style="color: #0000ff;">"</span> <span style="color: #0000ff;">/&gt;</span></pre>
+</div>
+
+&nbsp;
+
+<span style="font-family: Verdana;">这样在界面修改TextBox 或 后台程序修改CustomerName的时候都可以同步更新（内部还解决线程切换的问题）</span><span style="font-family: Verdana;">数据绑定可以方便的同步View和ViewModel，并很好的减少了耦合。</span>
+
+<style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+<pre class="csharpcode">&nbsp;</pre>
+<style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+
+### 3 命令绑定
+
+&nbsp;
+
+命令是 WPF 中的输入机制，它提供的输入处理比设备输入具有更高的语义级别。
+
+例如，在许多应用程序中都能找到的 &ldquo;复制&rdquo;、 &ldquo;剪切&rdquo;和 &ldquo;粘贴&rdquo;操作就是命令。
+
+&nbsp;
+
+命令支持自定义命令，实现自定义命令需要实现ICommand接口
+
+<span style="font-family: Verdana;">&nbsp;</span>&nbsp;
+
+<div class="cnblogs_code">
+<pre>    <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">interface</span> ICommand
+    {
+         <span style="color: #008000;">//</span><span style="color: #008000;">     当出现影响是否应执行该命令的更改时发生。</span><span style="color: #008000;">
+</span>        <span style="color: #0000ff;">event</span> EventHandler CanExecuteChanged;
+
+        <span style="color: #008000;">//</span><span style="color: #008000;">     定义用于确定此命令是否可以在其当前状态下执行的方法。</span><span style="color: #008000;">
+</span>          <span style="color: #0000ff;">bool</span> CanExecute(<span style="color: #0000ff;">object</span> parameter);
+
+        <span style="color: #008000;">//</span><span style="color: #008000;">     定义在调用此命令时调用的方法。</span><span style="color: #008000;">
+</span>           <span style="color: #0000ff;">void</span> Execute(<span style="color: #0000ff;">object</span> parameter);
+    }</pre>
+</div>
+
+&nbsp;
+
+<span style="font-family: Verdana;">自定义命令是MVVM命令绑定的基础。实现一个最简单的自定义Command，暂时无视CanExecuteChanged变更和传入参数。</span>
+
+&nbsp;
+
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> InvokeCommand : ICommand
+    {
+        <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">readonly</span> Action action;
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">event</span> EventHandler CanExecuteChanged;
+
+        <span style="color: #0000ff;">public</span> InvokeCommand(Action action)
+        {
+            <span style="color: #0000ff;">this</span>.action = action;
+        }
+
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">bool</span> CanExecute(<span style="color: #0000ff;">object</span> parameter)
+        {
+            <span style="color: #0000ff;">return</span> <span style="color: #0000ff;">true</span>;
+        }
+
+        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> Execute(<span style="color: #0000ff;">object</span> parameter)
+        {
+            action();
+        }
+    }</pre>
+</div>
+
+&nbsp;
+
+<span style="font-family: Verdana;">在ViewModel里面添加属性</span>
+
+<pre class="csharpcode">&nbsp;</pre>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">public</span> ICommand HelloCommand{ <span style="color: #0000ff;">get</span>; <span style="color: #0000ff;">set</span>; } </pre>
+</div>
+<pre class="csharpcode"><span style="font-family: Verdana;">ViewModel构造函数内添加</span></pre>
+<style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style>
+<pre class="csharpcode">&nbsp;</pre>
+<div class="cnblogs_code">
+<pre>HelloCommand = <span style="color: #0000ff;">new</span> InvokeCommand(() =&gt; MessageBox.Show(&ldquo;Hello world&rdquo;));</pre>
+</div>
+<pre class="csharpcode"></pre>
+
+<p><span style="font-family: Verdana;">在ButtonBase类里面有一个 Command属性，获取或设置当按此按钮时要调用的命令。</span></p>
+<p>&nbsp;</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">button </span><span style="color: #ff0000;">command</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{Binding HelloCommand}</span><span style="color: #0000ff;">“</span> <span style="color: #0000ff;">/&gt;</span></pre><br></div>
+
+<p>&nbsp;</p>
+<p><span style="font-family: Verdana;">&nbsp;这样点击button就会触发MessageBox.Show(&ldquo;Hello world&rdquo;)); 命令绑定提供了简单的机制，让业务处理的消息可以在ViewModel里执行。</span></p>
+<pre class="csharpcode">&nbsp;</pre>
+
+<h3 id="4-扩展命令绑定为动作绑定（事件绑定）">4.扩展命令绑定为动作绑定（事件绑定）</h3>
+<p>命令绑定仅仅提供了ButtonBase的点击事件，要是有更复杂的事件需要使用到动作绑定，这个基础是由</p>
+<p>System.Windows.Interactivity提供的，在C:Program Files (x86)Microsoft SDKsExpressionBlendWindows Phonev7.1Libraries里面可以找到。</p>
+<p>另外动作绑定并没有正式的名称，我只是为了统一随口叫的。</p>
+<p>&nbsp;</p>
+<p>动作绑定就稍微复杂一点，首先我们需要实现一个自定义的动作，继承TriggerAction实现自己的InvokeAction。</p>
+<div class="cnblogs_code"><br><pre><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> InvokeAction:TriggerAction&lt;FrameworkElement&gt;<br>    {<br>        <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">static</span> <span style="color: #0000ff;">readonly</span> DependencyProperty CommandProperty<br>            = DependencyProperty.Register(<span style="color: #800000;">“</span><span style="color: #800000;">Command</span><span style="color: #800000;">“</span>, <span style="color: #0000ff;">typeof</span> (ICommand), <span style="color: #0000ff;">typeof</span> (InvokeAction));<br><br>        <span style="color: #0000ff;">public</span> ICommand Command<br>        {<br>            <span style="color: #0000ff;">get</span> { <span style="color: #0000ff;">return</span> (ICommand) GetValue(CommandProperty); }<br>            <span style="color: #0000ff;">set</span> { SetCurrentValue(CommandProperty, value); }<br>        }<br>        <span style="color: #0000ff;">protected</span> <span style="color: #0000ff;">override</span> <span style="color: #0000ff;">void</span> Invoke(<span style="color: #0000ff;">object</span> parameter)<br>        {<br>            ICommand command = Command;<br>            <span style="color: #0000ff;">if</span> (command  == <span style="color: #0000ff;">null</span>)<span style="color: #0000ff;">return</span>;<br>            <span style="color: #0000ff;">if</span> (!command.CanExecute(parameter)) <span style="color: #0000ff;">return</span>;<br><br>            command.Execute(parameter);<br>        }<br>    }</pre><br></div><br><pre class="csharpcode"></pre><br><style><!--
+.csharpcode, .csharpcode pre
+{
+    font-size: small;
+    color: black;
+    font-family: consolas, "Courier New", courier, monospace;
+    background-color: #ffffff;
+    /*white-space: pre;*/
+}
+.csharpcode pre { margin: 0em; }
+.csharpcode .rem { color: #008000; }
+.csharpcode .kwrd { color: #0000ff; }
+.csharpcode .str { color: #006080; }
+.csharpcode .op { color: #0000c0; }
+.csharpcode .preproc { color: #cc6633; }
+.csharpcode .asp { background-color: #ffff00; }
+.csharpcode .html { color: #800000; }
+.csharpcode .attr { color: #ff0000; }
+.csharpcode .alt 
+{
+    background-color: #f4f4f4;
+    width: 100%;
+    margin: 0em;
+}
+.csharpcode .lnum { color: #606060; }
+--></style><br><br>里面定义了一个Command的依赖属性，用法和ButtonBase一样，这样就可以方便绑定命令了。<br><br>XAML代码如下：<br><br>首先引用System.Windows.Interactivity添加命名空间：<br><br>xmlns:i=”clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity”<br><br><div class="cnblogs_code"><br><pre><span style="color: #0000ff;">&lt;</span><span style="color: #800000;">Button </span><span style="color: #ff0000;">Content</span><span style="color: #0000ff;">=”Button”</span><span style="color: #0000ff;">&gt;</span><br>        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i:Interaction.Triggers</span><span style="color: #0000ff;">&gt;</span><br>                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">i:EventTrigger </span><span style="color: #ff0000;">EventName</span><span style="color: #0000ff;">=”Click”</span><span style="color: #0000ff;">&gt;</span><br>                    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">local:InvokeAction </span><span style="color: #ff0000;">Command</span><span style="color: #0000ff;">=”</span><span style="color: #808000;">{Binding HelloCommand}</span><span style="color: #0000ff;">“</span> <span style="color: #0000ff;">/&gt;</span><br>                <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">i:EventTrigger</span><span style="color: #0000ff;">&gt;</span><br>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">i:Interaction.Triggers</span><span style="color: #0000ff;">&gt;</span><br><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">Button</span><span style="color: #0000ff;">&gt;</span></pre><br></div>
+
+<p>i:EventTrigger 的EventName可以设置该控件上的各种事件，这里为了方便还是用的点击Click</p>
+<p>local:InvokeAction将自定义动作InvokeAction元素添加进去，还是继续使用上一节定义的HelloCommand，</p>
+<p>同样点击Button 之后Hello World就显示出来了。</p>
+<p>当然使用i:InvokeCommandAction&nbsp;更方便，我只是演示一下。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2012/01/27/wp7应用开发笔记13-mvvm/" data-id="4mnqjgqcfhmwxqlq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2012/01/27/wp7应用开发笔记14-使用caliburn-micro简化mvvm/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          WP7应用开发笔记(14) 使用Caliburn Micro简化MVVM
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2012/01/26/wp7应用开发笔记12-添加页面动画/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">WP7应用开发笔记(12)  添加页面动画</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/03/19/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+          </li>
+        
+          <li>
+            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+          </li>
+        
+          <li>
+            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 kiminozo<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>
