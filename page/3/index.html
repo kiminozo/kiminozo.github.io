@@ -1,91 +1,63 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
   
-  <title>Kiminozo&#39;s Tech Blog</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="og:type" content="blog">
-<meta name="og:title">
-<meta name="og:url" content="http://yoursite.com/page/3/">
-<meta name="og:image">
-<meta name="og:site_name" content="Kiminozo's Tech Blog">
-<meta name="og:description">
-<meta name="twitter:card" content="summary">
+  <title>第 3 页 | Kiminozo&#39;s Tech Blog</title>
+  <meta name="author" content="kiminozo">
   
-    <link rel="alternative" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  <meta name="description" content="关注Windows phone开发">
   
   
-    <link rel="icon" href="/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
   
-  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <meta property="og:site_name" content="Kiminozo&#39;s Tech Blog"/>
+
+  <link rel="alternate" href="/atom.xml" title="Kiminozo&#39;s Tech Blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
   
 </head>
+
+
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Kiminozo&#39;s Tech Blog</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main">
+  <div class="wrapper">
+    <header id="header"><div class="title">
+  <h1><a href="/">Kiminozo&#39;s Tech Blog</a></h1>
+  <p><a href="/"></a></p>
+</div>
+<nav class="nav">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+    <div class="content">
+  <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <time datetime="2012-02-15T04:11:00.000Z"><a href="/2012/02/15/从flc中学习的设计模式系列-创建型模式2-抽象工厂/">2月 15 2012</a></time>
+    
+    
   
-    <article id="post-从flc中学习的设计模式系列-创建型模式2-抽象工厂" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2012/02/15/从flc中学习的设计模式系列-创建型模式2-抽象工厂/" class="article-date">
-  <time datetime="2012-02-15T04:11:00.000Z" itemprop="datePublished">2月 15 2012</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/未分类/">未分类</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2012/02/15/从flc中学习的设计模式系列-创建型模式2-抽象工厂/">从FLC中学习的设计模式系列-创建型模式(2)-抽象工厂</a>
-    </h1>
+    <h1 class="title"><a href="/2012/02/15/从flc中学习的设计模式系列-创建型模式2-抽象工厂/">从FLC中学习的设计模式系列-创建型模式(2)-抽象工厂</a></h1>
   
 
-      </header>
+  </header>
+  
+  <div class="entry">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>抽象工厂模式 Abstract Factory 为一个产品家族提供了统一的创建接口。</p>
+      <p>抽象工厂模式 Abstract Factory 为一个产品家族提供了统一的创建接口。</p>
 <h2 id="&nbsp;">&nbsp;</h2>
 <h2 id="抽象工厂模式">抽象工厂模式</h2>
 <p>来自：<a href="http://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82" title="http://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82" target="_blank">http://zh.wikipedia.org/wiki/%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82</a></p>
@@ -106,46 +78,35 @@
 <p><img src="http://pic002.cnblogs.com/images/2012/25121/2012021520354362.jpg" alt=""></p>
 <p>&nbsp;</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2012/02/15/从flc中学习的设计模式系列-创建型模式2-抽象工厂/" data-id="g2ugqru2ewda4f13" class="article-share-link">Share</a>
-      
-      
-    </footer>
+    
   </div>
-  
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
 </article>
 
 
-  
-    <article id="post-从flc中学习的设计模式系列-创建型模式1-单例" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2012/02/15/从flc中学习的设计模式系列-创建型模式1-单例/" class="article-date">
-  <time datetime="2012-02-15T03:50:00.000Z" itemprop="datePublished">2月 15 2012</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/未分类/">未分类</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <time datetime="2012-02-15T03:50:00.000Z"><a href="/2012/02/15/从flc中学习的设计模式系列-创建型模式1-单例/">2月 15 2012</a></time>
     
     
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2012/02/15/从flc中学习的设计模式系列-创建型模式1-单例/">从FLC中学习的设计模式系列-创建型模式(1)-单例</a>
-    </h1>
+    <h1 class="title"><a href="/2012/02/15/从flc中学习的设计模式系列-创建型模式1-单例/">从FLC中学习的设计模式系列-创建型模式(1)-单例</a></h1>
   
 
-      </header>
+  </header>
+  
+  <div class="entry">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>单例模式Singleton：一个类仅有一个实例，自行实例化并向整个系统提供一个访问它的全局访问点。</p>
+      <p>单例模式Singleton：一个类仅有一个实例，自行实例化并向整个系统提供一个访问它的全局访问点。</p>
 <p>&nbsp;</p>
 <h2 id="单例模式Singleton">单例模式Singleton</h2>
 <p>来自：<a href="http://zh.wikipedia.org/wiki/单例模式" title="http://zh.wikipedia.org/wiki/单例模式" target="_blank">http://zh.wikipedia.org/wiki/单例模式</a></p>
@@ -172,46 +133,35 @@
     public override DbCommand CreateCommand();
 ...
  }</pre>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2012/02/15/从flc中学习的设计模式系列-创建型模式1-单例/" data-id="44qhrqn00du8t3n3" class="article-share-link">Share</a>
-      
-      
-    </footer>
+    
   </div>
-  
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
 </article>
 
 
-  
-    <article id="post-wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2012/02/12/wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理/" class="article-date">
-  <time datetime="2012-02-11T21:49:00.000Z" itemprop="datePublished">2月 12 2012</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/未分类/">未分类</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <time datetime="2012-02-11T21:49:00.000Z"><a href="/2012/02/12/wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理/">2月 12 2012</a></time>
     
     
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2012/02/12/wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理/">WP7应用开发笔记-技巧 使用VisualState布置屏幕方向处理</a>
-    </h1>
+    <h1 class="title"><a href="/2012/02/12/wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理/">WP7应用开发笔记-技巧 使用VisualState布置屏幕方向处理</a></h1>
   
 
-      </header>
+  </header>
+  
+  <div class="entry">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="VisualState是什么?">VisualState是什么?</h2>
+      <h2 id="VisualState是什么?">VisualState是什么?</h2>
 <p>VisualState 指定控件处于特定状态时的外观。</p>
 <p>例如，按下 Button 时，它的边框颜色可能与正常时的颜色不同。VisualState 类具有更改控件外观的 Storyboard 属性。控件进入 VisualState.Name 属性指定的状态时，Storyboard 开始。控件退出该状态时，Storyboard 停止。</p>
 <p>&nbsp;</p>
@@ -285,46 +235,35 @@
 <p>并且利用Blend4可以使用可视化编辑也很方便。</p>
 <p>/h3</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2012/02/12/wp7应用开发笔记-技巧-使用visualstate布置屏幕方向处理/" data-id="ecret02l6m3waxix" class="article-share-link">Share</a>
-      
-      
-    </footer>
+    
   </div>
-  
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
 </article>
 
 
-  
-    <article id="post-wp7应用开发笔记-豆知识-使用本地值的时候应该多考" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2012/02/12/wp7应用开发笔记-豆知识-使用本地值的时候应该多考/" class="article-date">
-  <time datetime="2012-02-11T20:55:00.000Z" itemprop="datePublished">2月 12 2012</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/未分类/">未分类</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <time datetime="2012-02-11T20:55:00.000Z"><a href="/2012/02/12/wp7应用开发笔记-豆知识-使用本地值的时候应该多考/">2月 12 2012</a></time>
     
     
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2012/02/12/wp7应用开发笔记-豆知识-使用本地值的时候应该多考/">WP7应用开发笔记-豆知识 使用本地值的时候应该多考虑使用系统主题资源</a>
-    </h1>
+    <h1 class="title"><a href="/2012/02/12/wp7应用开发笔记-豆知识-使用本地值的时候应该多考/">WP7应用开发笔记-豆知识 使用本地值的时候应该多考虑使用系统主题资源</a></h1>
   
 
-      </header>
+  </header>
+  
+  <div class="entry">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近时间比较少了，完成了本地化语言版本的开发，不过提供更新APP的时候没有通过。</p>
+      <p>最近时间比较少了，完成了本地化语言版本的开发，不过提供更新APP的时候没有通过。</p>
 <p>原因是这条手动测试没有过。</p>
 <p>&nbsp;</p>
 <p>5.5.2 - 内容和主题&nbsp;&nbsp;&nbsp;<br>无论使用哪种手机主题，应用程序内容（例如文本和可视元素）都必须清楚易读。例如，如果手机主题从黑色背景更改为白色背景，则应用程序的文本和可视元素必须清楚易读。</p>
@@ -346,46 +285,35 @@
 <p><img src="http://pic002.cnblogs.com/images/2012/25121/2012021212540991.png" alt=""></p>
 <p>&nbsp;</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2012/02/12/wp7应用开发笔记-豆知识-使用本地值的时候应该多考/" data-id="pwb4zhknwsgmebtj" class="article-share-link">Share</a>
-      
-      
-    </footer>
+    
   </div>
-  
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
 </article>
 
 
-  
-    <article id="post-同步上下文-synchronizationcontext-学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2012/02/06/同步上下文-synchronizationcontext-学习笔记/" class="article-date">
-  <time datetime="2012-02-06T05:41:00.000Z" itemprop="datePublished">2月 6 2012</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/未分类/">未分类</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <time datetime="2012-02-06T05:41:00.000Z"><a href="/2012/02/06/同步上下文-synchronizationcontext-学习笔记/">2月 6 2012</a></time>
     
     
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2012/02/06/同步上下文-synchronizationcontext-学习笔记/">同步上下文 SynchronizationContext 学习笔记</a>
-    </h1>
+    <h1 class="title"><a href="/2012/02/06/同步上下文-synchronizationcontext-学习笔记/">同步上下文 SynchronizationContext 学习笔记</a></h1>
   
 
-      </header>
+  </header>
+  
+  <div class="entry">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>提供在各种同步模型中传播同步上下文的基本功能。，同步上下文的工作就是确保调用在正确的线程上执行。</p>
+      <p>提供在各种同步模型中传播同步上下文的基本功能。，同步上下文的工作就是确保调用在正确的线程上执行。</p>
 <p>&nbsp;</p>
 <h3 id="同步上下文的基本操作">同步上下文的基本操作</h3>
 <h4 id="Current_获取当前同步上下文">Current 获取当前同步上下文</h4>
@@ -413,46 +341,35 @@
 
 <p>使用.net4.0的Task 可以简化成</p>
 <div class="cnblogs_code"><br><pre><span style="color: #0000ff;">private</span> <span style="color: #0000ff;">void</span> button_Click(<span style="color: #0000ff;">object</span> sender, EventArgs e)<br>{<br>            <span style="color: #0000ff;">var</span>  scheduler = TaskScheduler.FromCurrentSynchronizationContext(); <span style="color: #008000;">//</span><span style="color: #008000;"> 创建一个SynchronizationContext 关联的 TaskScheduler</span><span style="color: #008000;"><br></span>            Task.Factory.StartNew(() =&gt; label1.Text = <span style="color: #800000;">“</span><span style="color: #800000;">Hello TaskScheduler</span><span style="color: #800000;">“</span>, CancellationToken.None,<br>                                  TaskCreationOptions.None, scheduler);<br>}</pre><br></div>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2012/02/06/同步上下文-synchronizationcontext-学习笔记/" data-id="7tc80sjb450sdox0" class="article-share-link">Share</a>
-      
-      
-    </footer>
+    
   </div>
-  
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
 </article>
 
 
-  
-    <article id="post-在codeplex发布clickonce应用程序" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2012/02/04/在codeplex发布clickonce应用程序/" class="article-date">
-  <time datetime="2012-02-04T05:43:00.000Z" itemprop="datePublished">2月 4 2012</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/未分类/">未分类</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <time datetime="2012-02-04T05:43:00.000Z"><a href="/2012/02/04/在codeplex发布clickonce应用程序/">2月 4 2012</a></time>
     
     
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2012/02/04/在codeplex发布clickonce应用程序/">在Codeplex发布ClickOnce应用程序</a>
-    </h1>
+    <h1 class="title"><a href="/2012/02/04/在codeplex发布clickonce应用程序/">在Codeplex发布ClickOnce应用程序</a></h1>
   
 
-      </header>
+  </header>
+  
+  <div class="entry">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>CodePlex是微软的开源工程网站，涉及诸多微软最新技术的开源工程，同时也可以建立自己的开源工程，大家应该比较熟悉了吧。</p>
+      <p>CodePlex是微软的开源工程网站，涉及诸多微软最新技术的开源工程，同时也可以建立自己的开源工程，大家应该比较熟悉了吧。</p>
 <p>ClickOnce 是一种部署技术，使用该技术可创建自行更新的基于 Windows 的应用程序，这些应用程序可以通过最低程度的用户交互来安装和运行。</p>
 <p>而CodePlex支持ClickOnce的在线发布，可以减少安装部署和特别是更新的成本。当然只能是开源程序。</p>
 <p>下面就介绍一下如何在CodePlex发布ClickOnce应用程序/</p>
@@ -512,46 +429,35 @@
 <p>Creating a ClickOnce Release</p>
 <p><a href="http://codeplex.codeplex.com/wikipage?title=ClickOnce#Creating" title="http://codeplex.codeplex.com/wikipage?title=ClickOnce#Creating" target="_blank">http://codeplex.codeplex.com/wikipage?title=ClickOnce#Creating</a></p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2012/02/04/在codeplex发布clickonce应用程序/" data-id="tyh2l9dgfkty8kri" class="article-share-link">Share</a>
-      
-      
-    </footer>
+    
   </div>
-  
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
 </article>
 
 
-  
-    <article id="post-wp7应用开发笔记18-本地化与多语言" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2012/02/01/wp7应用开发笔记18-本地化与多语言/" class="article-date">
-  <time datetime="2012-02-01T04:24:00.000Z" itemprop="datePublished">2月 1 2012</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/未分类/">未分类</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <time datetime="2012-02-01T04:24:00.000Z"><a href="/2012/02/01/wp7应用开发笔记18-本地化与多语言/">2月 1 2012</a></time>
     
     
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2012/02/01/wp7应用开发笔记18-本地化与多语言/">WP7应用开发笔记(18) 本地化与多语言</a>
-    </h1>
+    <h1 class="title"><a href="/2012/02/01/wp7应用开发笔记18-本地化与多语言/">WP7应用开发笔记(18) 本地化与多语言</a></h1>
   
 
-      </header>
+  </header>
+  
+  <div class="entry">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>WP程序面向的是App Hub市场发布，支持多种语言是一个很重要的需求，也能为程序提供更广泛的用户群。</p>
+      <p>WP程序面向的是App Hub市场发布，支持多种语言是一个很重要的需求，也能为程序提供更广泛的用户群。</p>
 <p>如何实现让程序实现语言本地化呢？</p>
 <p>&nbsp;</p>
 <h2 id="使用资源文件">使用资源文件</h2>
@@ -642,46 +548,35 @@
 <p>Windows Phone 全球化和本地化</p>
 <p><a href="http://msdn.microsoft.com/zh-cn/library/ff637522(v=vs.92" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff637522(v=vs.92).aspx</a>.aspx “<a href="http://msdn.microsoft.com/zh-cn/library/ff637522(v=vs.92).aspx" target="_blank">http://msdn.microsoft.com/zh-cn/library/ff637522(v=vs.92).aspx</a>“)</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2012/02/01/wp7应用开发笔记18-本地化与多语言/" data-id="w7l34uhoe4kqjyxg" class="article-share-link">Share</a>
-      
-      
-    </footer>
+    
   </div>
-  
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
 </article>
 
 
-  
-    <article id="post-wp7应用开发笔记-插曲-小心使用messagebox" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2012/01/31/wp7应用开发笔记-插曲-小心使用messagebox/" class="article-date">
-  <time datetime="2012-01-31T04:06:00.000Z" itemprop="datePublished">1月 31 2012</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/未分类/">未分类</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <time datetime="2012-01-31T04:06:00.000Z"><a href="/2012/01/31/wp7应用开发笔记-插曲-小心使用messagebox/">1月 31 2012</a></time>
     
     
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2012/01/31/wp7应用开发笔记-插曲-小心使用messagebox/">WP7应用开发笔记-插曲 小心使用MessageBox</a>
-    </h1>
+    <h1 class="title"><a href="/2012/01/31/wp7应用开发笔记-插曲-小心使用messagebox/">WP7应用开发笔记-插曲 小心使用MessageBox</a></h1>
   
 
-      </header>
+  </header>
+  
+  <div class="entry">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>哎，上班了没什么时间学习了，谈点小技巧。</p>
+      <p>哎，上班了没什么时间学习了，谈点小技巧。</p>
 <p>最近审查的时候遇到一个问题，研究很久才解决，原来是一个小问题就是MessageBox</p>
 <p>&nbsp;</p>
 <p>原来的代码是这样的，在没有输入IP的时候提示用户并跳转到配置页面。</p>
@@ -703,46 +598,35 @@
 
 <p>这个故事告诉我一下在WP7里面使用MessageBox要注意 Deactivated 事件引发的MessageBox返回的情况。</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2012/01/31/wp7应用开发笔记-插曲-小心使用messagebox/" data-id="gi6f1wodm85tgmhy" class="article-share-link">Share</a>
-      
-      
-    </footer>
+    
   </div>
-  
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
 </article>
 
 
-  
-    <article id="post-我的wp7应用开发笔记系列" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2012/01/30/我的wp7应用开发笔记系列/" class="article-date">
-  <time datetime="2012-01-30T04:06:00.000Z" itemprop="datePublished">1月 30 2012</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/未分类/">未分类</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <time datetime="2012-01-30T04:06:00.000Z"><a href="/2012/01/30/我的wp7应用开发笔记系列/">1月 30 2012</a></time>
     
     
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2012/01/30/我的wp7应用开发笔记系列/">我的WP7应用开发笔记系列</a>
-    </h1>
+    <h1 class="title"><a href="/2012/01/30/我的wp7应用开发笔记系列/">我的WP7应用开发笔记系列</a></h1>
   
 
-      </header>
+  </header>
+  
+  <div class="entry">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>春节期间在学习WP7开发，为了练手开发了一款简单的程序，在这里记录一下设计开发过程给大家分享。</p>
+      <p>春节期间在学习WP7开发，为了练手开发了一款简单的程序，在这里记录一下设计开发过程给大家分享。</p>
 <p>本人虽然有几年的C#开发经验，但是wp7程序还是刚刚开始学习。</p>
 <p>边学边开发边写文章，目录结构可能比较混乱,文章只记录了开发过程的知识点，没有详细的编码过程。</p>
 <p>如果有什么问题还请各位园友见谅。</p>
@@ -816,46 +700,35 @@
 <p>第一个系列暂时到此结束，1个月不到学习了不少东西，也感觉漏掉了很多东西，以后等我继续学习在来写一个新应用吧。</p>
 <p>我还得准备工作相关的知识了。</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2012/01/30/我的wp7应用开发笔记系列/" data-id="do2cqt6tueu8opt8" class="article-share-link">Share</a>
-      
-      
-    </footer>
+    
   </div>
-  
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
 </article>
 
 
-  
-    <article id="post-wp7应用开发笔记17-提交应用" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2012/01/30/wp7应用开发笔记17-提交应用/" class="article-date">
-  <time datetime="2012-01-30T04:03:00.000Z" itemprop="datePublished">1月 30 2012</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/未分类/">未分类</a>
-  </div>
 
-  </div>
-  <div class="article-inner">
+  <article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <time datetime="2012-01-30T04:03:00.000Z"><a href="/2012/01/30/wp7应用开发笔记17-提交应用/">1月 30 2012</a></time>
     
     
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2012/01/30/wp7应用开发笔记17-提交应用/">WP7应用开发笔记(17) 提交应用</a>
-    </h1>
+    <h1 class="title"><a href="/2012/01/30/wp7应用开发笔记17-提交应用/">WP7应用开发笔记(17) 提交应用</a></h1>
   
 
-      </header>
+  </header>
+  
+  <div class="entry">
     
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="注册AppHub帐号">注册AppHub帐号</h2>
+      <h2 id="注册AppHub帐号">注册AppHub帐号</h2>
 <p>首先使用Windows Live ID登录<a href="http://create.msdn.com/zh-CN" title="http://create.msdn.com/zh-CN" target="_blank">http://create.msdn.com/zh-CN</a> 注册帐号，选择个人或者学生。</p>
 <p>如果想拥有免费帐号，AppHub为学生提供免费1年的使用，需要一个以edu.cn结尾的邮箱作为验证邮箱，如果你已经工作找你的后辈或者亲戚要一个吧。<span style="color: #000000;"><span style="color: #ffffff;">（不行入侵一个,好孩子不要学我）</span> </span></p>
 <p>点击&ldquo;Get Verified&rdquo;，然后按提示操作，选国家China，然后选自己edu.cn的邮箱的那个大学，验证之后邮箱会收到验证码Key.</p>
@@ -892,111 +765,128 @@
 <p><img src="http://pic002.cnblogs.com/images/2012/25121/2012013020023061.jpg" alt=""></p>
 <p>发布完成后可以修改一些详细信息和发布地区，以及提交更新包，注意提交更新后就不能修改了。（现在想改美国还得等几天了）。</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2012/01/30/wp7应用开发笔记17-提交应用/" data-id="b84dm3mxkrz5xkxo" class="article-share-link">Share</a>
-      
-      
-    </footer>
+    
   </div>
-  
+  <footer class="end-sep">
+    
+      
+      
+    
+    <div class="clearfix"></div>
+  </footer>
 </article>
 
 
-  
-  
-    <nav id="page-nav">
-      <a class="extend prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" href="/page/4/">Next &raquo;</a>
-    </nav>
-  
-</section>
-        
-          <aside id="sidebar">
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">67</span></li></ul>
-    </div>
-  </div>
 
-  
-    
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03">三月 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/11">十一月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/06">六月 2012</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/04">四月 2012</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/03">三月 2012</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/02">二月 2012</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2012/01">一月 2012</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/12">十二月 2011</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/08">八月 2011</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2011/02">二月 2011</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2010/12">十二月 2010</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/06">六月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2009/05">五月 2009</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2007/08">八月 2007</a><span class="archive-list-count">1</span></li></ul>
-    </div>
-  </div>
 
+<nav id="pagination">
+  
+    <a href="/page/2/" class="prev">上一页</a>
+  
+  
+    <a href="/page/4/" class="next">下一页</a>
+  
+  <div class="clearfix"></div>
+</nav></div>
+  </div>
+  <div class="widget-wrapper">
+    <aside id="sidebar">
+  
   
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recents</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2014/03/19/hello-world/">Hello World</a>
-          </li>
-        
-          <li>
-            <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
-          </li>
-        
-          <li>
-            <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
-          </li>
-        
-          <li>
-            <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
-          </li>
-        
-          <li>
-            <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
+      
+      
 
+<div class="widget tag first">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/未分类/">未分类</a><small>67</small></li>
+  
+  </ul>
+</div>
+
+    
+      
+      
+    
+      
+      
+    
+      
+      
+
+<div class="widget recent-posts">
+  <h3 class="title">最近的文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2014/03/19/hello-world/">Hello World</a>
+      </li>
+    
+      <li>
+        <a href="/2012/11/02/windows-phone-toolkit-for-wp8-已经出了/">Windows Phone Toolkit for WP8 已经出了</a>
+      </li>
+    
+      <li>
+        <a href="/2012/06/17/代码分享-scrollviewerlistener-获取scrollviewer的位置改变/">代码分享 ScrollViewerListener 获取ScrollViewer的位置改变</a>
+      </li>
+    
+      <li>
+        <a href="/2012/04/18/经验-c手动同步的滥用实例/">经验 C#手动同步的滥用实例</a>
+      </li>
+    
+      <li>
+        <a href="/2012/04/06/wp7技巧-扩展【共享-】按钮/">WP7技巧 扩展【共享...】按钮</a>
+      </li>
+    
+  </ul>
+</div>
+
+    
+      
+      
+
+<div class="widget blogroll">
+  <h3 class="title">友情链接</h3>
+  <ul class="entry">
+  
+    
+    <li><a href="http://heroicyang.com/" target="_blank">Heroic Yang&#39;s Blog</a></li>
+  
+  </ul>
+</div>
+
+    
   
 </aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2014 kiminozo<br>
-      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
-    </div>
+<div class="clearfix"></div>
   </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
+  <footer id="footer"><div class="copyright">
   
-    <a href="/" class="mobile-nav-link">Home</a>
+  &copy; 2014 <a href="/">kiminozo</a>
   
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
 
 
 <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
 <script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
 
-
-<script type="text/javascript" src="/js/script.js"></script>
-  </div>
 </body>
 </html>
