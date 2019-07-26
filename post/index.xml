@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Piova&#39;s weblog</title>
+    <link>http://kiminozo.github.io/post/</link>
+    <description>Recent content in Posts on Piova&#39;s weblog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 26 Jul 2019 10:00:35 +0800</lastBuildDate>
+    
+	<atom:link href="http://kiminozo.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>设计API的原则---读《软件框架设计艺术》</title>
+      <link>http://kiminozo.github.io/post/api-design/</link>
+      <pubDate>Fri, 26 Jul 2019 10:00:35 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/post/api-design/</guid>
+      <description>概要 NetBeans项目最初的架构师Jaroslav Tulach 讲自己10年来API设计的经验总结，少有的详细讲述API如何架构的书，虽然历史比较久远</description>
+    </item>
+    
+    <item>
+      <title>怎么样做单测测试</title>
+      <link>http://kiminozo.github.io/post/how-to-test/</link>
+      <pubDate>Tue, 23 Jul 2019 16:45:02 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/post/how-to-test/</guid>
+      <description>怎么样做单测测试 什么是单元测试 在计算机编程中，单元测试（英语：Unit Testing）又称为模块测试，是针对程序模块（软件设计的最小单位）来</description>
+    </item>
+    
+    <item>
+      <title>谷歌是怎么样做测试的</title>
+      <link>http://kiminozo.github.io/post/how-to-test-in-google/</link>
+      <pubDate>Tue, 16 Jul 2019 10:24:25 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/post/how-to-test-in-google/</guid>
+      <description>测试质量理念 质量不是被测试出来的，开发和测试必须同时开展。 有哪些测试方式？ 参考G+团队的Android测试 Unit Tests 在Android中，将UI代码</description>
+    </item>
+    
+    <item>
+      <title>Hugo建站</title>
+      <link>http://kiminozo.github.io/post/hello/</link>
+      <pubDate>Mon, 15 Jul 2019 17:32:06 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/post/hello/</guid>
+      <description>今天用Hugo建站成功 最近在学习go语言, Hexo的旧站没用了，有空以前的Blog慢慢迁移过来吧。</description>
+    </item>
+    
+  </channel>
+</rss>

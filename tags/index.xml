@@ -1,14 +1,105 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on My New Hugo Site</title>
+    <title>Tags on Piova&#39;s weblog</title>
     <link>http://kiminozo.github.io/tags/</link>
-    <description>Recent content in Tags on My New Hugo Site</description>
+    <description>Recent content in Tags on Piova&#39;s weblog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-cn</language>
+    <language>en</language>
+    <lastBuildDate>Fri, 26 Jul 2019 10:00:35 +0800</lastBuildDate>
     
 	<atom:link href="http://kiminozo.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>架构</title>
+      <link>http://kiminozo.github.io/tags/%E6%9E%B6%E6%9E%84/</link>
+      <pubDate>Fri, 26 Jul 2019 10:00:35 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/tags/%E6%9E%B6%E6%9E%84/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>设计</title>
+      <link>http://kiminozo.github.io/tags/%E8%AE%BE%E8%AE%A1/</link>
+      <pubDate>Fri, 26 Jul 2019 10:00:35 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/tags/%E8%AE%BE%E8%AE%A1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>读书笔记</title>
+      <link>http://kiminozo.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Fri, 26 Jul 2019 10:00:35 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>单元测试”,“设计</title>
+      <link>http://kiminozo.github.io/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E8%AE%BE%E8%AE%A1/</link>
+      <pubDate>Tue, 23 Jul 2019 16:45:02 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E8%AE%BE%E8%AE%A1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>单测</title>
+      <link>http://kiminozo.github.io/tags/%E5%8D%95%E6%B5%8B/</link>
+      <pubDate>Tue, 23 Jul 2019 16:45:02 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/tags/%E5%8D%95%E6%B5%8B/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>测试</title>
+      <link>http://kiminozo.github.io/tags/%E6%B5%8B%E8%AF%95/</link>
+      <pubDate>Tue, 23 Jul 2019 16:45:02 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/tags/%E6%B5%8B%E8%AF%95/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>android</title>
+      <link>http://kiminozo.github.io/tags/android/</link>
+      <pubDate>Tue, 16 Jul 2019 10:24:25 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/tags/android/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>test</title>
+      <link>http://kiminozo.github.io/tags/test/</link>
+      <pubDate>Tue, 16 Jul 2019 10:24:25 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/tags/test/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>golang</title>
+      <link>http://kiminozo.github.io/tags/golang/</link>
+      <pubDate>Mon, 15 Jul 2019 17:32:06 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>web</title>
+      <link>http://kiminozo.github.io/tags/web/</link>
+      <pubDate>Mon, 15 Jul 2019 17:32:06 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/tags/web/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

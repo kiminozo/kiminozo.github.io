@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>单测 on Piova&#39;s weblog</title>
+    <link>http://kiminozo.github.io/tags/%E5%8D%95%E6%B5%8B/</link>
+    <description>Recent content in 单测 on Piova&#39;s weblog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 23 Jul 2019 16:45:02 +0800</lastBuildDate>
+    
+	<atom:link href="http://kiminozo.github.io/tags/%E5%8D%95%E6%B5%8B/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>怎么样做单测测试</title>
+      <link>http://kiminozo.github.io/post/how-to-test/</link>
+      <pubDate>Tue, 23 Jul 2019 16:45:02 +0800</pubDate>
+      
+      <guid>http://kiminozo.github.io/post/how-to-test/</guid>
+      <description>怎么样做单测测试 什么是单元测试 在计算机编程中，单元测试（英语：Unit Testing）又称为模块测试，是针对程序模块（软件设计的最小单位）来</description>
+    </item>
+    
+  </channel>
+</rss>

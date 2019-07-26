@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>谷歌是怎么样做测试的 - Piova&#39;s weblog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Piova Chen" /><meta name="description" content="测试质量理念 质量不是被测试出来的，开发和测试必须同时开展。 有哪些测试方式？ 参考G&#43;团队的Android测试 Unit Tests 在Android中，将UI代码" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+
+
+<link rel="canonical" href="http://kiminozo.github.io/post/how-to-test-in-google/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="谷歌是怎么样做测试的" />
+<meta property="og:description" content="测试质量理念 质量不是被测试出来的，开发和测试必须同时开展。 有哪些测试方式？ 参考G&#43;团队的Android测试 Unit Tests 在Android中，将UI代码" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://kiminozo.github.io/post/how-to-test-in-google/" />
+<meta property="article:published_time" content="2019-07-16T10:24:25&#43;08:00"/>
+<meta property="article:modified_time" content="2019-07-16T10:24:25&#43;08:00"/>
+
+<meta itemprop="name" content="谷歌是怎么样做测试的">
+<meta itemprop="description" content="测试质量理念 质量不是被测试出来的，开发和测试必须同时开展。 有哪些测试方式？ 参考G&#43;团队的Android测试 Unit Tests 在Android中，将UI代码">
+
+
+<meta itemprop="datePublished" content="2019-07-16T10:24:25&#43;08:00" />
+<meta itemprop="dateModified" content="2019-07-16T10:24:25&#43;08:00" />
+<meta itemprop="wordCount" content="1905">
+
+
+
+<meta itemprop="keywords" content="test,android," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="谷歌是怎么样做测试的"/>
+<meta name="twitter:description" content="测试质量理念 质量不是被测试出来的，开发和测试必须同时开展。 有哪些测试方式？ 参考G&#43;团队的Android测试 Unit Tests 在Android中，将UI代码"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Piova</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Piova</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">谷歌是怎么样做测试的</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-07-16 </span>
+        <div class="post-category">
+            <a href="/categories/%E6%B5%8B%E8%AF%95/"> 测试 </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#测试质量理念">测试质量理念</a></li>
+<li><a href="#有哪些测试方式">有哪些测试方式？</a>
+<ul>
+<li><a href="#unit-tests">Unit Tests</a></li>
+<li><a href="#hermetic-ui-tests">Hermetic UI Tests</a></li>
+<li><a href="#monkey-tests">Monkey Tests</a></li>
+</ul></li>
+<li><a href="#测试需要怎么样的环境">测试需要怎么样的环境？</a>
+<ul>
+<li><a href="#hermetic-servers-封闭环境">hermetic-servers 封闭环境</a></li>
+<li><a href="#自动化测试">自动化测试</a></li>
+<li><a href="#封闭测试使用fake服务">封闭测试使用Fake服务</a></li>
+<li><a href="#结论">结论：</a></li>
+</ul></li>
+<li><a href="#角色">角色</a></li>
+<li><a href="#测试类型">测试类型</a></li>
+<li><a href="#测试成熟度等级">测试成熟度等级</a></li>
+<li><a href="#如何执行的">如何执行的</a></li>
+<li><a href="#推广过程">推广过程</a></li>
+<li><a href="#总结">总结</a></li>
+<li><a href="#参考文章">参考文章</a></li>
+<li><a href="#参考书籍">参考书籍</a></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<hr />
+
+<h1 id="测试质量理念">测试质量理念</h1>
+
+<blockquote>
+<p>质量不是被测试出来的，开发和测试必须同时开展。</p>
+</blockquote>
+
+<h1 id="有哪些测试方式">有哪些测试方式？</h1>
+
+<p>参考G+团队的Android测试</p>
+
+<h2 id="unit-tests">Unit Tests</h2>
+
+<p>在Android中，将UI代码与代码逻辑分离尤其困难。例如，期望某个活动同时充当控制器和视图；在编写单元测试时请确保记住这一点。</p>
+
+<p>另一个有用的建议是将单元测试与Android emulator分离，这将消除构建APK并安装它的需要，您的测试将运行得更快。</p>
+
+<p>Robolecture是一个非常好的工具；它在运行测试时对Android平台的实现进行模拟。</p>
+
+<h2 id="hermetic-ui-tests">Hermetic UI Tests</h2>
+
+<p>封闭测试通常以UI测试的形式运行，不需要网络调用或外部依赖。</p>
+
+<p>一旦测试可以在密封环境中运行，像Espresso这样的白盒测试框架就可以模拟用户在UI上的操作，并与应用程序代码紧密耦合。</p>
+
+<p>espresso还将使您的测试操作与UI线程上的事件同步，从而减少不稳定。</p>
+
+<p>Espresso is now being used by over 30 applications within Google (Drive, Maps and G+, just to name a few)</p>
+
+<h2 id="monkey-tests">Monkey Tests</h2>
+
+<p><strong>Monkey测试</strong>通过强调Android应用程序来查找崩溃和ANR。</p>
+
+<p>他们在被测试的应用程序上进行伪随机事件，比如点击或手势。</p>
+
+<p><strong>Monkey测试</strong>的测试结果在一定程度上是可重复的；时间和延迟并不完全在你的控制之下，可能导致测试失败。</p>
+
+<p>但是，在相同的配置下重新运行相同的<strong>Monkey测试</strong>通常会重现这些失败。</p>
+
+<p>如果您每天都在不同的SDK上运行它们，那么它们在新版本开发周期的早期就能非常有效地捕获bug。</p>
+
+<h1 id="测试需要怎么样的环境">测试需要怎么样的环境？</h1>
+
+<h2 id="hermetic-servers-封闭环境">hermetic-servers 封闭环境</h2>
+
+<p><img src="/images/201907/123374814.jpg" alt="image" /></p>
+
+<h2 id="自动化测试">自动化测试</h2>
+
+<p>1：不要用E2E测试代替UI测试</p>
+
+<p><img src="/images/201907/123381148.png" alt="image" /></p>
+
+<p>E2E测试的问题：</p>
+
+<ul>
+<li>大而慢的测试用例</li>
+<li>由于超时和设备问题导致的高异常率</li>
+<li>难以调试和调查问题</li>
+<li>身份认证问题</li>
+</ul>
+
+<h2 id="封闭测试使用fake服务">封闭测试使用Fake服务</h2>
+
+<p><img src="/images/201907/123358136.png" alt="image" /></p>
+
+<h2 id="结论">结论：</h2>
+
+<ul>
+<li>写unit tests 和 integration tests 与 UI tests协助</li>
+<li>Hermetic tests are the way to go.</li>
+<li>设计APP的时候使用依赖注入</li>
+<li>把APP放到更多的小模块里面让每个模块都可以独立测试减少集成测试的成本。</li>
+<li>组件化的UI测试已经证明比E2E快得多，并且99%的稳定性。</li>
+</ul>
+
+<h1 id="角色">角色</h1>
+
+<p>Software Engineer</p>
+
+<blockquote>
+<p>为代码的质量负责，他们也会写很多的测试代码，包括测试驱动设计，单元测试，并参与小、中、大型测试的创建工作</p>
+</blockquote>
+
+<p>Software Engineer in Test</p>
+
+<blockquote>
+<p>主要负责软件的可测试性</p>
+</blockquote>
+
+<p>Test Engineer</p>
+
+<blockquote>
+<p>自动化脚本、使用场景的代码、甚至模拟最终用户的操作方面的代码</p>
+</blockquote>
+
+<h1 id="测试类型">测试类型</h1>
+
+<blockquote>
+<p>弃用了单元测试、白盒测试、端到端测试等令人疑惑的类型</p>
+</blockquote>
+
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>占比</th>
+<th>作用</th>
+<th>备注</th>
+<th>人员</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>小型测试</td>
+<td>70%</td>
+<td>验证一个函数和模块</td>
+<td>大部分自动化实现 mock、fack</td>
+<td>SWE、少量SET</td>
+</tr>
+
+<tr>
+<td>中型测试</td>
+<td>20%</td>
+<td>2个及以上的功能模块</td>
+<td>验证功能临界区</td>
+<td>大部分自动化实现</td>
+</tr>
+
+<tr>
+<td>大型测试</td>
+<td>10%</td>
+<td>3个及更多功能模块</td>
+<td>使用真实的场景和数据</td>
+<td>验证满足最终用户的需求</td>
+</tr>
+</tbody>
+</table>
+
+<h1 id="测试成熟度等级">测试成熟度等级</h1>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>L1</th>
+<th>L2</th>
+<th>L3</th>
+<th>L4</th>
+<th>L5</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>重点</td>
+<td>建立自动化机制</td>
+<td>提高增量覆盖率</td>
+<td>测试新增代码</td>
+<td>历史遗留代码</td>
+<td>更好的覆盖率工具</td>
+</tr>
+
+<tr>
+<td>工具</td>
+<td>覆盖率、CI、分类</td>
+<td>覆盖率、CI、分类</td>
+<td>覆盖率、CI、分类</td>
+<td>覆盖率、CI、分类</td>
+<td>覆盖率、CI、分类、代码分析</td>
+</tr>
+
+<tr>
+<td>不确定的测试</td>
+<td>明确标注</td>
+<td>明确标注</td>
+<td>明确标注</td>
+<td>没有</td>
+<td>没有</td>
+</tr>
+
+<tr>
+<td>代码提交</td>
+<td>-</td>
+<td>提交前冒烟通过</td>
+<td>重要代码变更必须测试通过</td>
+<td>提交新代码自动冒烟</td>
+<td>提交新代码自动冒烟</td>
+</tr>
+
+<tr>
+<td>集成测试</td>
+<td>-</td>
+<td>一个特性至少一个集成用例</td>
+<td>新功能必须集成测试通过</td>
+<td>重要功能都应该集成测试</td>
+<td>重要功能都应该集成测试</td>
+</tr>
+
+<tr>
+<td>流程要求</td>
+<td>-</td>
+<td>测试失败不能发布</td>
+<td>测试失败不能发布</td>
+<td>测试失败不能发布，冒烟30分钟内</td>
+<td>失败不能发布，冒烟30分钟内，重要缺陷补充用例</td>
+</tr>
+
+<tr>
+<td>新增代码覆盖</td>
+<td>-</td>
+<td>合计&gt;50%，小型&gt;10%</td>
+<td>合计&gt;50%，小型&gt;50%</td>
+<td>合计&gt;50%，小型&gt;50%</td>
+<td>合计&gt;50%，小型&gt;50%</td>
+</tr>
+
+<tr>
+<td>总体覆盖率</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>合计&gt;40%，小型&gt;25%</td>
+<td>合计&gt;60%，小型&gt;40%</td>
+</tr>
+</tbody>
+</table>
+
+<h1 id="如何执行的">如何执行的</h1>
+
+<p>Google将测试成熟度等级作为团队认证，由TE组成的专家团队考察，最初都是L0，如果达到成熟度L1就给这个团队颁发L1测试认证的勋章。</p>
+
+<p>公司内部可以通过认证级别知道，哪些团队在测试方面做得优秀。</p>
+
+<p>团队和个人会把提高测试成熟度作为团队的目标或者个人绩效，高L的开发团队在公司内得到更多影响力和认可</p>
+
+<p>测试人员帮助开发团队提升认证可以自己也能提高影响力，所以加入认证的开发团队会吸引更多的测试人员。</p>
+
+<h1 id="推广过程">推广过程</h1>
+
+<p>最初在15个团队试点（团队感兴趣、代码比较干净、有一个测试经验的人），然后再公司内部各种地方宣传。</p>
+
+<p>几个月后50个团队参与了，还培养了很多测试认证的教练。</p>
+
+<p>逐步形成为公司文化</p>
+
+<h1 id="总结">总结</h1>
+
+<p>Google的测试主要是又SWE负责、SET协助完成的，使用了大量的自动化测试来减少的TE的工作量。</p>
+
+<p>ST主要工作是评审需求、测试用例编写和执行、探索性测试、用户场景。</p>
+
+<p>Android里 Espresso系列是主要测试工具，在完备的Hermetic环境反复可以执行。</p>
+
+<p>SWE负责保证质量，这样对SWE的本身能力要求会比较高。</p>
+
+<hr />
+
+<h1 id="参考文章">参考文章</h1>
+
+<p><a href="https://testing.googleblog.com/">https://testing.googleblog.com/</a></p>
+
+<p><a href="http://blog.jobbole.com/15277/">http://blog.jobbole.com/15277/</a></p>
+
+<p><a href="http://blog.jobbole.com/15791/">http://blog.jobbole.com/15791/</a></p>
+
+<p><a href="https://zhuanlan.zhihu.com/p/43846016">https://zhuanlan.zhihu.com/p/43846016</a></p>
+
+<p><a href="https://testing.googleblog.com/2012/10/hermetic-servers.html">https://testing.googleblog.com/2012/10/hermetic-servers.html</a></p>
+
+<p><a href="https://testing.googleblog.com/2015/03/android-ui-automated-testing.html">https://testing.googleblog.com/2015/03/android-ui-automated-testing.html</a></p>
+
+<h1 id="参考书籍">参考书籍</h1>
+
+<p>《Google软件测试之道》</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Piova Chen</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-07-16
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/test/">test</a>
+          <a href="/tags/android/">android</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/how-to-test/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">怎么样做单测测试</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/hello/">
+            <span class="next-text nav-default">Hugo建站</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2019-07-16 10:24:25 \x2b0800 CST',
+        title: '谷歌是怎么样做测试的',
+        clientID: 'd7b6d695fbddd731f9bb',
+        clientSecret: '2b147c5e72cb946651a8f219050d2db127f90332',
+        repo: 'kiminozo.github.io',
+        owner: 'kiminozo',
+        admin: ['kiminozo'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="http://www.gitHub.com/kiminozo" class="iconfont icon-github" title="github"></a>
+  <a href="http://kiminozo.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Piova Chen</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

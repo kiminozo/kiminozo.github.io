@@ -1,19 +1,139 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<?xml-stylesheet type="text/xsl" href="http://kiminozo.github.io/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
     <loc>http://kiminozo.github.io/categories/</loc>
+    <lastmod>2019-07-26T10:00:35+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://kiminozo.github.io/</loc>
+    <lastmod>2019-07-26T10:00:35+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/post/</loc>
+    <lastmod>2019-07-26T10:00:35+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://kiminozo.github.io/tags/</loc>
+    <lastmod>2019-07-26T10:00:35+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/categories/%E6%9E%B6%E6%9E%84/</loc>
+    <lastmod>2019-07-26T10:00:35+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/tags/%E6%9E%B6%E6%9E%84/</loc>
+    <lastmod>2019-07-26T10:00:35+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/tags/%E8%AE%BE%E8%AE%A1/</loc>
+    <lastmod>2019-07-26T10:00:35+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/post/api-design/</loc>
+    <lastmod>2019-07-26T10:00:35+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2019-07-26T10:00:35+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2019-07-26T10:00:35+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E8%AE%BE%E8%AE%A1/</loc>
+    <lastmod>2019-07-23T16:45:02+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/tags/%E5%8D%95%E6%B5%8B/</loc>
+    <lastmod>2019-07-23T16:45:02+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/post/how-to-test/</loc>
+    <lastmod>2019-07-23T16:45:02+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/categories/%E6%B5%8B%E8%AF%95/</loc>
+    <lastmod>2019-07-23T16:45:02+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/tags/%E6%B5%8B%E8%AF%95/</loc>
+    <lastmod>2019-07-23T16:45:02+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/tags/android/</loc>
+    <lastmod>2019-07-16T10:24:25+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/tags/test/</loc>
+    <lastmod>2019-07-16T10:24:25+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/post/how-to-test-in-google/</loc>
+    <lastmod>2019-07-16T10:24:25+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/post/hello/</loc>
+    <lastmod>2019-07-15T17:32:06+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/tags/golang/</loc>
+    <lastmod>2019-07-15T17:32:06+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/categories/other/</loc>
+    <lastmod>2019-07-15T17:32:06+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://kiminozo.github.io/tags/web/</loc>
+    <lastmod>2019-07-15T17:32:06+08:00</lastmod>
     <priority>0</priority>
   </url>
   

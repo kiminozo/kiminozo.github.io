@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>设计API的原则---读《软件框架设计艺术》 - Piova&#39;s weblog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Piova Chen" /><meta name="description" content="概要 NetBeans项目最初的架构师Jaroslav Tulach 讲自己10年来API设计的经验总结，少有的详细讲述API如何架构的书，虽然历史比较久远" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+
+
+<link rel="canonical" href="http://kiminozo.github.io/post/api-design/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="设计API的原则---读《软件框架设计艺术》" />
+<meta property="og:description" content="概要 NetBeans项目最初的架构师Jaroslav Tulach 讲自己10年来API设计的经验总结，少有的详细讲述API如何架构的书，虽然历史比较久远" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://kiminozo.github.io/post/api-design/" />
+<meta property="article:published_time" content="2019-07-26T10:00:35&#43;08:00"/>
+<meta property="article:modified_time" content="2019-07-26T10:00:35&#43;08:00"/>
+
+<meta itemprop="name" content="设计API的原则---读《软件框架设计艺术》">
+<meta itemprop="description" content="概要 NetBeans项目最初的架构师Jaroslav Tulach 讲自己10年来API设计的经验总结，少有的详细讲述API如何架构的书，虽然历史比较久远">
+
+
+<meta itemprop="datePublished" content="2019-07-26T10:00:35&#43;08:00" />
+<meta itemprop="dateModified" content="2019-07-26T10:00:35&#43;08:00" />
+<meta itemprop="wordCount" content="905">
+
+
+
+<meta itemprop="keywords" content="架构,设计,读书笔记," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="设计API的原则---读《软件框架设计艺术》"/>
+<meta name="twitter:description" content="概要 NetBeans项目最初的架构师Jaroslav Tulach 讲自己10年来API设计的经验总结，少有的详细讲述API如何架构的书，虽然历史比较久远"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Piova</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Piova</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">设计API的原则---读《软件框架设计艺术》</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-07-26 </span>
+        <div class="post-category">
+            <a href="/categories/%E6%9E%B6%E6%9E%84/"> 架构 </a>
+            <a href="/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"> 读书笔记 </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#概要">概要</a></li>
+<li><a href="#心得">心得</a></li>
+<li><a href="#核心思想">核心思想</a></li>
+<li><a href="#兼容原则">兼容原则</a></li>
+<li><a href="#设计原则">设计原则</a></li>
+<li><a href="#面向接口编程">面向接口编程</a></li>
+<li><a href="#区分目标用户">区分目标用户</a></li>
+<li><a href="#合理分解api">合理分解API</a></li>
+<li><a href="#可测性">可测性</a></li>
+<li><a href="#与其他api协作">与其他API协作</a></li>
+<li><a href="#团队协作">团队协作</a></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<h1 id="概要">概要</h1>
+
+<p><img src="/images/201907/131609203.jpg" alt="book" /></p>
+
+<p>NetBeans项目最初的架构师Jaroslav Tulach 讲自己10年来API设计的经验总结，少有的详细讲述API如何架构的书，虽然历史比较久远但是还有很多经验可以学习。</p>
+
+<h1 id="心得">心得</h1>
+
+<p>读完这本书籍里面有很多已经遇到过的知识，但是作者把这些知识点总结归纳得很好，
+非常适合需要编写SDK、设计API的人先读一读。</p>
+
+<h1 id="核心思想">核心思想</h1>
+
+<blockquote>
+<p>无绪 cluelessness</p>
+</blockquote>
+
+<p>就是让API的使用者只需要浅层理解就可以使用，不用去深层理解内部实现</p>
+
+<h1 id="兼容原则">兼容原则</h1>
+
+<ul>
+<li>向后兼容</li>
+<li>源代码兼容</li>
+<li>二进制兼容</li>
+</ul>
+
+<h1 id="设计原则">设计原则</h1>
+
+<ul>
+<li>只公开需要公开的内容</li>
+<li>方法优于字段</li>
+<li>工厂方法优于构造函数</li>
+<li>让所有内容不可更改</li>
+<li>避免滥用Settier</li>
+<li>仅可能通过友元公开功能</li>
+<li>赋予对象创建者更多权利</li>
+<li>避免暴露深层次的继承</li>
+</ul>
+
+<h1 id="面向接口编程">面向接口编程</h1>
+
+<p>接口不是Interface，而是抽象的内容。</p>
+
+<ul>
+<li>要为增加参数做好准备</li>
+<li>要考虑增加或移除方法和字段的兼容性</li>
+<li>考虑interface和抽象类的兼容性</li>
+</ul>
+
+<h1 id="区分目标用户">区分目标用户</h1>
+
+<p>分清楚API和SPI的区别，将API分成四类</p>
+
+<ul>
+<li><strong>核心类型API</strong>  用户只关心API的提供功能，执行SDK需要的关键且必须的操作</li>
+<li><strong>支持类型API</strong>  SDK提供的辅助功能和实用方法，帮助用户更好的使用核心API，但非必须操作</li>
+<li><strong>核心类型SPI</strong>  给另一类用户提供的API，用于扩展SDK的功能。如果SDK不支持扩展就不提供。</li>
+<li><strong>支持类型SPI</strong>  辅助扩展SDK功能的助手类接口</li>
+</ul>
+
+<h1 id="合理分解api">合理分解API</h1>
+
+<ul>
+<li>把有关联的方法放在一个类里面；（单一职责）</li>
+<li>对应一些无关的方法，绝不能没地方放而随便放到与它无关的地方</li>
+<li>把关联的类放在同一个包里面
+*把特殊场景的类转移到其他包</li>
+</ul>
+
+<h1 id="可测性">可测性</h1>
+
+<ul>
+<li>单元测试和代码覆盖率可以让API更稳定，但是覆盖率100%并不能保证没有问题</li>
+<li>在提供API的的时候，好的SDK还会提供测试工具来帮助单元测试</li>
+<li>测试套件TCK 可以帮助一个可扩展的SDK的用户快速验证</li>
+</ul>
+
+<h1 id="与其他api协作">与其他API协作</h1>
+
+<ul>
+<li>慎用第三方API</li>
+<li>只暴露抽象内容</li>
+<li>强化API的一致性</li>
+<li>避免误用</li>
+<li>小心监听器</li>
+</ul>
+
+<h1 id="团队协作">团队协作</h1>
+
+<ul>
+<li>提交API代码前必须进行代码评审
+
+<ul>
+<li>标准方式：两轮评审，设计和集成各一次</li>
+<li>快速跟踪：先准备好代码RP后，一星期内没人反对就pass。</li>
+</ul></li>
+<li>重大设计需要架构评审
+
+<ul>
+<li>需要架构团队进行评审，准备好20个问题和解答（泛指）</li>
+</ul></li>
+<li>开发人员需要为API提供文档</li>
+<li>监控变化，最好是自动化监控</li>
+<li>合理接受使用者的RP补丁</li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Piova Chen</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-07-26
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E6%9E%B6%E6%9E%84/">架构</a>
+          <a href="/tags/%E8%AE%BE%E8%AE%A1/">设计</a>
+          <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/how-to-test/">
+            <span class="next-text nav-default">怎么样做单测测试</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2019-07-26 10:00:35 \x2b0800 CST',
+        title: '设计API的原则---读《软件框架设计艺术》',
+        clientID: 'd7b6d695fbddd731f9bb',
+        clientSecret: '2b147c5e72cb946651a8f219050d2db127f90332',
+        repo: 'kiminozo.github.io',
+        owner: 'kiminozo',
+        admin: ['kiminozo'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="http://www.gitHub.com/kiminozo" class="iconfont icon-github" title="github"></a>
+  <a href="http://kiminozo.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Piova Chen</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
